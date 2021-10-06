@@ -13,14 +13,10 @@ git push
 #Después se exporta el contenido html del sitio web a un directorio determinado.
 #Yo he decidido guardarlo en mi repositorio conectado con Netlify, seleccionando
 #el tema:
-echo "Directorio donde se generará el sitio web:"
-read dir
-echo "Tema que tendrá el sitio web:"
-read tema
-pelican -o $dir -t $tema
+pelican -o ../web-estatica-netlify -t pelican-clean-blog
 
 #Por último, actualizo el repositorio de GitHub conectado con Netlify:
-cd $dir
+cd ../web-estatica-netlify
 git add .
 git commit -m "Sitio web actualizado"
 git push
