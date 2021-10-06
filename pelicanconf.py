@@ -3,7 +3,6 @@
 
 AUTHOR = 'Lara Pruna'
 SITENAME = 'SysRaider'
-SITEURL = ''
 
 PATH = 'content'
 STATIC_PATHS = ['images', 'extra']
