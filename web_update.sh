@@ -4,8 +4,10 @@
 #en Netlify, aunque también podría funcionar con Render. El script estará guardado
 #en el mismo directorio que Pelican.
 
-#Primero se sube los cambios al repositorio de Pelican en GitHub:
-echo "Introduce la contraseña de tu clave ssh:"
+#Primero se actualiza el contenido del sitio web:
+pelican content -s pelicanconf.py -t pelican-clean-blog
+
+#Luego se suben los cambios al repositorio de Pelican en GitHub:
 git add .
 git commit -m "Nuevos cambios en el repositorio"
 git push
