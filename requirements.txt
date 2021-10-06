@@ -1,5 +1,5 @@
 aiofiles==0.6.0
-aiohttp==3.7.4.post0
+aiohttp==2.3.2b2
 aiohttp-cors==0.7.0
 ansible-base==2.10.8
 apache-libcloud==3.2.0
