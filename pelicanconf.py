@@ -14,7 +14,7 @@ TIMEZONE = 'Europe/Paris'
 
 DEFAULT_LANG = 'es'
 
-THEME = 'theme/pelican-clean-blog'
+THEME = 'pelican-clean-blog'
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
