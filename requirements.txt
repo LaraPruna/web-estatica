@@ -52,7 +52,6 @@ pywinrm==0.3.0
 pyxattr==0.7.2
 pyxdg==0.27
 PyYAML==5.3.1
-reportbug==7.10.3
 requests==2.25.1
 requests-kerberos==0.12.0
 requests-ntlm==1.1.0
