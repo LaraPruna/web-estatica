@@ -15,9 +15,6 @@ distro==1.6.0
 dnspython==2.0.0
 docutils==0.17.1
 feedgenerator==1.9.2
-fuse-python==1.0.1
-gns3-gui==2.2.25
-gns3-server==2.2.25
 gpg===1.14.0-unknown
 httplib2==0.18.1
 idna==2.10
