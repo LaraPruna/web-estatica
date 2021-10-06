@@ -15,7 +15,6 @@ distro==1.6.0
 dnspython==2.0.0
 docutils==0.17.1
 feedgenerator==1.9.2
-gpg===1.14.0-unknown
 httplib2==0.18.1
 idna==2.10
 Jinja2==3.0.1
