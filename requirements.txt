@@ -22,7 +22,6 @@ jmespath==0.10.0
 jsonschema==3.2.0
 libvirt-python==7.0.0
 lockfile==0.12.2
-louis==3.16.0
 Markdown==3.3.4
 MarkupSafe==2.0.1
 multidict==5.1.0
