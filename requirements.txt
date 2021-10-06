@@ -12,7 +12,6 @@ chardet==4.0.0
 cryptography==3.3.2
 dbus-python==1.2.16
 distro==1.6.0
-distro-info==1.0
 dnspython==2.0.0
 docutils==0.17.1
 feedgenerator==1.9.2
