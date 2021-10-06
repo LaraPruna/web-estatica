@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-        <title>Sobre mí</title>
+        <title>Pelican</title>
 
             <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="SysRaider Full Atom Feed" />
         <!-- Bootstrap Core CSS -->
@@ -36,7 +36,7 @@
 		<meta property="og:site_name" content="SysRaider">
 </head>
 
-<body class="page-about">
+<body class="page-pelican">
 
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
@@ -56,8 +56,8 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
 
-                            <li class="active"><a href="/pages/about.html">Sobre mí</a></li>
-                            <li><a href="/pages/pelican.html">Pelican</a></li>
+                            <li><a href="/pages/about.html">Sobre mí</a></li>
+                            <li class="active"><a href="/pages/pelican.html">Pelican</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -71,7 +71,7 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
-                        <h1>Sobre mí</h1>
+                        <h1>Pelican</h1>
                     </div>
                 </div>
             </div>
@@ -83,16 +83,45 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
     <article>
-        <p>¡Hola! Me llamo Lara, y soy administradora de sistemas. Unos datos sobre mí:</p>
-<ul>
-<li>Estudiante del grado superior de Administración de Sistemas en el instituto IES Gonzalo Nazareno (Dos Hermanas).</li>
-<li>Graduada en Traducción e Interpretación por la Universidad Pablo de Olavide.</li>
-<li>Especializada en Localización de Software, Sitios Web y Videojuegos por el ISTRAD.</li>
-<li>Alto nivel de inglés</li>
-<li>Nivel N3 de japonés</li>
-<li>Nivel medio de alemán</li>
-</ul>
-<p><img src="/images/Admin.png" alt="Texto" width="500"/></p>
+        <h1>¿Te interesa crear tu propia web estática con Pelican en Debian?</h1>
+<p>Aquí aprenderás a hacerlo sin problemas. Como sabrás, Pelican es un generador de páginas estáticas basado en Python, y es bastante fácil de usar. Sigue con atención los siguientes pasos:</p>
+<h2>Primeros pasos en Pelican</h2>
+<p>Instala el paquete con pip, y opcionalmente, con markdown. Si no tienes pip, puedes instalarlo como cualquier paquete de Debian:</p>
+<pre><code class="shell">
+apt install python3-pip
+pip install "pelican[markdown]"
+</code></pre>
+
+<p>Genera tu sitio web:</p>
+<pre><code class="shell">
+pelican-quickstart
+</code></pre>
+
+<p>El programa te preguntará el nombre de tu nueva web, en qué directorio quieres guardarlo, nombre completo del creador, si quieres activar la paginación, etc.</p>
+<p><img src="/images/yes.png" alt="Conseguido" width="100" align="middle"/>
+Ya tienes lo básico.</p>
+<p>Ahora puedes probar a escribir un artículo. Tan solo tienes que crear un fichero en markdown o en el lenguaje que hayas elegido y guardarlo en el directorio "content". Veamos un ejemplo:</p>
+<pre><code class="markdown">
+Title: Mi primer artículo
+Date: 2021-10-05 9:10
+Category: Review
+lang: es
+
+Hola, esto es una prueba.
+</code></pre>
+
+<p>Después, ejecuta el siguiente comando para guardar los cambios que hayas hecho en la carpeta:</p>
+<pre><code class="shell">
+pelican content
+</code></pre>
+
+<p>Es posible que, al generar el sitio web, no se haya creado automáticamente el directorio "images" dentro de la carpeta "content". En ese caso, al ejecutar el comando anterior saltará una alerta de tipo "Warning". Para solucionarlo, simplemente tendríamos que crear la carpeta a mano. Ya solo nos quedaría desplegar la previsualización en el navegador. Para ello, introducimos el comando:</p>
+<pre><code class="shell"> 
+pelican --listen
+</code></pre>
+
+<p>El programa nos devolverá una dirección http (http://localhost:8000). Copiamos dicha dirección en el navegador y ¡voila!</p>
+<p><img src="/images/primer_articulo.png" alt="Mi primer articulo" width="700" align="middle"/></p>
     </article>
             </div>
         </div>

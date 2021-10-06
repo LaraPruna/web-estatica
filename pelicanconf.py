@@ -6,7 +6,9 @@ SITENAME = 'SysRaider'
 SITEURL = ''
 
 PATH = 'content'
-STATIC_PATHS = ['images']
+STATIC_PATHS = ['images', 'extra']
+
+EXTRA_PATH_METADATA = {'extra/favicon.ico': {'path':'favicon.ico'}}
 
 TIMEZONE = 'Europe/Paris'
 
