@@ -11,3 +11,5 @@ pelican content -s pelicanconf.py
 git add .
 git commit -m "Sitio web actualizado"
 git push
+
+#Automáticamente, Netlify actualizará el sitio web.
