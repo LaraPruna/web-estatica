@@ -2,6 +2,8 @@ Title: Sobre mí
 Slug: about
 Authors: Lara Pruna
 
+<img src="{static}/images/hola.png" alt="Hola" width="200"/>
+
 ¡Hola! Me llamo Lara, y soy administradora de sistemas. Unos datos sobre mí:
 
 - Estudiante del grado superior de Administración de Sistemas en el instituto IES Gonzalo Nazareno (Dos Hermanas).
@@ -11,4 +13,4 @@ Authors: Lara Pruna
 - Nivel N3 de japonés
 - Nivel medio de alemán
 
-<img src="{static}/images/Admin.png" alt="Texto" width="500"/>
+<img src="{static}/images/Admin.png" alt="Hola, soy admin" width="500"/>

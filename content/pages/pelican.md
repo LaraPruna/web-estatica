@@ -48,3 +48,4 @@ pelican --listen
 El programa nos devolverá una dirección http (http://localhost:8000). Copiamos dicha dirección en el navegador y ¡voila!
 
 <img src="{static}/images/primer_articulo.png" alt="Mi primer articulo" width="700" align="middle"/>
+
