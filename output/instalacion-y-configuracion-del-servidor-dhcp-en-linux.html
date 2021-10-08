@@ -109,7 +109,7 @@
     <!-- Post Content -->
     <article>
         <p>Empecemos por crear un escenario con dos nodos en Vagrant: uno será el servidor DHCP y otro el cliente. Ambos tendrán una red muy aislada, pero solo uno de ellos tendrá una IP estática, el servidor DHCP.</p>
-<p><img src="/images/perspicaz.png" alt="Recolocándose las gafas" width="300"/>
+<p><img src="/images/perspicaz.png" alt="Recolocándose las gafas" width="200"/>
 Veamos el fichero Vagrantfile:</p>
 <pre><code class="ruby">
 Vagrant.configure("2") do |config|
@@ -169,7 +169,7 @@ subnet 192.168.0.0 netmask 255.255.255.0 {
 systemctl restart isc-dhcp-server
 </code></pre>
 
-<p><img src="/images/corriendo.png" alt="Nos desplazamos" width="300"/>
+<p><img src="/images/corriendo.png" alt="Nos desplazamos" width="200"/>
 Vayámonos ahora a la máquina cliente.</p>
 <p>Para que la interfaz conectada con el servidor reciba una IP de esta, hay que reiniciarla:</p>
 <pre><code class="shell">
@@ -238,7 +238,7 @@ lease {
 
 <p>¡Ya tendríamos un servidor DHCP básico completamente operativo!</p>
 <p>Vuelve a pasarte por aquí para ver más articulos y seguir aprendiendo.
-<img src="/images/gracias.png" alt="¡Gracias!" width="300"/></p>
+<img src="/images/gracias.png" alt="¡Gracias!" width="200"/></p>
     </article>
 
         <div class="tags">
