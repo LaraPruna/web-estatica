@@ -7,7 +7,7 @@ summary: En este artículo veremos cómo instalar y configurar un servidor DHCP 
 
 Empecemos por crear un escenario con dos nodos en Vagrant: uno será el servidor DHCP y otro el cliente. Ambos tendrán una red muy aislada, pero solo uno de ellos tendrá una IP estática, el servidor DHCP.
 
-<img src="{static}/images/perspicaz.png" alt="Recolocándose las gafas" width="200"/>
+<img src="{static}/images/perspicaz.png" alt="Recolocándose las gafas" width="100"/>
 Veamos el fichero Vagrantfile:
 
 <pre><code class="ruby">
