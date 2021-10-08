@@ -65,7 +65,7 @@ Guardamos el fichero y reiniciamos el servicio DHCP:
 systemctl restart isc-dhcp-server
 </code></pre>
 
-<img src="{static}/images/corriendo.png" alt="Nos desplazamos" width="200"/>
+<img src="{static}/images/corriendo.png" alt="Nos desplazamos" width="100"/>
 Vayámonos ahora a la máquina cliente.
 
 Para que la interfaz conectada con el servidor reciba una IP de esta, hay que reiniciarla:
@@ -136,4 +136,4 @@ lease {
 ¡Ya tendríamos un servidor DHCP básico completamente operativo!
 
 Vuelve a pasarte por aquí para ver más articulos y seguir aprendiendo.
-<img src="{static}/images/gracias.png" alt="¡Gracias!" width="200"/>
+<img src="{static}/images/gracias.png" alt="¡Gracias!" width="100"/>
