@@ -144,14 +144,14 @@ sudo apt install isc-dhcp-server
 
 <p>Ahora tenemos que editar dos ficheros de configuración:</p>
 <ul>
-<li><em>/etc/default/isc-dhcp-server</em>: en la línea de las interfaces IPv4 añadimos la interfaz por la que se servirán direcciones IP.</li>
+<li><strong>/etc/default/isc-dhcp-server</strong>: en la línea de las interfaces IPv4 añadimos la interfaz por la que se servirán direcciones IP.</li>
 </ul>
 <pre><code class="shell">
 INTERFACESv4="eth1"
 </code></pre>
 
 <ul>
-<li><em>/etc/dhcp/dhcpd.conf</em>: en este fichero añadimos un subnet con la red de las direcciones IP que se vayan a repartir, así como el rango, la máscara de red, la puerta de enlace y el tiempo de concesión.</li>
+<li><strong>/etc/dhcp/dhcpd.conf</strong>: en este fichero añadimos un subnet con la red de las direcciones IP que se vayan a repartir, así como el rango, la máscara de red, la puerta de enlace y el tiempo de concesión.</li>
 </ul>
 <pre><code class="shell">
 subnet 192.168.0.0 netmask 255.255.255.0 {
