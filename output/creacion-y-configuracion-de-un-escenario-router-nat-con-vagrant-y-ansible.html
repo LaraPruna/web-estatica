@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Creación y configuración de un escenario Router-NAT con Vagrant y Ansible</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo te explico cómo crear un escenario de Vagrant con dos nodos: un router con NAT conectado con un cliente por una red muy...">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Redes">
+        <meta name="tags" content="NAT">
+        <meta name="tags" content="Vagrant">
+        <meta name="tags" content="Ansible">
+        <meta name="tags" content="SSH">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="/author/lara-pruna.html">
+	<meta property="og:url" content="/creacion-y-configuracion-de-un-escenario-router-nat-con-vagrant-y-ansible.html">
+	<meta property="og:title" content="Creación y configuración de un escenario Router-NAT con Vagrant y Ansible">
+	<meta property="article:published_time" content="2021-10-10 15:01:00+02:00">
+            <meta property="og:description" content="En este artículo te explico cómo crear un escenario de Vagrant con dos nodos: un router con NAT conectado con un cliente por una red muy...">
+
+            <meta property="og:image" content="/theme/images/post-bg.jpg">
+</head>
+
+<body class="article-creacion-y-configuracion-de-un-escenario-router-nat-con-vagrant-y-ansible">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">SysRaider</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="/pages/about.html">Sobre mí</a></li>
+                            <li><a href="/pages/pelican.html">Pelican</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('/theme/images/post-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Creación y configuración de un escenario Router-NAT con Vagrant y Ansible</h1>
+                        <span class="meta">Posted by
+                                <a href="/author/lara-pruna.html">Lara Pruna</a>
+                             on dom 10 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <h2>Crear el escenario de Vagrant</h2>
+<p>Vamos a crear un escenario de Vagrant con dos nodos, ambas con un direccionamiento estático, y tendrán las siguientes características:</p>
+<ul>
+<li>El <strong>router</strong> tendrá un total de tres interfaces: la red de mantenimiento de Vagrant, un puente con la red del puente y una red muy aislada, a la que estará conectada la máquina cliente.</li>
+<li>El <strong>cliente</strong> tendrá dos interfaces: la de mantenimiento y la red muy aislada conectada al router.</li>
+</ul>
+<p>Si vamos a tener una interfaz "bridge" en el router, lo primero que debemos hacer es crear el puente en nuestro host. Por lo tanto, nos dirigimos al fichero /etc/network/interfaces y lo editamos como root. Añadimos el siguiente contenido (sustituyendo "enp2s0" por nuestra interfaz primaria):</p>
+<pre><code class="shell">
+#Puente
+auto br0
+iface br0 inet dhcp
+        bridge_ports enp2s0
+</code></pre>
+
+<p><img src="/images/relax.png" alt="Escuchemos un poco de música mientras esperamos" width="150"/>
+Guardamos el fichero y reiniciamos el host.</p>
+<p>Ahora que ya tenemos nuestro puente, creamos el escenario de Vagrant con la siguiente configuración:</p>
+<pre><code class="ruby">
+Vagrant.configure("2") do |config|
+
+    config.vm.define :nodo1 do |nodo1|
+      nodo1.vm.box = "debian/bullseye64" 
+      nodo1.vm.hostname = "servidor" 
+      nodo1.vm.synced_folder ".", "/vagrant", disabled: true
+      nodo1.vm.network :public_network,
+        :dev => "br0",
+        :mode => "bridge",
+        :type => "bridge" 
+      nodo1.vm.network :private_network,
+        :libvirt__network_name => "muyaislada",
+        :libvirt__dhcp_enabled => false,
+        :ip => "10.0.0.1",
+        :libvirt__forward_mode => "veryisolated" 
+    end
+    config.vm.define :nodo2 do |nodo2|
+      nodo2.vm.box = "debian/bullseye64" 
+      nodo2.vm.hostname = "cliente" 
+      nodo2.vm.synced_folder ".", "/vagrant", disabled: true
+      nodo2.vm.network :private_network,
+        :libvirt__network_name => "muyaislada",
+        :libvirt__dhcp_enabled => false,
+        :ip => "10.0.0.2",
+        :libvirt__forward_mode => "veryisolated" 
+    end
+  end
+</code></pre>
+
+<p>Levantamos las máquinas con "vagrant up". Si entramos en el cliente, deberemos poder hacer ping al router.</p>
+<h2>Configuración del escenario router-NAT</h2>
+<p>Vamos a configurar el escenario que hemos creado en el apartado anterior de manera que cumpla los siguientes objetivos:</p>
+<ul>
+<li>El <strong>router</strong> accederá a Internet por eth1, la interfaz que tenemos en modo puente.</li>
+<li>El <strong>cliente</strong> tendrá acceso a Internet a través de eth1, la interfaz de red aislada conectada con el router, el cual enrutará las peticiones del cliente.</li>
+</ul>
+<p>Podemos hacerlo de dos formas: manualmente o con Ansible.</p>
+<h3><img src="/images/manual.png" alt="Lo hacemos nosotros mismos" width="150"/> Método manual</h3>
+<p>Cambiamos el bit de forwarding para que el router pueda actuar como tal:</p>
+<pre><code class="shell">
+echo "1" > /proc/sys/net/ipv4/ip_forward
+</code></pre>
+
+<p>Entramos en el router y editamos el fichero /etc/network/interfaces, de manera que la interfaz eth0 y eth1 queden de la siguiente manera:</p>
+<pre><code class="shell">
+# The primary network interface
+allow-hotplug eth0
+iface eth0 inet dhcp
+    post-up ip route del default dev $IFACE || true
+#VAGRANT-BEGIN
+# The contents below are automatically generated by Vagrant. Do not modify.
+auto eth1
+iface eth1 inet dhcp
+    post-up iptables -t nat -A POSTROUTING -s 10.0.0.0 -o eth1 -j MASQUERADE
+    #post-up ip route del default dev $IFACE || true
+#VAGRANT-END
+</code></pre>
+<p>De esta manera, eliminamos la ruta por defecto que tiene el router en la interfaz eth0. En su lugar, será eth1 el que enrute las peticiones provenientes de la red 10.0.0.0 y las mande por el puente. Guardamos el fichero y reiniciamos la máquina.</p>
+<p>Por ultimo, salimos del router, entramos en el cliente y añadimos una línea en eth0 para eliminar la ruta por defecto. Ahora las peticiones se enviarán a la nueva puerta de enlace, el router:</p>
+<pre><code class="shell">
+# The primary network interface
+allow-hotplug eth0
+iface eth0 inet dhcp
+      post-up ip route del default dev $IFACE || true
+#VAGRANT-BEGIN
+# The contents below are automatically generated by Vagrant. Do not modify.
+auto eth1
+iface eth1 inet static
+      address 10.0.0.2
+      netmask 255.255.255.0
+      gateway 10.0.0.1
+</code></pre>
+
+<p>Guardamos el fichero y reiniciamos la máquina.</p>
+<h3><img src="/images/peli.png" alt="Se hace automáticamente" width="150"/> Método Ansible</h3>
+<p>Para esta ocasión tengo preparada esta maravillosa <a href="https://github.com/LaraPruna/Escenario-router-nat-ansible">receta de Ansible</a>. La receta realiza todos los pasos explicados en el método manual, salvo que de forma automatizada. Tan solo tienes que clonar el repositorio en el mismo directorio donde se encuentre el escenario, editar el fichero hosts para cambiar la dirección IP correspondiente a la interfaz eth0 de cada máquina y ejecutar el comando "ansible-playbook site.yaml".</p>
+<p>Para <strong>configurar las máquinas automáticamente desde la creación del escenario</strong>, una vez nos aseguremos de que tenemos la receta de Ansible en el mismo directorio, editamos el fichero Vagrantfile y añadimos al final el siguiente contenido:</p>
+<pre><code class="ruby">
+    config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "site.yaml" 
+    end
+end
+</code></pre>
+
+<p>Al levantar el escenario, tras instalar los nodos, comenzará a aplicarse la receta.</p>
+<h2>Conectarse por SSH al cliente pasando por el router</h2>
+<p>Antes que nada, introducimos nuestra clave publica en ambas máquinas. Podemos hacerlo manualmente (copia y pega), con una receta de Ansible o con el siguiente comando:</p>
+<pre><code class="shell">
+ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@IP.de.la.máquina
+</code></pre>
+
+<p>El router ya estará listo, pero para entrar por SSH en el cliente a través de eth1 necesitaremos hacer uso del <strong>agente SSH</strong>.</p>
+<p><img src="/images/pensando.png" alt="Pensando..." width="150"/> ¿Qué es eso del agente SSH?</p>
+<p>Veámoslo de la siguiente forma:</p>
+<p>Queremos entrar en una zona restringida dentro de otra zona restringida. Para ello, accedemos a la primera zona llevándonos con nosotros a nuestro agente, nuestro ayudante. Como tenemos nuestras credenciales, no hay problema, nos dejan pasar.</p>
+<p>Imaginemos que, para entrar a la siguiente zona (donde nos pedirán de nuevo las credenciales), necesitamos dejar allí al agente como nuestro representante. No obstante, para que cumpla su labor, él también necesita unas credenciales, una <strong>identidad</strong>.</p>
+<p>De hecho, si ejecutamos el comando <strong>ssh-add -L</strong>, veremos todas las identidades que posee el agente en ese momento. Si aún no le hemos dado nada, nos dirán que el agente no dispone de ninguna identidad. No es nadie.</p>
+<p><img src="/images/miedo.png" alt="Qué miedo" width="150"/> Es una persona sin rostro...</p>
+<p>Por eso, nos reunimos con él en casa, en el host, y le damos una copia de nuestro carnet y nuestra cara con el comando <strong>ssh-add ~/.ssh/id_rsa</strong>. Ahora el agente y nosotros somos la misma persona.</p>
+<p>A continuación, nos llevamos al agente al router, opción que activamos empleando uno de los dos siguientes procedimientos:</p>
+<ul>
+<li>Con el parámetro -A del comando ssh:</li>
+</ul>
+<pre><code class="shell">
+ssh -A vagrant@IP.Interfaz.eth1.router
+</code></pre>
+
+<ul>
+<li>Añadiendo "ForwardAgent yes" en el fichero /etc/hosts (en el host) y accediendo después con ssh al router sin el parámetro -A:</li>
+</ul>
+<pre><code<pre><code class="shell">
+Host router
+    HostName 192.168.122.37
+    ForwardAgent Yes
+</code></pre>
+
+<p>Una vez dentro del router, podemos comprobar con el comando "ssh-add -L" que nuestro agente tiene una identidad, por lo que ya podemos dejar allí a nuestro agente y entrar por ssh al cliente como lo hacemos normalmente:</p>
+<pre><code class="shell">
+ssh vagrant@IP.Interfaz.eth1.cliente
+</code></pre>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="/tag/redes.html">Redes</a>, <a href="/tag/nat.html">NAT</a>, <a href="/tag/vagrant.html">Vagrant</a>, <a href="/tag/ansible.html">Ansible</a>, <a href="/tag/ssh.html">SSH</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="/theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
