@@ -59,7 +59,7 @@ Una vez hayamos generado la copia de la imagen en formato raw, entramos en el fi
 sudo virsh edit --domain nodo1-lara
 </code></pre>
 
-<pre><code class="xml">
+<pre><code class="shell">
 <driver name='qemu' type='raw'/>
       <source file='/var/lib/libvirt/images/nodo1_lara.raw'/>
 </code></pre>
