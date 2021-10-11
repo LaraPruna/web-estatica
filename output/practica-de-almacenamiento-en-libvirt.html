@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Práctica de almacenamiento en libvirt</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="Vamos a aprender a gestionar el almacenamiento en libvirt. Para ello, crearemos un pool de almacenamiento de tipo LVM y otro de tipo...">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Almacenamiento">
+        <meta name="tags" content="KVM">
+        <meta name="tags" content="QEMU">
+        <meta name="tags" content="libvirt">
+        <meta name="tags" content="LVM">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="/author/lara-pruna.html">
+	<meta property="og:url" content="/practica-de-almacenamiento-en-libvirt.html">
+	<meta property="og:title" content="Práctica de almacenamiento en libvirt">
+	<meta property="article:published_time" content="2021-10-11 18:47:00+02:00">
+            <meta property="og:description" content="Vamos a aprender a gestionar el almacenamiento en libvirt. Para ello, crearemos un pool de almacenamiento de tipo LVM y otro de tipo...">
+
+            <meta property="og:image" content="/theme/images/post-bg.jpg">
+</head>
+
+<body class="article-practica-de-almacenamiento-en-libvirt">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">SysRaider</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="/pages/about.html">Sobre mí</a></li>
+                            <li><a href="/pages/pelican.html">Pelican</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('/theme/images/post-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Práctica de almacenamiento en libvirt</h1>
+                        <span class="meta">Posted by
+                                <a href="/author/lara-pruna.html">Lara Pruna</a>
+                             on lun 11 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>Vamos a aprender a gestionar el almacenamiento en libvirt. Para ello, crearemos un pool de almacenamiento de tipo LVM y otro de tipo directorio. En cada uno de estos grupos, generaremos nuevos volúmenes y, con ellos, máquinas virtuales. Además, emplearemos imágenes con formato raw y qcow2.</p>
+<p><img src="/images/programando.png" alt="Hora de jugar" width="150"/> Vamos a jugar un poco con el almacenamiento en libvirt.</p>
+<h2>Pool de almacenamiento de tipo LVM</h2>
+<p>Empecemos por <strong>pool de almacenamiento de tipo LVM</strong> con "pool-define-as". Después de definirlo, lo iniciaremos con "pool-start":</p>
+<pre><code class="shell">
+sudo virsh -c qemu:///system pool-define-as vg01 --type logical
+sudo virsh -c qemu:///system pool-start vg01
+</code></pre>
+
+<p>Dentro de este pool, creamos un <strong>volumen lógico</strong> de 3GiB:</p>
+<pre><code class="shell">
+sudo virsh -c qemu:///system vol-create-as pool01 original_lara --capacity 3GiB
+</code></pre>
+
+<p>Con el volumen que hemos creado, he instalado una máquina llamada "original_lara", con 1GiB de memoria y la última imagen de Debian 11 para la arquitectura amd64:</p>
+<pre><code class="shell">
+sudo virt-install --name original_lara --disk /dev/pool01/vol01 --memory 1024 --cdrom ~/Descargas/debian-11.0.0-amd64-netinst.iso
+</code></pre>
+
+<p>Podemos comprobar que la máquina se ha creado con el volumen vol01 ejecutando el siguiente comando:</p>
+<pre><code class="shell">
+sudo virsh -c qemu:///system domblklist original_lara
+</code></pre>
+
+<h2>Conversión del formato de imagen</h2>
+<p>Como a la hora de crear el volumen lógico no hemos especificado ningún formato, el que tendrá por defecto es <strong>raw</strong>. Vamos a <em>convertir</em> el volumen a formato qcow2 (aunque, más que convertir, lo que haremos es crear una copia en un formato distinto), y se guardará en el pool default:</p>
+<pre><code class="shell">
+sudo qemu-img convert /dev/pool01/vol01 /var/lib/libvirt/images/original_lara.qcow2
+</code></pre>
+
+<p>A partir de la imagen base en formato qcow2, podemos crear máquinas virtuales con <strong>aprovisionamiento ligero</strong>. Yo he creado dos nodos:</p>
+<pre><code class="shell">
+sudo qemu-img create -b /var/lib/libvirt/images/original_lara.qcow2 -f qcow2 /var/lib/libvirt/images/nodo1_lara.qcow2
+sudo qemu-img create -b /var/lib/libvirt/images/original_lara.qcow2 -f qcow2 /var/lib/libvirt/images/nodo2_lara.qcow2
+sudo virt-install --name nodo1-lara --disk /var/lib/libvirt/images/nodo1_lara.qcow2 --import --memory 1024
+sudo virt-install --name nodo2-lara --disk /var/lib/libvirt/images/nodo2_lara.qcow2 --import --memory 1024
+</code></pre>
+
+<p>Antes hemos convertido la imagen qcow2 a raw, pero también podemos hacerlo <strong>a la inversa</strong> (asegurémonos antes de que la máquina está apagada):</p>
+<pre><code class="shell">
+sudo qemu-img convert /var/lib/libvirt/images/nodo1_lara.qcow2 /var/lib/libvirt/images/nodo1_lara.raw
+</code></pre>
+
+<p>Una vez hayamos generado la copia de la imagen en formato raw, entramos en el fichero xml de la máquina y cambiamos la imagen qcow2 por la raw:</p>
+<pre><code class="shell">
+sudo virsh edit --domain nodo1-lara
+</code></pre>
+
+<pre><code class="xml">
+<driver name='qemu' type='raw'/>
+      <source file='/var/lib/libvirt/images/nodo1_lara.raw'/>
+</code></pre>
+
+<h2>Redimensionamiento de las imágenes</h2>
+<p>Imaginemos que tenemos que añadirle más tamaño a la imagen del nodo 2, por ejemplo, 1GiB más. Primero, redimensionamos la imagen en sí con el siguiente
+comando:</p>
+<pre><code class="shell">
+sudo qemu-img resize /var/lib/libvirt/images/nodo2_lara.qcow2 +1G
+</code></pre>
+
+<p>Para aumentar también el <strong>sistema de ficheros</strong>, crearemos una imagen idéntica a la del nodo2, solo que con un gigabyte más. Después, la sustituiremos por la original:</p>
+<pre><code class="shell">
+sudo qemu-img create -f qcow2 -o preallocation=metadata -a /var/lib/libvirt/images/nodo2_lara_copia.qcow2 4G
+sudo virt-resize --expand /dev/sda1 /var/lib/libvirt/images/nodo2_lara.qcow2 /var/lib/libvirt/images/nodo2_lara_copia.qcow2
+sudo rm /var/lib/libvirt/images/nodo2_lara.qcow2 .
+sudo mv /var/lib/libvirt/images/nodo2_lara_copia.qcow2 /var/lib/libvirt/images/nodo2_lara.qcow2
+</code></pre>
+
+<h2>Creación de instantáneas (snapshots)</h2>
+<p>Antes de generar la instantánea, tenemos que tener en cuenta que el comando que vamos a usar es alérgico al formato raw. Por lo tanto, será mejor que lo <em>convirtamos</em> antes a qcow2 (guiño, guiño), y luego aplicamos el comando:</p>
+<pre><code class="shell">
+sudo virsh snapshot-create-as --domain nodo1-lara --name nodo1_snap
+</code></pre>
+
+<p><img src="/images/demonio.png" alt="Maldad" width="150"/>
+Ahora sería un buen momento para maltratar un poco al nodo.</p>
+<p>Estas son algunas ideas: comenta líneas del fichero /etc/fstab, cámbiale la cantidad de memoria en el fichero xml, crea o elimina diferentes ficheros... Cuando hayamos acabado de hacer diabluras, restauraremos la máquina con la instantánea:</p>
+<pre><code class="shell">
+sudo virsh snapshot-revert nodo1-lara nodo1_snap
+</code></pre>
+
+<h2>Pool de almacenamiento de tipo directorio</h2>
+<p>Vamos a definir e iniciar un pool de tipo directorio llamado "discos_externos", al igual que hicimos con el de tipo LVM:</p>
+<pre><code class="shell">
+sudo virsh -c qemu:///system pool-define-as pool_dir --type dir --target ./pool_dir
+sudo virsh -c qemu:///system pool-start pool_dir
+</code></pre>
+
+<p>Y dentro, crearemos un volumen de 1GiB:</p>
+<pre><code class="shell">
+sudo virsh -c qemu:///system vol-create-as pool_dir vol_dir --capacity 1GiB
+</code></pre>
+
+<p>Podemos añadir este volumen en caliente a cualquiera de las máquinas, por ejemplo, al nodo2:</p>
+<pre><code class="shell">
+sudo virsh -c qemu:///system attach-disk nodo2-lara ./pool_dir/vol_dir vdb
+</code></pre>
+
+<p>Al acceder al nodo2, crearemos una nueva partición con el comando "fdisk /dev/vda", le daremos un sistema de ficheros con "mkfs" (para dejarlo como ext4, el comando sería "mkfs.ext4" seguido de la partición) y, por último, lo montamos con "mount". Recuerda, todos estos comandos han de ejecutarse como root.</p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="/tag/almacenamiento.html">Almacenamiento</a>, <a href="/tag/kvm.html">KVM</a>, <a href="/tag/qemu.html">QEMU</a>, <a href="/tag/libvirt.html">libvirt</a>, <a href="/tag/lvm.html">LVM</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="/theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
