@@ -156,7 +156,7 @@ Host router
     ForwardAgent Yes
 </code></pre>
 
-Una vez dentro del router, podemos comprobar con el comando "ssh-add -L" que nuestro agente tiene una identidad, por lo que ya podemos dejar allí a nuestro agente y entrar por ssh al cliente como lo hacemos normalmente:
+Una vez dentro del router, podemos comprobar con el comando "ssh-add -L" que nuestro agente tiene una identidad, por lo que ya podemos dejarlo allí en representación nuestra y entrar por ssh al cliente como lo hacemos normalmente:
 <pre><code class="shell">
 ssh vagrant@IP.Interfaz.eth1.cliente
 </code></pre>
