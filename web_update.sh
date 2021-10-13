@@ -22,5 +22,6 @@ git add .
 git commit -m "Sitio web actualizado"
 git push
 
+cd ../web-estatica-pelican
 #Automáticamente, Netlify actualizará el sitio web.
 deactivate
