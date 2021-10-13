@@ -13,7 +13,8 @@ git commit -m "Sitio web actualizado"
 git push
 
 #Se generará la carpeta de salida en otro repositorio:
-pelican -o ../salida-web-estatica
+pelican -o ../salida-web-estatica/
+cd ../salida-web-estatica/
 
 #Se suben los cambios en la carpeta de salida a su repositorio:
 git add .
