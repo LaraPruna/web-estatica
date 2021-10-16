@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Uso básico de virsh</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="Crearemos una red interna, generaremos un volumen en el pool por defecto con una imagen qcow2 y montaremos la imagen con qemu-nbd.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Virtualización">
+        <meta name="tags" content="KVM">
+        <meta name="tags" content="QEMU">
+        <meta name="tags" content="libvirt">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="/author/lara-pruna.html">
+	<meta property="og:url" content="/uso-basico-de-virsh.html">
+	<meta property="og:title" content="Uso básico de virsh">
+	<meta property="article:published_time" content="2021-10-15 18:55:00+02:00">
+            <meta property="og:description" content="Crearemos una red interna, generaremos un volumen en el pool por defecto con una imagen qcow2 y montaremos la imagen con qemu-nbd.">
+
+            <meta property="og:image" content="/theme/images/post-bg.jpg">
+</head>
+
+<body class="article-uso-basico-de-virsh">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">SysRaider</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="/pages/about.html">Sobre mí</a></li>
+                            <li><a href="/pages/pelican.html">Pelican</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('/theme/images/post-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Uso básico de virsh</h1>
+                        <span class="meta">Posted by
+                                <a href="/author/lara-pruna.html">Lara Pruna</a>
+                             on vie 15 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <h1>Uso básico de virsh</h1>
+<p>¿Abierto a nuevas experiencias?¿Virtualbox se te ha quedado pequeño?¿Te han obligado a pasarte a KVM y no sabes cómo?</p>
+<p><img src="/images/rock.png" alt="Hora de Rock & Roll" width="150"/>
+¡Entonces este es tu sitio!</p>
+<p>En un momento vamos a aprender cómo crear una red interna en KVM/QEMU con virsh, generaremos un volumen en el pool por defecto con una imagen qcow2 y montaremos dicha imagen con qemu-nbd.</p>
+<p><br></p>
+<h2>Crear una red interna</h2>
+<p>Primero, para crear una red con virsh, es necesario generar un fichero XML con una determinada configuración.</p>
+<div class="highlight"><pre><span></span><code>nano red_interna.xml
+</code></pre></div>
+
+<p>Para que la red sea interna de tipo NAT, debería tener un aspecto similar a este:</p>
+<div class="highlight"><pre><span></span><code> <span class="nt">&lt;network&gt;</span>
+    <span class="nt">&lt;name&gt;</span>red_interna<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;bridge</span> <span class="na">name=</span><span class="s">&quot;virbr2&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;forward</span> <span class="na">mode=</span><span class="s">&quot;nat&quot;</span><span class="nt">/&gt;</span> 
+    <span class="nt">&lt;model</span> <span class="na">type=</span><span class="s">&quot;virtio&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;ip</span> <span class="na">address=</span><span class="s">&quot;10.0.1.1&quot;</span> <span class="na">netmask=</span><span class="s">&quot;255.255.255.0&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;dhcp&gt;</span>
+        <span class="nt">&lt;range</span> <span class="na">start=</span><span class="s">&quot;10.0.1.2&quot;</span> <span class="na">end=</span><span class="s">&quot;10.0.1.254&quot;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/dhcp&gt;</span>
+    <span class="nt">&lt;/ip&gt;</span>
+  <span class="nt">&lt;/network&gt;</span>
+</code></pre></div>
+
+<p>Guardamos el fichero y lo añadimos la lista de redes virtuales de QEMU:</p>
+<div class="highlight"><pre><span></span><code>virsh -c qemu:///system net-create --file red_interna.xml
+</code></pre></div>
+
+<p><img src="/images/ojo.png" alt="Ojo cuidao" width="150"/>
+<strong>OJO CUIDAO</strong></p>
+<p>El comando net-create no crea las redes de manera <strong>persistente</strong>, es decir, que se irán a tomar viento fresco en cuanto apaguemos o reiniciemos el host. Para mantener las redes de forma indefinida, en su lugar emplearemos el comando net-define.</p>
+<p>Estas son otras acciones que puedes hacer con las redes:</p>
+<ul>
+<li>Eliminar la red: net-destroy</li>
+<li>Iniciar la red: net-start</li>
+<li>Configurar la red para que se inicie automáticamente al iniciar el host: net-autostart</li>
+<li>Ver la configuración XML de la red: net-dumpxml</li>
+<li>Editar el fichero XML de la red: net-edit</li>
+<li>Ver la lista de redes registradas en el sistema: net-list</li>
+<li>Ver información sobre la red: net-info</li>
+<li>Hacer que la red deje de ser persistente: net-undefine</li>
+</ul>
+<p>Ahora que tenemos creada nuestra red interna de tipo NAT, podemos iniciarla si no lo está aún:</p>
+<div class="highlight"><pre><span></span><code>virsh -c qemu:///system net-start red_interna
+</code></pre></div>
+
+<p><br></p>
+<h2>Montar una imagen qcow2 con qemu-nbd</h2>
+<p>Vamos a cargar el módulo nbd en memoria para habilitarlo, asegurándonos de que pueda soportar un número alto de particiones (por ejemplo, 8):</p>
+<div class="highlight"><pre><span></span><code>sudo modprobe nbd max_part=8
+</code></pre></div>
+
+<p>Conectamos nuestro fichero qcow2 como un dispositivo de bloque (/dev/nbd0):</p>
+<div class="highlight"><pre><span></span><code><span class="nv">sudo</span> <span class="nv">qemu</span><span class="o">-</span><span class="nv">nbd</span> <span class="o">--</span><span class="k">connect</span><span class="o">=/</span><span class="nv">dev</span><span class="o">/</span><span class="nv">nbd0</span> <span class="o">~/</span><span class="nv">debiantest</span>.<span class="nv">qcow2</span>
+</code></pre></div>
+
+<p>Con fdisk, podemos ver las particiones del dispositivo de bloque:</p>
+<div class="highlight"><pre><span></span><code>sudo fdisk /dev/nbd0 -l
+</code></pre></div>
+
+<p>Creamos un directorio en /mnt y montamos la primera partición de la máquina virtual en esa carpeta:</p>
+<div class="highlight"><pre><span></span><code>sudo mkdir /mnt/nbd
+sudo mount /dev/nbd0p1 /mnt/nbd/
+</code></pre></div>
+
+<p><img src="/images/alivio.png" alt="Hecho" width="150"/>
+¡Aparcao!</p>
+<p>Ahora podremos ver el contenido de la imagen qcow2 y hacer los cambios oportunos, como definir una nueva contraseña para el usuario:</p>
+<div class="highlight"><pre><span></span><code>sudo chroot /mnt/nbd
+passwd usuario
+</code></pre></div>
+
+<p>O copiar nuestra clave pública en la máquina virtual para poder entrar después por SSH. Para ello, nos conectados como root, creamos el directorio .ssh en la máquina virtual y redirigimos nuestra clave pública al fichero authorized_keys dentro de esa carpeta:</p>
+<div class="highlight"><pre><span></span><code>sudo cat ~/.ssh/id_rsa.pub &gt; /mnt/nbd/.ssh/authorized_keys
+</code></pre></div>
+
+<p>También podemos aprovechar para cambiar el nombre de la máquina, editando los ficheros /etc/hostname y /etc/hosts</p>
+<div class="highlight"><pre><span></span><code>echo maquina_lara &gt; /mnt/nbd/etc/hostname
+sed -i &#39;s/debiantest/maquina_lara/g&#39; &quot;/mnt/nbd/etc/hosts&quot;
+</code></pre></div>
+
+<p>Cuando terminemos de hacer los cambios, desmontamos la máquina virtual:</p>
+<div class="highlight"><pre><span></span><code>umount /mnt/nbd/
+</code></pre></div>
+
+<p><br></p>
+<h2>Crear un volumen en el pool por defecto con la imagen</h2>
+<p>En el volumen que vamos a crear, al que llamaremos "voltest", subiremos la imagen qcow2 de la sección anterior, por lo que tendremos que darle también un formato qcow2 y 10GB de capacidad. Recuerda que "create" significa en virsh "crear temporalmente". Si quisiéramos generar un volumen para tenerlo de manera indefinida, usaríamos "vol-define-as":</p>
+<div class="highlight"><pre><span></span><code>virsh -c qemu:///system vol-create-as --format qcow2 --name voltest --capacity 10GiB --pool default
+</code></pre></div>
+
+<p>Ahora que ya tenemos el contenedor preparado, vamos a introducir el contenido:</p>
+<div class="highlight"><pre><span></span><code><span class="n">virsh</span> <span class="o">-</span><span class="n">c</span> <span class="n">qemu</span><span class="p">:</span><span class="o">///</span><span class="n">system</span> <span class="n">vol</span><span class="o">-</span><span class="n">upload</span> <span class="n">voltest</span> <span class="n">debiantest</span><span class="o">.</span><span class="n">qcow2</span> <span class="o">--</span><span class="n">pool</span> <span class="n">default</span>
+</code></pre></div>
+
+<p><br></p>
+<h2>Definir el dominio con un fichero XML y conectado a la red creada</h2>
+<p>Dejadme aclarar antes para los novicios el término "dominio". No debemos confundirlo con el dominio de un sitio web; en virsh, se le llama así a las máquinas virtuales. Quizá no sea el mejor término para referirse a ellas...</p>
+<p><img src="/images/enfin.png" alt="Qué se le va a hacer" width="150"/>
+Pero en fin...</p>
+<p>Antes de definir un dominio, necesitamos un fichero XML donde alojar su configuración, que incluirá la red que hemos creado en la primera sección:</p>
+<div class="highlight"><pre><span></span><code>nano dominio1.xml
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;domain</span> <span class="na">type=</span><span class="s">&quot;kvm&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;name&gt;</span>maquina_lara<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;memory</span> <span class="na">unit=</span><span class="s">&quot;G&quot;</span><span class="nt">&gt;</span>1<span class="nt">&lt;/memory&gt;</span>
+  <span class="nt">&lt;vcpu&gt;</span>1<span class="nt">&lt;/vcpu&gt;</span>
+  <span class="nt">&lt;os&gt;</span>   
+    <span class="nt">&lt;type</span> <span class="na">arch=</span><span class="s">&quot;x86_64&quot;</span><span class="nt">&gt;</span>hvm<span class="nt">&lt;/type&gt;</span>
+  <span class="nt">&lt;/os&gt;</span>  
+  <span class="nt">&lt;devices&gt;</span>
+    <span class="nt">&lt;emulator&gt;</span>/usr/bin/kvm<span class="nt">&lt;/emulator&gt;</span>
+    <span class="nt">&lt;disk</span> <span class="na">type=</span><span class="s">&#39;file&#39;</span> <span class="na">device=</span><span class="s">&#39;disk&#39;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;driver</span> <span class="na">name=</span><span class="s">&#39;qemu&#39;</span> <span class="na">type=</span><span class="s">&#39;qcow2&#39;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;source</span> <span class="na">file=</span><span class="s">&#39;/var/lib/libvirt/images/maquina_lara&#39;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;target</span> <span class="na">dev=</span><span class="s">&quot;vda&quot;</span> <span class="na">bus=</span><span class="s">&quot;virtio&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/disk&gt;</span>
+    <span class="nt">&lt;interface</span> <span class="na">type=</span><span class="s">&quot;network&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;source</span> <span class="na">network=</span><span class="s">&quot;red_interna&quot;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;mac</span> <span class="na">address=</span><span class="s">&quot;52:54:00:86:c6:a9&quot;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;model</span> <span class="na">type=</span><span class="s">&quot;virtio&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/interface&gt;</span>
+    <span class="nt">&lt;graphics</span> <span class="na">type=</span><span class="s">&#39;vnc&#39;</span> <span class="na">port=</span><span class="s">&#39;-1&#39;</span> <span class="na">autoport=</span><span class="s">&#39;yes&#39;</span> <span class="na">listen=</span><span class="s">&#39;0.0.0.0&#39;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/devices&gt;</span>
+<span class="nt">&lt;/domain&gt;</span>
+</code></pre></div>
+
+<p>Ya podemos definir el dominio:</p>
+<div class="highlight"><pre><span></span><code>virsh -c qemu:///system define dominio1.xml
+</code></pre></div>
+
+<p><br></p>
+<h2>Arrancar el dominio y acceder a la máquina por ssh:</h2>
+<p>Primero, iniciamos la red interna que hemos creado:</p>
+<div class="highlight"><pre><span></span><code>virsh -c qemu:///system net-start red_interna
+</code></pre></div>
+
+<p>Después, arrancamos el dominio:</p>
+<div class="highlight"><pre><span></span><code>virsh -c qemu:///system start maquina_lara
+</code></pre></div>
+
+<p>Vamos a entrar un momentito con el visor remoto ("virt-viewer"), nos conectamos como root para levantar la interfaz, que estará caída, y le pedimos una IP al servidor DHCP:</p>
+<div class="highlight"><pre><span></span><code>virt-viewer maquina_lara
+sudo su
+ip l set enp0s3 up
+dhclient
+</code></pre></div>
+
+<p>Y finalmente nos salimos del visor para entrar por SSH:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="w"> </span><span class="n">usuario</span><span class="mf">@10.0.1.226</span><span class="w"></span>
+</code></pre></div>
+
+<p><img src="/images/fiesta.png" alt="¡Olé!" width="150"/>
+¡Ya tenemos listo nuestro dominio!</p>
+<p>En resumen, hemos creado una red interna y un volumen a partir de una imagen qcow2 (que hemos acondicionado previamente), y con esos dos elementos hemos generado una máquina virtual con una red NAT a la que podemos acceder por SSH.</p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="/tag/virtualizacion.html">Virtualización</a>, <a href="/tag/kvm.html">KVM</a>, <a href="/tag/qemu.html">QEMU</a>, <a href="/tag/libvirt.html">libvirt</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="/theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
