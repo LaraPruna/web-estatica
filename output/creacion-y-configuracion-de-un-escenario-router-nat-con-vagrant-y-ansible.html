@@ -116,45 +116,43 @@
 <li>El <strong>cliente</strong> tendrá dos interfaces: la de mantenimiento y la red muy aislada conectada al router.</li>
 </ul>
 <p>Si vamos a tener una interfaz "bridge" en el router, lo primero que debemos hacer es crear el puente en nuestro host. Por lo tanto, nos dirigimos al fichero /etc/network/interfaces y lo editamos como root. Añadimos el siguiente contenido (sustituyendo "enp2s0" por nuestra interfaz primaria):</p>
-<pre><code class="shell">
-#Puente
+<div class="highlight"><pre><span></span><code>#Puente
 auto br0
 iface br0 inet dhcp
         bridge_ports enp2s0
-</code></pre>
+</code></pre></div>
 
 <p><img src="/images/relax.png" alt="Escuchemos un poco de música mientras esperamos" width="150"/>
 Guardamos el fichero y reiniciamos el host.</p>
 <p>Ahora que ya tenemos nuestro puente, creamos el escenario de Vagrant con la siguiente configuración:</p>
-<pre><code class="ruby">
-Vagrant.configure("2") do |config|
+<div class="highlight"><pre><span></span><code><span class="nv">Vagrant</span>.<span class="nv">configure</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">2</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="k">do</span> <span class="o">|</span><span class="nv">config</span><span class="o">|</span>
 
-    config.vm.define :nodo1 do |nodo1|
-      nodo1.vm.box = "debian/bullseye64" 
-      nodo1.vm.hostname = "servidor" 
-      nodo1.vm.synced_folder ".", "/vagrant", disabled: true
-      nodo1.vm.network :public_network,
-        :dev => "br0",
-        :mode => "bridge",
-        :type => "bridge" 
-      nodo1.vm.network :private_network,
-        :libvirt__network_name => "muyaislada",
-        :libvirt__dhcp_enabled => false,
-        :ip => "10.0.0.1",
-        :libvirt__forward_mode => "veryisolated" 
-    end
-    config.vm.define :nodo2 do |nodo2|
-      nodo2.vm.box = "debian/bullseye64" 
-      nodo2.vm.hostname = "cliente" 
-      nodo2.vm.synced_folder ".", "/vagrant", disabled: true
-      nodo2.vm.network :private_network,
-        :libvirt__network_name => "muyaislada",
-        :libvirt__dhcp_enabled => false,
-        :ip => "10.0.0.2",
-        :libvirt__forward_mode => "veryisolated" 
-    end
-  end
-</code></pre>
+    <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo1</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo1</span><span class="o">|</span>
+      <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span> 
+      <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">servidor</span><span class="s2">&quot;</span> 
+      <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+      <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">public_network</span>,
+        :<span class="nv">dev</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">br0</span><span class="s2">&quot;</span>,
+        :<span class="nv">mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">bridge</span><span class="s2">&quot;</span>,
+        :<span class="nv">type</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">bridge</span><span class="s2">&quot;</span> 
+      <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+        :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+        :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+        :<span class="nv">ip</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">10.0.0.1</span><span class="s2">&quot;</span>,
+        :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span> 
+    <span class="k">end</span>
+    <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo2</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo2</span><span class="o">|</span>
+      <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span> 
+      <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">cliente</span><span class="s2">&quot;</span> 
+      <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+      <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+        :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+        :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+        :<span class="nv">ip</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">10.0.0.2</span><span class="s2">&quot;</span>,
+        :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span> 
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre></div>
 
 <p>Levantamos las máquinas con "vagrant up". Si entramos en el cliente, deberemos poder hacer ping al router.</p>
 <h2>Configuración del escenario router-NAT</h2>
@@ -166,57 +164,53 @@ Vagrant.configure("2") do |config|
 <p>Podemos hacerlo de dos formas: manualmente o con Ansible.</p>
 <h3><img src="/images/manual.png" alt="Lo hacemos nosotros mismos" width="150"/> Método manual</h3>
 <p>Cambiamos el bit de forwarding para que el router pueda actuar como tal:</p>
-<pre><code class="shell">
-echo "1" > /proc/sys/net/ipv4/ip_forward
-</code></pre>
+<div class="highlight"><pre><span></span><code>echo &quot;1&quot; &gt; /proc/sys/net/ipv4/ip_forward
+</code></pre></div>
 
 <p>Entramos en el router y editamos el fichero /etc/network/interfaces, de manera que la interfaz eth0 y eth1 queden de la siguiente manera:</p>
-<pre><code class="shell">
-# The primary network interface
-allow-hotplug eth0
-iface eth0 inet dhcp
-    post-up ip route del default dev $IFACE || true
-#VAGRANT-BEGIN
-# The contents below are automatically generated by Vagrant. Do not modify.
-auto eth1
-iface eth1 inet dhcp
-    post-up iptables -t nat -A POSTROUTING -s 10.0.0.0 -o eth1 -j MASQUERADE
-    #post-up ip route del default dev $IFACE || true
-#VAGRANT-END
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">The</span> <span class="n">primary</span> <span class="n">network</span> <span class="n">interface</span>
+<span class="n">allow</span><span class="o">-</span><span class="n">hotplug</span> <span class="n">eth0</span>
+<span class="n">iface</span> <span class="n">eth0</span> <span class="n">inet</span> <span class="n">dhcp</span>
+    <span class="n">post</span><span class="o">-</span><span class="n">up</span> <span class="n">ip</span> <span class="n">route</span> <span class="n">del</span> <span class="n">default</span> <span class="n">dev</span> <span class="o">$</span><span class="n">IFACE</span> <span class="p">||</span> <span class="n">true</span>
+<span class="o">#</span><span class="n">VAGRANT</span><span class="o">-</span><span class="kr">BEGIN</span>
+<span class="o">#</span> <span class="n">The</span> <span class="n">contents</span> <span class="n">below</span> <span class="n">are</span> <span class="n">automatically</span> <span class="n">generated</span> <span class="n">by</span> <span class="n">Vagrant</span><span class="p">.</span> <span class="n">Do</span> <span class="n">not</span> <span class="n">modify</span><span class="p">.</span>
+<span class="n">auto</span> <span class="n">eth1</span>
+<span class="n">iface</span> <span class="n">eth1</span> <span class="n">inet</span> <span class="n">dhcp</span>
+    <span class="n">post</span><span class="o">-</span><span class="n">up</span> <span class="n">iptables</span> <span class="o">-</span><span class="n">t</span> <span class="n">nat</span> <span class="o">-</span><span class="n">A</span> <span class="n">POSTROUTING</span> <span class="o">-</span><span class="n">s</span> <span class="mf">10.0</span><span class="p">.</span><span class="mf">0.0</span> <span class="o">-</span><span class="n">o</span> <span class="n">eth1</span> <span class="o">-</span><span class="n">j</span> <span class="n">MASQUERADE</span>
+    <span class="o">#</span><span class="n">post</span><span class="o">-</span><span class="n">up</span> <span class="n">ip</span> <span class="n">route</span> <span class="n">del</span> <span class="n">default</span> <span class="n">dev</span> <span class="o">$</span><span class="n">IFACE</span> <span class="p">||</span> <span class="n">true</span>
+<span class="o">#</span><span class="n">VAGRANT</span><span class="o">-</span><span class="kr">END</span>
+</code></pre></div>
+
 <p>De esta manera, eliminamos la ruta por defecto que tiene el router en la interfaz eth0. En su lugar, será eth1 el que enrute las peticiones provenientes de la red 10.0.0.0 y las mande por el puente. Guardamos el fichero y reiniciamos la máquina.</p>
 <p>Por ultimo, salimos del router, entramos en el cliente y añadimos una línea en eth0 para eliminar la ruta por defecto. Ahora las peticiones se enviarán a la nueva puerta de enlace, el router:</p>
-<pre><code class="shell">
-# The primary network interface
-allow-hotplug eth0
-iface eth0 inet dhcp
-      post-up ip route del default dev $IFACE || true
-#VAGRANT-BEGIN
-# The contents below are automatically generated by Vagrant. Do not modify.
-auto eth1
-iface eth1 inet static
-      address 10.0.0.2
-      netmask 255.255.255.0
-      gateway 10.0.0.1
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">The</span> <span class="n">primary</span> <span class="n">network</span> <span class="n">interface</span>
+<span class="n">allow</span><span class="o">-</span><span class="n">hotplug</span> <span class="n">eth0</span>
+<span class="n">iface</span> <span class="n">eth0</span> <span class="n">inet</span> <span class="n">dhcp</span>
+      <span class="n">post</span><span class="o">-</span><span class="n">up</span> <span class="n">ip</span> <span class="n">route</span> <span class="n">del</span> <span class="n">default</span> <span class="n">dev</span> <span class="o">$</span><span class="n">IFACE</span> <span class="p">||</span> <span class="n">true</span>
+<span class="o">#</span><span class="n">VAGRANT</span><span class="o">-</span><span class="kr">BEGIN</span>
+<span class="o">#</span> <span class="n">The</span> <span class="n">contents</span> <span class="n">below</span> <span class="n">are</span> <span class="n">automatically</span> <span class="n">generated</span> <span class="n">by</span> <span class="n">Vagrant</span><span class="p">.</span> <span class="n">Do</span> <span class="n">not</span> <span class="n">modify</span><span class="p">.</span>
+<span class="n">auto</span> <span class="n">eth1</span>
+<span class="n">iface</span> <span class="n">eth1</span> <span class="n">inet</span> <span class="n">static</span>
+      <span class="n">address</span> <span class="mf">10.0</span><span class="p">.</span><span class="mf">0.2</span>
+      <span class="n">netmask</span> <span class="mf">255.255</span><span class="p">.</span><span class="mf">255.0</span>
+      <span class="n">gateway</span> <span class="mf">10.0</span><span class="p">.</span><span class="mf">0.1</span>
+</code></pre></div>
 
 <p>Guardamos el fichero y reiniciamos la máquina.</p>
 <h3><img src="/images/peli.png" alt="Se hace automáticamente" width="150"/> Método Ansible</h3>
 <p>Para esta ocasión tengo preparada esta maravillosa <a href="https://github.com/LaraPruna/Escenario-router-nat-ansible">receta de Ansible</a>. La receta realiza todos los pasos explicados en el método manual, salvo que de forma automatizada. Tan solo tienes que clonar el repositorio en el mismo directorio donde se encuentre el escenario, editar el fichero hosts para cambiar la dirección IP correspondiente a la interfaz eth0 de cada máquina y ejecutar el comando "ansible-playbook site.yaml".</p>
 <p>Para <strong>configurar las máquinas automáticamente desde la creación del escenario</strong>, una vez nos aseguremos de que tenemos la receta de Ansible en el mismo directorio, editamos el fichero Vagrantfile y añadimos al final el siguiente contenido:</p>
-<pre><code class="ruby">
-    config.vm.provision "ansible" do |ansible|
-      ansible.playbook = "site.yaml" 
-    end
-end
-</code></pre>
+<div class="highlight"><pre><span></span><code>    <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">provision</span> <span class="s2">&quot;</span><span class="s">ansible</span><span class="s2">&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="nv">ansible</span><span class="o">|</span>
+      <span class="nv">ansible</span>.<span class="nv">playbook</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">site.yaml</span><span class="s2">&quot;</span> 
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
 
 <p>Al levantar el escenario, tras instalar los nodos, comenzará a aplicarse la receta.</p>
 <h2>Conectarse por SSH al cliente pasando por el router</h2>
 <p>Antes que nada, introducimos nuestra clave publica en ambas máquinas. Podemos hacerlo manualmente (copia y pega), con una receta de Ansible o con el siguiente comando:</p>
-<pre><code class="shell">
-ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@IP.de.la.máquina
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="o">-</span><span class="n">copy</span><span class="o">-</span><span class="n">id</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="p">.</span><span class="n">pub</span><span class="w"> </span><span class="n">vagrant</span><span class="nv">@IP</span><span class="p">.</span><span class="n">de</span><span class="p">.</span><span class="n">la</span><span class="p">.</span><span class="n">máquina</span><span class="w"></span>
+</code></pre></div>
 
 <p>El router ya estará listo, pero para entrar por SSH en el cliente a través de eth1 necesitaremos hacer uso del <strong>agente SSH</strong>.</p>
 <p><img src="/images/pensando.png" alt="Pensando..." width="150"/> ¿Qué es eso del agente SSH?</p>
@@ -230,23 +224,20 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@IP.de.la.máquina
 <ul>
 <li>Con el parámetro -A del comando ssh:</li>
 </ul>
-<pre><code class="shell">
-ssh -A vagrant@IP.Interfaz.eth1.router
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="w"> </span><span class="o">-</span><span class="n">A</span><span class="w"> </span><span class="n">vagrant</span><span class="nv">@IP</span><span class="p">.</span><span class="n">Interfaz</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">router</span><span class="w"></span>
+</code></pre></div>
 
 <ul>
 <li>Añadiendo "ForwardAgent yes" en el fichero /etc/hosts (en el host) y accediendo después con ssh al router sin el parámetro -A:</li>
 </ul>
-<pre><code<pre><code class="shell">
-Host router
+<div class="highlight"><pre><span></span><code>Host router
     HostName 192.168.122.37
     ForwardAgent Yes
-</code></pre>
+</code></pre></div>
 
 <p>Una vez dentro del router, podemos comprobar con el comando "ssh-add -L" que nuestro agente tiene una identidad, por lo que ya podemos dejarlo allí en representación nuestra y entrar por ssh al cliente como lo hacemos normalmente:</p>
-<pre><code class="shell">
-ssh vagrant@IP.Interfaz.eth1.cliente
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="w"> </span><span class="n">vagrant</span><span class="nv">@IP</span><span class="p">.</span><span class="n">Interfaz</span><span class="p">.</span><span class="n">eth1</span><span class="p">.</span><span class="n">cliente</span><span class="w"></span>
+</code></pre></div>
     </article>
 
         <div class="tags">

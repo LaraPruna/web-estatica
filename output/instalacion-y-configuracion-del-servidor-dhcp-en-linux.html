@@ -111,50 +111,46 @@
         <p>Empecemos por crear un escenario con dos nodos en Vagrant: uno será el servidor DHCP y otro el cliente. Ambos tendrán una red muy aislada, pero solo uno de ellos tendrá una IP estática, el servidor DHCP.</p>
 <p><img src="/images/perspicaz.png" alt="Recolocándose las gafas" width="100"/>
 Veamos el fichero Vagrantfile:</p>
-<pre><code class="ruby">
-Vagrant.configure("2") do |config|
+<div class="highlight"><pre><span></span><code><span class="nv">Vagrant</span>.<span class="nv">configure</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">2</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="k">do</span> <span class="o">|</span><span class="nv">config</span><span class="o">|</span>
 
-  config.vm.define :nodo1 do |nodo1|
-    nodo1.vm.box = "debian/bullseye64" 
-    nodo1.vm.hostname = "servidor" 
-    nodo1.vm.synced_folder ".", "/vagrant", disabled: true
-    nodo1.vm.network :private_network,
-      :libvirt__network_name => "muyaislada",
-      :libvirt__dhcp_enabled => false,
-      :ip => "192.168.0.1",
-      :libvirt__forward_mode => "veryisolated" 
-  end
-  config.vm.define :nodo2 do |nodo2|
-    nodo2.vm.box = "debian/bullseye64" 
-    nodo2.vm.hostname = "cliente" 
-    nodo2.vm.synced_folder ".", "/vagrant", disabled: true
-    nodo2.vm.network :private_network,
-      :libvirt__network_name => "muyaislada",
-      :libvirt__dhcp_enabled => false,
-      :libvirt__forward_mode => "veryisolated" 
-  end
-end
-</code></pre>
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo1</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo1</span><span class="o">|</span>
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">servidor</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+      :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+      :<span class="nv">ip</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">192.168.0.1</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span> 
+  <span class="k">end</span>
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo2</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo2</span><span class="o">|</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">cliente</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+      :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+      :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span> 
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
 
 <p>Una vez creados los nodos, entramos en el servidor DHCP e instalamos el paquete "isc-dhcp-server":</p>
-<pre><code class="shell">
-vagrant ssh nodo1
+<div class="highlight"><pre><span></span><code>vagrant ssh nodo1
 sudo apt install isc-dhcp-server
-</code></pre>
+</code></pre></div>
 
 <p>Ahora tenemos que editar dos ficheros de configuración:</p>
 <ul>
 <li><strong>/etc/default/isc-dhcp-server</strong>: en la línea de las interfaces IPv4 añadimos la interfaz por la que se servirán direcciones IP.</li>
 </ul>
-<pre><code class="shell">
-INTERFACESv4="eth1"
-</code></pre>
+<div class="highlight"><pre><span></span><code>INTERFACESv4=&quot;eth1&quot;
+</code></pre></div>
 
 <ul>
 <li><strong>/etc/dhcp/dhcpd.conf</strong>: en este fichero añadimos un subnet con la red de las direcciones IP que se vayan a repartir, así como el rango, la máscara de red, la puerta de enlace y el tiempo de concesión.</li>
 </ul>
-<pre><code class="shell">
-subnet 192.168.0.0 netmask 255.255.255.0 {
+<div class="highlight"><pre><span></span><code>subnet 192.168.0.0 netmask 255.255.255.0 {
   range 192.168.0.100 192.168.0.110;
   option subnet-mask 255.255.255.0;
   option routers 192.168.0.1;
@@ -162,79 +158,74 @@ subnet 192.168.0.0 netmask 255.255.255.0 {
   default-lease-time 3600;
   max-lease-time 3600;
 }
-</code></pre>
+</code></pre></div>
 
 <p>Guardamos el fichero y reiniciamos el servicio DHCP:</p>
-<pre><code class="shell">
-systemctl restart isc-dhcp-server
-</code></pre>
+<div class="highlight"><pre><span></span><code>systemctl restart isc-dhcp-server
+</code></pre></div>
 
 <p><img src="/images/corriendo.png" alt="Nos desplazamos" width="150"/>
 Vayámonos ahora a la máquina cliente.</p>
 <p>Para que la interfaz conectada con el servidor reciba una IP de esta, hay que reiniciarla:</p>
-<pre><code class="shell">
-sudo ifup eth1
+<div class="highlight"><pre><span></span><code>sudo ifup eth1
 sudo ifdown eth1
-</code></pre>
+</code></pre></div>
 
 <p>Si ejecutamos ahora el comando "ip a", veremos que la interfaz ha recibido una nueva IP en el rango establecido.</p>
-<pre><code class="shell">
-vagrant@cliente:~$ ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host 
-       valid_lft forever preferred_lft forever
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-    link/ether 52:54:00:15:fc:78 brd ff:ff:ff:ff:ff:ff
-    altname enp0s5
-    altname ens5
-    inet 192.168.121.40/24 brd 192.168.121.255 scope global dynamic eth0
-       valid_lft 3137sec preferred_lft 3137sec
-    inet6 fe80::5054:ff:fe15:fc78/64 scope link 
-       valid_lft forever preferred_lft forever
-3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-    link/ether 52:54:00:44:49:92 brd ff:ff:ff:ff:ff:ff
-    altname enp0s6
-    altname ens6
-    inet 192.168.0.100/24 brd 192.168.0.255 scope global dynamic eth1
-       valid_lft 3598sec preferred_lft 3598sec
-    inet6 fe80::5054:ff:fe44:4992/64 scope link 
-       valid_lft forever preferred_lft forever
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">vagrant</span><span class="nv">@cliente</span><span class="err">:</span><span class="o">~</span><span class="err">$</span><span class="w"> </span><span class="n">ip</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+<span class="mi">1</span><span class="err">:</span><span class="w"> </span><span class="nl">lo</span><span class="p">:</span><span class="w"> </span><span class="o">&lt;</span><span class="n">LOOPBACK</span><span class="p">,</span><span class="n">UP</span><span class="p">,</span><span class="n">LOWER_UP</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mtu</span><span class="w"> </span><span class="mi">65536</span><span class="w"> </span><span class="n">qdisc</span><span class="w"> </span><span class="n">noqueue</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="k">UNKNOWN</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">qlen</span><span class="w"> </span><span class="mi">1000</span><span class="w"></span>
+<span class="w">    </span><span class="n">link</span><span class="o">/</span><span class="n">loopback</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">00</span><span class="w"></span>
+<span class="w">    </span><span class="n">inet</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="o">/</span><span class="mi">8</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="k">host</span><span class="w"> </span><span class="n">lo</span><span class="w"></span>
+<span class="w">       </span><span class="n">valid_lft</span><span class="w"> </span><span class="n">forever</span><span class="w"> </span><span class="n">preferred_lft</span><span class="w"> </span><span class="n">forever</span><span class="w"></span>
+<span class="w">    </span><span class="n">inet6</span><span class="w"> </span><span class="o">::</span><span class="mi">1</span><span class="o">/</span><span class="mi">128</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="k">host</span><span class="w"> </span>
+<span class="w">       </span><span class="n">valid_lft</span><span class="w"> </span><span class="n">forever</span><span class="w"> </span><span class="n">preferred_lft</span><span class="w"> </span><span class="n">forever</span><span class="w"></span>
+<span class="mi">2</span><span class="err">:</span><span class="w"> </span><span class="nl">eth0</span><span class="p">:</span><span class="w"> </span><span class="o">&lt;</span><span class="n">BROADCAST</span><span class="p">,</span><span class="n">MULTICAST</span><span class="p">,</span><span class="n">UP</span><span class="p">,</span><span class="n">LOWER_UP</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mtu</span><span class="w"> </span><span class="mi">1500</span><span class="w"> </span><span class="n">qdisc</span><span class="w"> </span><span class="n">pfifo_fast</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">UP</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">qlen</span><span class="w"> </span><span class="mi">1000</span><span class="w"></span>
+<span class="w">    </span><span class="n">link</span><span class="o">/</span><span class="n">ether</span><span class="w"> </span><span class="mi">52</span><span class="err">:</span><span class="mi">54</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">15</span><span class="err">:</span><span class="nl">fc</span><span class="p">:</span><span class="mi">78</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="nl">ff</span><span class="p">:</span><span class="nl">ff</span><span class="p">:</span><span class="nl">ff</span><span class="p">:</span><span class="nl">ff</span><span class="p">:</span><span class="nl">ff</span><span class="p">:</span><span class="n">ff</span><span class="w"></span>
+<span class="w">    </span><span class="n">altname</span><span class="w"> </span><span class="n">enp0s5</span><span class="w"></span>
+<span class="w">    </span><span class="n">altname</span><span class="w"> </span><span class="n">ens5</span><span class="w"></span>
+<span class="w">    </span><span class="n">inet</span><span class="w"> </span><span class="mf">192.168.121.40</span><span class="o">/</span><span class="mi">24</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="mf">192.168.121.255</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="k">global</span><span class="w"> </span><span class="k">dynamic</span><span class="w"> </span><span class="n">eth0</span><span class="w"></span>
+<span class="w">       </span><span class="n">valid_lft</span><span class="w"> </span><span class="mi">3137</span><span class="n">sec</span><span class="w"> </span><span class="n">preferred_lft</span><span class="w"> </span><span class="mi">3137</span><span class="n">sec</span><span class="w"></span>
+<span class="w">    </span><span class="n">inet6</span><span class="w"> </span><span class="nl">fe80</span><span class="p">:</span><span class="err">:</span><span class="mi">5054</span><span class="err">:</span><span class="nl">ff</span><span class="p">:</span><span class="nl">fe15</span><span class="p">:</span><span class="n">fc78</span><span class="o">/</span><span class="mi">64</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span>
+<span class="w">       </span><span class="n">valid_lft</span><span class="w"> </span><span class="n">forever</span><span class="w"> </span><span class="n">preferred_lft</span><span class="w"> </span><span class="n">forever</span><span class="w"></span>
+<span class="mi">3</span><span class="err">:</span><span class="w"> </span><span class="nl">eth1</span><span class="p">:</span><span class="w"> </span><span class="o">&lt;</span><span class="n">BROADCAST</span><span class="p">,</span><span class="n">MULTICAST</span><span class="p">,</span><span class="n">UP</span><span class="p">,</span><span class="n">LOWER_UP</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mtu</span><span class="w"> </span><span class="mi">1500</span><span class="w"> </span><span class="n">qdisc</span><span class="w"> </span><span class="n">pfifo_fast</span><span class="w"> </span><span class="k">state</span><span class="w"> </span><span class="n">UP</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">qlen</span><span class="w"> </span><span class="mi">1000</span><span class="w"></span>
+<span class="w">    </span><span class="n">link</span><span class="o">/</span><span class="n">ether</span><span class="w"> </span><span class="mi">52</span><span class="err">:</span><span class="mi">54</span><span class="err">:</span><span class="mi">00</span><span class="err">:</span><span class="mi">44</span><span class="err">:</span><span class="mi">49</span><span class="err">:</span><span class="mi">92</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="nl">ff</span><span class="p">:</span><span class="nl">ff</span><span class="p">:</span><span class="nl">ff</span><span class="p">:</span><span class="nl">ff</span><span class="p">:</span><span class="nl">ff</span><span class="p">:</span><span class="n">ff</span><span class="w"></span>
+<span class="w">    </span><span class="n">altname</span><span class="w"> </span><span class="n">enp0s6</span><span class="w"></span>
+<span class="w">    </span><span class="n">altname</span><span class="w"> </span><span class="n">ens6</span><span class="w"></span>
+<span class="w">    </span><span class="n">inet</span><span class="w"> </span><span class="mf">192.168.0.100</span><span class="o">/</span><span class="mi">24</span><span class="w"> </span><span class="n">brd</span><span class="w"> </span><span class="mf">192.168.0.255</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="k">global</span><span class="w"> </span><span class="k">dynamic</span><span class="w"> </span><span class="n">eth1</span><span class="w"></span>
+<span class="w">       </span><span class="n">valid_lft</span><span class="w"> </span><span class="mi">3598</span><span class="n">sec</span><span class="w"> </span><span class="n">preferred_lft</span><span class="w"> </span><span class="mi">3598</span><span class="n">sec</span><span class="w"></span>
+<span class="w">    </span><span class="n">inet6</span><span class="w"> </span><span class="nl">fe80</span><span class="p">:</span><span class="err">:</span><span class="mi">5054</span><span class="err">:</span><span class="nl">ff</span><span class="p">:</span><span class="nl">fe44</span><span class="p">:</span><span class="mi">4992</span><span class="o">/</span><span class="mi">64</span><span class="w"> </span><span class="k">scope</span><span class="w"> </span><span class="n">link</span><span class="w"> </span>
+<span class="w">       </span><span class="n">valid_lft</span><span class="w"> </span><span class="n">forever</span><span class="w"> </span><span class="n">preferred_lft</span><span class="w"> </span><span class="n">forever</span><span class="w"></span>
+</code></pre></div>
 
 <p>Podemos ver pruebas de nuestra hazaña en los ficheros de registro de concesiones, tanto en el servidor (/var/lib/dhcp/dhcpd.leases)...</p>
-<pre><code class="shell">
-lease 192.168.0.100 {
-  starts 5 2021/10/08 14:46:12;
-  ends 5 2021/10/08 15:46:12;
-  cltt 5 2021/10/08 14:46:12;
-  binding state active;
-  next binding state free;
-  rewind binding state free;
-  hardware ethernet 52:54:00:44:49:92;
-  uid "\377\000DI\222\000\001\000\001(\362\367\027RT\000DI\222";
-  client-hostname "cliente";
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="nt">lease</span> <span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">100</span> <span class="p">{</span>
+  <span class="err">starts</span> <span class="err">5</span> <span class="err">2021/10/08</span> <span class="err">14:46:12</span><span class="p">;</span>
+  <span class="err">ends</span> <span class="err">5</span> <span class="err">2021/10/08</span> <span class="err">15:46:12</span><span class="p">;</span>
+  <span class="err">cltt</span> <span class="err">5</span> <span class="err">2021/10/08</span> <span class="err">14:46:12</span><span class="p">;</span>
+  <span class="err">binding</span> <span class="err">state</span> <span class="err">active</span><span class="p">;</span>
+  <span class="err">next</span> <span class="err">binding</span> <span class="err">state</span> <span class="err">free</span><span class="p">;</span>
+  <span class="err">rewind</span> <span class="err">binding</span> <span class="err">state</span> <span class="err">free</span><span class="p">;</span>
+  <span class="err">hardware</span> <span class="err">ethernet</span> <span class="err">52:54:00:44:49:92</span><span class="p">;</span>
+  <span class="err">uid</span> <span class="err">&quot;\377\000DI\222\000\001\000\001(\362\367\027RT\000DI\222&quot;</span><span class="p">;</span>
+  <span class="err">client-hostname</span> <span class="err">&quot;cliente&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
 
 <p>...como en el cliente (/var/lib/dhcp/dhclient.eth1.leases).</p>
-<pre><code class="shell">
-lease {
-  interface "eth1";
-  fixed-address 192.168.0.100;
-  option subnet-mask 255.255.255.0;
-  option routers 192.168.0.1;
-  option dhcp-lease-time 3600;
-  option dhcp-message-type 5;
-  option domain-name-servers 8.8.8.8,8.8.4.4;
-  option dhcp-server-identifier 192.168.0.1;
-  renew 5 2021/10/08 15:13:47;
-  rebind 5 2021/10/08 15:38:42;
-  expire 5 2021/10/08 15:46:12;
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="nt">lease</span> <span class="p">{</span>
+  <span class="err">interface</span> <span class="err">&quot;eth1&quot;</span><span class="p">;</span>
+  <span class="err">fixed-address</span> <span class="err">192.168.0.100</span><span class="p">;</span>
+  <span class="err">option</span> <span class="err">subnet-mask</span> <span class="err">255.255.255.0</span><span class="p">;</span>
+  <span class="err">option</span> <span class="err">routers</span> <span class="err">192.168.0.1</span><span class="p">;</span>
+  <span class="err">option</span> <span class="err">dhcp-lease-time</span> <span class="err">3600</span><span class="p">;</span>
+  <span class="err">option</span> <span class="err">dhcp-message-type</span> <span class="err">5</span><span class="p">;</span>
+  <span class="err">option</span> <span class="err">domain-name-servers</span> <span class="err">8.8.8.8,8.8.4.4</span><span class="p">;</span>
+  <span class="err">option</span> <span class="err">dhcp-server-identifier</span> <span class="err">192.168.0.1</span><span class="p">;</span>
+  <span class="err">renew</span> <span class="err">5</span> <span class="err">2021/10/08</span> <span class="err">15:13:47</span><span class="p">;</span>
+  <span class="err">rebind</span> <span class="err">5</span> <span class="err">2021/10/08</span> <span class="err">15:38:42</span><span class="p">;</span>
+  <span class="err">expire</span> <span class="err">5</span> <span class="err">2021/10/08</span> <span class="err">15:46:12</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
 
 <p>¡Ya tendríamos un servidor DHCP básico completamente operativo!</p>
 <p>Vuelve a pasarte por aquí para ver más articulos y seguir aprendiendo.

@@ -10,7 +10,7 @@ Empecemos por crear un escenario con dos nodos en Vagrant: uno será el servidor
 <img src="{static}/images/perspicaz.png" alt="Recolocándose las gafas" width="100"/>
 Veamos el fichero Vagrantfile:
 
-<pre><code class="ruby">
+```
 Vagrant.configure("2") do |config|
 
   config.vm.define :nodo1 do |nodo1|
@@ -33,23 +33,23 @@ Vagrant.configure("2") do |config|
       :libvirt__forward_mode => "veryisolated" 
   end
 end
-</code></pre>
+```
 
 Una vez creados los nodos, entramos en el servidor DHCP e instalamos el paquete "isc-dhcp-server":
-<pre><code class="shell">
+```
 vagrant ssh nodo1
 sudo apt install isc-dhcp-server
-</code></pre>
+```
 
 Ahora tenemos que editar dos ficheros de configuración:
 
 * **/etc/default/isc-dhcp-server**: en la línea de las interfaces IPv4 añadimos la interfaz por la que se servirán direcciones IP.
-<pre><code class="shell">
+```
 INTERFACESv4="eth1"
-</code></pre>
+```
 
 * **/etc/dhcp/dhcpd.conf**: en este fichero añadimos un subnet con la red de las direcciones IP que se vayan a repartir, así como el rango, la máscara de red, la puerta de enlace y el tiempo de concesión.
-<pre><code class="shell">
+```
 subnet 192.168.0.0 netmask 255.255.255.0 {
   range 192.168.0.100 192.168.0.110;
   option subnet-mask 255.255.255.0;
@@ -58,24 +58,24 @@ subnet 192.168.0.0 netmask 255.255.255.0 {
   default-lease-time 3600;
   max-lease-time 3600;
 }
-</code></pre>
+```
 
 Guardamos el fichero y reiniciamos el servicio DHCP:
-<pre><code class="shell">
+```
 systemctl restart isc-dhcp-server
-</code></pre>
+```
 
 <img src="{static}/images/corriendo.png" alt="Nos desplazamos" width="150"/>
 Vayámonos ahora a la máquina cliente.
 
 Para que la interfaz conectada con el servidor reciba una IP de esta, hay que reiniciarla:
-<pre><code class="shell">
+```
 sudo ifup eth1
 sudo ifdown eth1
-</code></pre>
+```
 
 Si ejecutamos ahora el comando "ip a", veremos que la interfaz ha recibido una nueva IP en el rango establecido.
-<pre><code class="shell">
+```
 vagrant@cliente:~$ ip a
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -99,10 +99,10 @@ vagrant@cliente:~$ ip a
        valid_lft 3598sec preferred_lft 3598sec
     inet6 fe80::5054:ff:fe44:4992/64 scope link 
        valid_lft forever preferred_lft forever
-</code></pre>
+```
 
 Podemos ver pruebas de nuestra hazaña en los ficheros de registro de concesiones, tanto en el servidor (/var/lib/dhcp/dhcpd.leases)...
-<pre><code class="shell">
+```
 lease 192.168.0.100 {
   starts 5 2021/10/08 14:46:12;
   ends 5 2021/10/08 15:46:12;
@@ -114,10 +114,10 @@ lease 192.168.0.100 {
   uid "\377\000DI\222\000\001\000\001(\362\367\027RT\000DI\222";
   client-hostname "cliente";
 }
-</code></pre>
+```
 
 ...como en el cliente (/var/lib/dhcp/dhclient.eth1.leases).
-<pre><code class="shell">
+```
 lease {
   interface "eth1";
   fixed-address 192.168.0.100;
@@ -131,7 +131,7 @@ lease {
   rebind 5 2021/10/08 15:38:42;
   expire 5 2021/10/08 15:46:12;
 }
-</code></pre>
+```
 
 ¡Ya tendríamos un servidor DHCP básico completamente operativo!
 
