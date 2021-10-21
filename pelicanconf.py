@@ -32,7 +32,7 @@ LINKS = (('Pelican', 'https://getpelican.com/'),
 SOCIAL = (('LinkedIn', 'https://www.linkedin.com/in/lara-pruna-ternero-97887911b/'),
           ('GitHub', 'https://github.com/LaraPruna/'),)
 
-DEFAULT_PAGINATION = True
+DEFAULT_PAGINATION = 5
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
