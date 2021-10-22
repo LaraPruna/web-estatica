@@ -3,7 +3,7 @@
 
 AUTHOR = 'Lara Pruna'
 SITENAME = 'SysRaider'
-URL = 'sysraider.larapruna.org'
+URL = 'https://sysraider.larapruna.org'
 
 PATH = 'content'
 STATIC_PATHS = ['images', 'extra']
