@@ -15,6 +15,7 @@ TIMEZONE = 'Europe/Paris'
 DEFAULT_LANG = 'es'
 
 THEME = 'theme/pelican-clean-blog'
+NEWEST_FIRST_ARCHIVES = True
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
