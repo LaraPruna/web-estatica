@@ -3,6 +3,7 @@ Date: 2021-10-10 15:01
 Category: Automatización
 lang: es
 tags: Redes,NAT,Vagrant,Ansible,SSH
+Header_Cover: images/covers/vagrant_ansible.png
 summary: En este artículo te explico cómo crear un escenario de Vagrant con dos nodos: un router con NAT conectado con un cliente por una red muy aislada que podrá conectarse a Internet. También prepararemos una receta de ansible que automatice todos los pasos a seguir, y veremos cómo conectarnos por SSH al cliente a través del router.
 
 ## Crear el escenario de Vagrant

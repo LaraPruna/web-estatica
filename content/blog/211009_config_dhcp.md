@@ -3,6 +3,7 @@ Date: 2021-10-09 19:12
 Category: Redes
 lang: es
 tags: Redes,DHCP,Vagrant,Debian11
+Header_Cover: images/covers/DHCP.jpg
 summary: En este artículo veremos cómo instalar y configurar un servidor DHCP mediante una máquina de Vagrant con Debian 11 (Bullseye).
 
 Empecemos por crear un escenario con dos nodos en Vagrant: uno será el servidor DHCP y otro el cliente. Ambos tendrán una red muy aislada, pero solo uno de ellos tendrá una IP estática, el servidor DHCP.
@@ -135,5 +136,5 @@ lease {
 
 ¡Ya tendríamos un servidor DHCP básico completamente operativo!
 
-Vuelve a pasarte por aquí para ver más articulos y seguir aprendiendo.
+Vuelve a pasarte por aquí para ver más artículos y seguir aprendiendo.
 <img src="{static}/images/gracias.png" alt="¡Gracias!" width="200"/>

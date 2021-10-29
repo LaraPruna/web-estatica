@@ -14,7 +14,7 @@ TIMEZONE = 'Europe/Paris'
 
 DEFAULT_LANG = 'es'
 
-THEME = 'theme/pelican-clean-blog'
+THEME = 'theme/pelican-clean-blog/'
 NEWEST_FIRST_ARCHIVES = True
 DISPLAY_CATEGORIES_ON_MENU = True
 
