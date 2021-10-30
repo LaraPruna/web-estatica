@@ -3,6 +3,7 @@ Date: 2021-10-17 10:46
 Category: Redes
 lang: es
 tags: Redes,Libvirt,bridge
+Header_Cover: images/covers/redes_libvirt.jpg
 summary: Crearemos un dominio conectado a una red interna, lo clonaremos y uniremos ambos nodos con una red muy aislada. Sustuiremos la red interna por un bridge.
 
 Este es el escenario que vamos a crear en este ejercicio, para que os hagáis una idea:

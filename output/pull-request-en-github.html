@@ -49,7 +49,7 @@
 	<meta property="article:published_time" content="2021-10-21 16:45:00+02:00">
             <meta property="og:description" content="Vamos a aprender a hacer un Pull Request al repositorio de otro perfil de GitHub.">
 
-            <meta property="og:image" content="/theme/images/post-bg.jpg">
+            <meta property="og:image" content="images/covers/PullRequest.jpg">
 </head>
 
 <body class="article-pull-request-en-github">
@@ -82,7 +82,7 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('/theme/images/post-bg.jpg')">
+        <header class="intro-header" style="background-image: url('/images/covers/PullRequest.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -105,7 +105,64 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
     <!-- Post Content -->
     <article>
-        <h2>Antes de hacer el cambio</h2>
+        <p>El <strong>Pull Request</strong> es una petición que se hace al propietario de un repositorio para realizar un cambio en el mismo. Si el propietario está de acuerdo, aceptará el cambio y actualizará el repositorio con la nueva versión.</p>
+<p><img src="/images/high_five.png" alt="Choca esos cinco" width="150"/> En otras palabras, se trata de una colaboración.</p>
+<h2>Antes de hacer el cambio</h2>
+<p>Estos son los pasos que tenemos que seguir antes de realizar el Pull Request:</p>
+<p>Primero, creamos una rama (<em>fork</em>) pulsando en ese mismo botón en el repositorio.</p>
+<p><img src="/images/github/fork.png" alt="Botón fork" width="1000"/></p>
+<p>Clonamos el repositorio (con ssh, para que nos pida la clave en lugar de la contraseña del usuario):</p>
+<div class="highlight"><pre><span></span><code><span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">git</span><span class="nv">@github</span><span class="p">.</span><span class="nl">com</span><span class="p">:</span><span class="n">LaraPruna</span><span class="o">/</span><span class="n">web</span><span class="o">-</span><span class="n">estatica</span><span class="o">-</span><span class="n">pelican</span><span class="p">.</span><span class="n">git</span><span class="w"></span>
+</code></pre></div>
+
+<p>Creamos una rama nueva:</p>
+<div class="highlight"><pre><span></span><code>git checkout -b pr_lpt
+</code></pre></div>
+
+<p><img src="/images/yes.png" alt="Hora de juguetear" width="150"/> Ya podemos cambiar lo que queramos.</p>
+<p><br></p>
+<h2>Después de hacer el cambio</h2>
+<p>Añadimos los cambios a la rama y los confirmamos:</p>
+<div class="highlight"><pre><span></span><code>git add .
+git commit -m &quot;He añadido un nuevo fichero&quot; 
+</code></pre></div>
+
+<p>Identificamos el nombre del repositorio remoto con el siguiente comando. En mi caso, es "origin".</p>
+<div class="highlight"><pre><span></span><code>git remote
+</code></pre></div>
+
+<p>Enviamos los cambios con <code>git push</code>, el repositorio remoto y el nombre de nuestra rama:</p>
+<div class="highlight"><pre><span></span><code>git push origin pr_lpt
+</code></pre></div>
+
+<p>Por último, creamos el Pull Request pulsando el botón que nos aparecerá en el repositorio:</p>
+<p><img src="/images/github/pull_request.png" alt="Botón fork" width="250"/></p>
+<p>Para sincronizar nuestra rama con el repositorio remoto, revisamos en qué rama estamos. La rama en la que nos encontramos se mostrará en verde.</p>
+<div class="highlight"><pre><span></span><code>git branch
+</code></pre></div>
+
+<p>Si no nos encontramos en nuestra rama principal (main o master), cambiamos a esta:</p>
+<div class="highlight"><pre><span></span><code>git checkout main
+</code></pre></div>
+
+<p>Añadimos el repositorio original como un repositorio upstream, si no lo tenemos ya:</p>
+<div class="highlight"><pre><span></span><code>git remote add upstream https://github.com/josedom24/prueba-pr-asir.git
+</code></pre></div>
+
+<p>Buscamos los cambios del repositorio original:</p>
+<div class="highlight"><pre><span></span><code>git fetch upstream
+</code></pre></div>
+
+<p>Fusionamos nuestra rama principal con el repositorio original:</p>
+<div class="highlight"><pre><span></span><code>git merge upstream/main
+</code></pre></div>
+
+<p>Mandamos los cambios a GitHub:</p>
+<div class="highlight"><pre><span></span><code>git push origin main
+</code></pre></div>
+
+<p>Y ya solo nos quedaría esperar que el propietario del repositorio...</p>
+<p><img src="/images/espia.png" alt="Observando a distancia" width="150"/> ...nos acepte el cambio.</p>
     </article>
 
         <div class="tags">

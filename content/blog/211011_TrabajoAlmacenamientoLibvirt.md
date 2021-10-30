@@ -3,6 +3,7 @@ Date: 2021-10-11 18:47
 Category: KVM/QEMU
 lang: es
 tags: Almacenamiento,KVM,QEMU,libvirt,LVM
+Header_Cover: images/covers/almacenamiento_libvirt.jpg
 summary: Vamos a aprender a gestionar el almacenamiento en libvirt. Para ello, crearemos un pool de almacenamiento de tipo LVM y otro de tipo directorio. En cada uno de estos grupos, generaremos nuevos volúmenes y, con ellos, máquinas virtuales. Además, emplearemos imágenes con formato raw y qcow2.
 
 Vamos a aprender a gestionar el almacenamiento en libvirt. Para ello, crearemos un pool de almacenamiento de tipo LVM y otro de tipo directorio. En cada uno de estos grupos, generaremos nuevos volúmenes y, con ellos, máquinas virtuales. Además, emplearemos imágenes con formato raw y qcow2.

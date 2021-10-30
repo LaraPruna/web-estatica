@@ -3,6 +3,7 @@ Date: 2021-10-15 18:55
 Category: KVM/QEMU
 lang: es
 tags: Virtualización,KVM,QEMU,libvirt
+Header_Cover: images/covers/qemu.jpg
 summary: Crearemos una red interna, generaremos un volumen en el pool por defecto con una imagen qcow2 y montaremos la imagen con qemu-nbd.
 
 # Uso básico de virsh
