@@ -3,6 +3,7 @@ Date: 2021-10-21 16:45
 Category: Git
 lang: es
 tags: GitHub
+modified: 2021-11-01 20:01
 Header_Cover: images/covers/PullRequest.jpg
 summary: Vamos a aprender a hacer un Pull Request al repositorio de otro perfil de GitHub.
 
@@ -10,7 +11,9 @@ El **Pull Request** es una petición que se hace al propietario de un repositori
 
 <img src="{static}/images/high_five.png" alt="Choca esos cinco" width="150"/> En otras palabras, se trata de una colaboración.
 
-## Antes de hacer el cambio
+## Enviar el Pull Request
+
+### Antes de hacer el cambio
 
 Estos son los pasos que tenemos que seguir antes de realizar el Pull Request:
 
@@ -32,7 +35,7 @@ git checkout -b pr_lpt
 
 <br>
 
-## Después de hacer el cambio
+### Después de hacer el cambio
 
 Añadimos los cambios a la rama y los confirmamos:
 ```
@@ -87,3 +90,21 @@ git push origin main
 Y ya solo nos quedaría esperar que el propietario del repositorio...
 
 <img src="{static}/images/espia.png" alt="Observando a distancia" width="150"/> ...nos acepte el cambio.
+
+## Recibir el Pull Request
+
+Cuando recibamos un Pull Request, nos aparecerá la propuesta en la pestaña "commit" de nuestro repositorio.
+
+<img src="{static}/images/llamada.png" alt="Llamando a Dani" width="150"/> Me he servido de la ayuda de mi compi Daniel para hacer la prueba.
+
+Aquí os muestro el resultado de su Pull Request:
+
+<img src="{static}/images/github/PR_Daniel.png" alt="Pull Request de Daniel" width="1000"/>
+
+Después, aceptamos el cambio...
+
+<img src="{static}/images/maldad.png" alt="WAAJAJAJAJA" width="200"/> ... o lo rechazamos.
+
+Así queda el sitio web después de aceptar el Pull Request y actualizar el repositorio.
+
+<img src="{static}/images/github/web_actualizada.png" alt="Web actualizada con un nuevo artículo" width="1000"/>
