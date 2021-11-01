@@ -3,6 +3,7 @@ Date: 2021-10-09 19:12
 Category: Redes
 lang: es
 tags: Redes,DHCP,Vagrant,Debian11
+modified: 2021-11-01 20:43
 Header_Cover: images/covers/DHCP.jpg
 summary: En este artículo veremos cómo instalar y configurar un servidor DHCP mediante una máquina de Vagrant con Debian 11 (Bullseye).
 
@@ -135,6 +136,66 @@ lease {
 ```
 
 ¡Ya tendríamos un servidor DHCP básico completamente operativo!
+
+## Congifiguración de una reserva
+
+Añadimos un segundo cliente en el fichero Vagrantfile:
+```
+Vagrant.configure("2") do |config|
+
+  config.vm.define :nodo1 do |nodo1|
+    nodo1.vm.box = "debian/bullseye64" 
+    nodo1.vm.hostname = "servidor" 
+    nodo1.vm.synced_folder ".", "/vagrant", disabled: true
+    nodo1.vm.network :private_network,
+      :libvirt__network_name => "muyaislada",
+      :libvirt__dhcp_enabled => false,
+      :ip => "192.168.0.1",
+      :libvirt__forward_mode => "veryisolated" 
+  end
+  config.vm.define :nodo2 do |nodo2|
+    nodo2.vm.box = "debian/bullseye64" 
+    nodo2.vm.hostname = "cliente" 
+    nodo2.vm.synced_folder ".", "/vagrant", disabled: true
+    nodo2.vm.network :private_network,
+      :libvirt__network_name => "muyaislada",
+      :libvirt__dhcp_enabled => false,
+      :libvirt__forward_mode => "veryisolated" 
+  end
+  config.vm.define :nodo3 do |nodo3|
+    nodo3.vm.box = "debian/bullseye64" 
+    nodo3.vm.hostname = "cliente2" 
+    nodo3.vm.synced_folder ".", "/vagrant", disabled: true
+    nodo3.vm.network :private_network,
+      :libvirt__network_name => "muyaislada",
+      :libvirt__dhcp_enabled => false,
+      :libvirt__forward_mode => "veryisolated" 
+  end
+end
+```
+
+Después, entramos en la configuración del servidor DHCP para asignarle una reserva al nuevo cliente:
+```
+subnet 192.168.0.0 netmask 255.255.255.0 {
+  range 192.168.0.100 192.168.0.110;
+  option subnet-mask 255.255.255.0;
+  option routers 192.168.0.1;
+  option domain-name-servers 8.8.8.8,8.8.4.4;
+  default-lease-time 3600;
+  max-lease-time 3600;
+}
+
+host nodo3 {
+  hardware ethernet 52:54:00:fb:8b:67;
+  fixed-address 192.168.0.105;
+}
+```
+
+Por último, reiniciamos el servicio isc-dhcp-server y la máquina cliente. Al ejecutar el comando `ip a`, nos saldrá el siguiente resultado:
+
+<img src="{static}/images/dhcp/dhcp_reserva_ipa.png" alt="El cliente ha recibido una IP de la reserva" width="1000"/>
+
+Si echamos un vistazo al fichero de concesiones, comprobaremos que no se ha guardado este registro, puesto que no es necesario: toda la información que deba haber sobre la reserva ya se encuentra guardada en el fichero de configuración.
 
 Vuelve a pasarte por aquí para ver más artículos y seguir aprendiendo.
 <img src="{static}/images/gracias.png" alt="¡Gracias!" width="200"/>

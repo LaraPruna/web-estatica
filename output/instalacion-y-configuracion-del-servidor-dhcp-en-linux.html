@@ -95,6 +95,7 @@
                                 <a href="/author/lara-pruna.html">Lara Pruna</a>
                              on sáb 09 octubre 2021
                         </span>
+                            <span class="meta">Updated on lun 01 noviembre 2021</span>
                         
                     </div>
                 </div>
@@ -228,6 +229,60 @@ sudo ifdown eth1
 </code></pre></div>
 
 <p>¡Ya tendríamos un servidor DHCP básico completamente operativo!</p>
+<h2>Congifiguración de una reserva</h2>
+<p>Añadimos un segundo cliente en el fichero Vagrantfile:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">Vagrant</span>.<span class="nv">configure</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">2</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="k">do</span> <span class="o">|</span><span class="nv">config</span><span class="o">|</span>
+
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo1</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo1</span><span class="o">|</span>
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">servidor</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+      :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+      :<span class="nv">ip</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">192.168.0.1</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span> 
+  <span class="k">end</span>
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo2</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo2</span><span class="o">|</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">cliente</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+      :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+      :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span> 
+  <span class="k">end</span>
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo3</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo3</span><span class="o">|</span>
+    <span class="nv">nodo3</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo3</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">cliente2</span><span class="s2">&quot;</span> 
+    <span class="nv">nodo3</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+    <span class="nv">nodo3</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+      :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+      :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span> 
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+
+<p>Después, entramos en la configuración del servidor DHCP para asignarle una reserva al nuevo cliente:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">subnet</span> <span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span> <span class="nt">netmask</span> <span class="nt">255</span><span class="p">.</span><span class="nc">255</span><span class="p">.</span><span class="nc">255</span><span class="p">.</span><span class="nc">0</span> <span class="p">{</span>
+  <span class="err">range</span> <span class="err">192.168.0.100</span> <span class="err">192.168.0.110</span><span class="p">;</span>
+  <span class="err">option</span> <span class="err">subnet-mask</span> <span class="err">255.255.255.0</span><span class="p">;</span>
+  <span class="err">option</span> <span class="err">routers</span> <span class="err">192.168.0.1</span><span class="p">;</span>
+  <span class="err">option</span> <span class="err">domain-name-servers</span> <span class="err">8.8.8.8,8.8.4.4</span><span class="p">;</span>
+  <span class="err">default-lease-time</span> <span class="err">3600</span><span class="p">;</span>
+  <span class="err">max-lease-time</span> <span class="err">3600</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">host</span> <span class="nt">nodo3</span> <span class="p">{</span>
+  <span class="err">hardware</span> <span class="err">ethernet</span> <span class="err">52:54:00:</span><span class="n">fb</span><span class="p">:</span><span class="mi">8</span><span class="n">b</span><span class="o">:</span><span class="mi">67</span><span class="p">;</span>
+  <span class="err">fixed-address</span> <span class="err">192.168.0.105</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Por último, reiniciamos el servicio isc-dhcp-server y la máquina cliente. Al ejecutar el comando <code>ip a</code>, nos saldrá el siguiente resultado:</p>
+<p><img src="/images/dhcp/dhcp_reserva_ipa.png" alt="El cliente ha recibido una IP de la reserva" width="1000"/></p>
+<p>Si echamos un vistazo al fichero de concesiones, comprobaremos que no se ha guardado este registro, puesto que no es necesario: toda la información que deba haber sobre la reserva ya se encuentra guardada en el fichero de configuración.</p>
 <p>Vuelve a pasarte por aquí para ver más artículos y seguir aprendiendo.
 <img src="/images/gracias.png" alt="¡Gracias!" width="200"/></p>
     </article>
