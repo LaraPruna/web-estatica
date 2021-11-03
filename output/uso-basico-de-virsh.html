@@ -10,13 +10,13 @@
         <title>Uso básico de virsh</title>
 
         <!-- Bootstrap Core CSS -->
-        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
 
         <!-- Code highlight color scheme -->
-            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
 
 
         <!-- Custom Fonts -->
@@ -46,13 +46,13 @@
 		<meta property="og:site_name" content="SysRaider">
 
 	<meta property="og:type" content="article">
-            <meta property="article:author" content="/author/lara-pruna.html">
-	<meta property="og:url" content="/uso-basico-de-virsh.html">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./uso-basico-de-virsh.html">
 	<meta property="og:title" content="Uso básico de virsh">
 	<meta property="article:published_time" content="2021-10-15 18:55:00+02:00">
             <meta property="og:description" content="Crearemos una red interna, generaremos un volumen en el pool por defecto con una imagen qcow2 y montaremos la imagen con qemu-nbd.">
 
-            <meta property="og:image" content="images/covers/qemu.jpg">
+            <meta property="og:image" content=".images/covers/qemu.jpg">
 </head>
 
 <body class="article-uso-basico-de-virsh">
@@ -68,15 +68,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">SysRaider</a>
+                <a class="navbar-brand" href="./">SysRaider</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
 
-                            <li><a href="/pages/about.html">Sobre mí</a></li>
-                            <li><a href="/pages/pelican.html">Pelican</a></li>
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                            <li><a href="./pages/pelican.html">Pelican</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -85,14 +85,14 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('/images/covers/qemu.jpg')">
+        <header class="intro-header" style="background-image: url('./images/covers/qemu.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Uso básico de virsh</h1>
                         <span class="meta">Posted by
-                                <a href="/author/lara-pruna.html">Lara Pruna</a>
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
                              on vie 15 octubre 2021
                         </span>
                         
@@ -110,7 +110,7 @@
     <article>
         <h1>Uso básico de virsh</h1>
 <p>¿Abierto a nuevas experiencias?¿Virtualbox se te ha quedado pequeño?¿Te han obligado a pasarte a KVM y no sabes cómo?</p>
-<p><img src="/images/rock.png" alt="Hora de Rock & Roll" width="150"/>
+<p><img src="./images/rock.png" alt="Hora de Rock & Roll" width="150"/>
 ¡Entonces este es tu sitio!</p>
 <p>En un momento vamos a aprender cómo crear una red interna en KVM/QEMU con virsh, generaremos un volumen en el pool por defecto con una imagen qcow2 y montaremos dicha imagen con qemu-nbd.</p>
 <p><br></p>
@@ -137,7 +137,7 @@
 <div class="highlight"><pre><span></span><code>virsh -c qemu:///system net-create --file red_interna.xml
 </code></pre></div>
 
-<p><img src="/images/ojo.png" alt="Ojo cuidao" width="150"/>
+<p><img src="./images/ojo.png" alt="Ojo cuidao" width="150"/>
 <strong>OJO CUIDAO</strong></p>
 <p>El comando net-create no crea las redes de manera <strong>persistente</strong>, es decir, que se irán a tomar viento fresco en cuanto apaguemos o reiniciemos el host. Para mantener las redes de forma indefinida, en su lugar emplearemos el comando net-define.</p>
 <p>Estas son otras acciones que puedes hacer con las redes:</p>
@@ -174,7 +174,7 @@
 sudo mount /dev/nbd0p1 /mnt/nbd/
 </code></pre></div>
 
-<p><img src="/images/alivio.png" alt="Hecho" width="150"/>
+<p><img src="./images/alivio.png" alt="Hecho" width="150"/>
 ¡Aparcao!</p>
 <p>Ahora podremos ver el contenido de la imagen qcow2 y hacer los cambios oportunos, como definir una nueva contraseña para el usuario:</p>
 <div class="highlight"><pre><span></span><code>sudo chroot /mnt/nbd
@@ -207,7 +207,7 @@ sed -i &#39;s/debiantest/maquina_lara/g&#39; &quot;/mnt/nbd/etc/hosts&quot;
 <p><br></p>
 <h2>Definir el dominio con un fichero XML y conectado a la red creada</h2>
 <p>Dejadme aclarar antes para los novicios el término "dominio". No debemos confundirlo con el dominio de un sitio web; en virsh, se le llama así a las máquinas virtuales. Quizá no sea el mejor término para referirse a ellas...</p>
-<p><img src="/images/enfin.png" alt="Qué se le va a hacer" width="150"/>
+<p><img src="./images/enfin.png" alt="Qué se le va a hacer" width="150"/>
 Pero en fin...</p>
 <p>Antes de definir un dominio, necesitamos un fichero XML donde alojar su configuración, que incluirá la red que hemos creado en la primera sección:</p>
 <div class="highlight"><pre><span></span><code>nano dominio1.xml
@@ -262,13 +262,13 @@ dhclient
 <div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="w"> </span><span class="n">usuario</span><span class="mf">@10.0.1.226</span><span class="w"></span>
 </code></pre></div>
 
-<p><img src="/images/fiesta.png" alt="¡Olé!" width="150"/>
+<p><img src="./images/fiesta.png" alt="¡Olé!" width="150"/>
 ¡Ya tenemos listo nuestro dominio!</p>
 <p>En resumen, hemos creado una red interna y un volumen a partir de una imagen qcow2 (que hemos acondicionado previamente), y con esos dos elementos hemos generado una máquina virtual con una red NAT a la que podemos acceder por SSH.</p>
     </article>
 
         <div class="tags">
-            <p>tags: <a href="/tag/virtualizacion.html">Virtualización</a>, <a href="/tag/kvm.html">KVM</a>, <a href="/tag/qemu.html">QEMU</a>, <a href="/tag/libvirt.html">libvirt</a></p>
+            <p>tags: <a href="./tag/virtualizacion.html">Virtualización</a>, <a href="./tag/kvm.html">KVM</a>, <a href="./tag/qemu.html">QEMU</a>, <a href="./tag/libvirt.html">libvirt</a></p>
         </div>
 
     <hr>
@@ -311,13 +311,13 @@ dhclient
     </footer>
 
     <!-- jQuery -->
-    <script src="/theme/js/jquery.min.js"></script>
+    <script src="./theme/js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/theme/js/bootstrap.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="/theme/js/clean-blog.min.js"></script>
+        <script src="./theme/js/clean-blog.min.js"></script>
 
 </body>
 

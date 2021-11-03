@@ -10,13 +10,13 @@
         <title>Creación y configuración de un escenario Router-NAT con Vagrant y Ansible</title>
 
         <!-- Bootstrap Core CSS -->
-        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
 
         <!-- Code highlight color scheme -->
-            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
 
 
         <!-- Custom Fonts -->
@@ -47,13 +47,13 @@
 		<meta property="og:site_name" content="SysRaider">
 
 	<meta property="og:type" content="article">
-            <meta property="article:author" content="/author/lara-pruna.html">
-	<meta property="og:url" content="/creacion-y-configuracion-de-un-escenario-router-nat-con-vagrant-y-ansible.html">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./creacion-y-configuracion-de-un-escenario-router-nat-con-vagrant-y-ansible.html">
 	<meta property="og:title" content="Creación y configuración de un escenario Router-NAT con Vagrant y Ansible">
 	<meta property="article:published_time" content="2021-10-10 15:01:00+02:00">
             <meta property="og:description" content="En este artículo te explico cómo crear un escenario de Vagrant con dos nodos: un router con NAT conectado con un cliente por una red muy...">
 
-            <meta property="og:image" content="images/covers/vagrant_ansible.png">
+            <meta property="og:image" content=".images/covers/vagrant_ansible.png">
 </head>
 
 <body class="article-creacion-y-configuracion-de-un-escenario-router-nat-con-vagrant-y-ansible">
@@ -69,15 +69,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">SysRaider</a>
+                <a class="navbar-brand" href="./">SysRaider</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
 
-                            <li><a href="/pages/about.html">Sobre mí</a></li>
-                            <li><a href="/pages/pelican.html">Pelican</a></li>
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                            <li><a href="./pages/pelican.html">Pelican</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -86,14 +86,14 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('/images/covers/vagrant_ansible.png')">
+        <header class="intro-header" style="background-image: url('./images/covers/vagrant_ansible.png')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Creación y configuración de un escenario Router-NAT con Vagrant y Ansible</h1>
                         <span class="meta">Posted by
-                                <a href="/author/lara-pruna.html">Lara Pruna</a>
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
                              on dom 10 octubre 2021
                         </span>
                         
@@ -122,7 +122,7 @@ iface br0 inet dhcp
         bridge_ports enp2s0
 </code></pre></div>
 
-<p><img src="/images/relax.png" alt="Escuchemos un poco de música mientras esperamos" width="150"/>
+<p><img src="./images/relax.png" alt="Escuchemos un poco de música mientras esperamos" width="150"/>
 Guardamos el fichero y reiniciamos el host.</p>
 <p>Ahora que ya tenemos nuestro puente, creamos el escenario de Vagrant con la siguiente configuración:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">Vagrant</span>.<span class="nv">configure</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">2</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="k">do</span> <span class="o">|</span><span class="nv">config</span><span class="o">|</span>
@@ -162,7 +162,7 @@ Guardamos el fichero y reiniciamos el host.</p>
 <li>El <strong>cliente</strong> tendrá acceso a Internet a través de eth1, la interfaz de red aislada conectada con el router, el cual enrutará las peticiones del cliente.</li>
 </ul>
 <p>Podemos hacerlo de dos formas: manualmente o con Ansible.</p>
-<h3><img src="/images/manual.png" alt="Lo hacemos nosotros mismos" width="150"/> Método manual</h3>
+<h3><img src="./images/manual.png" alt="Lo hacemos nosotros mismos" width="150"/> Método manual</h3>
 <p>Cambiamos el bit de forwarding para que el router pueda actuar como tal:</p>
 <div class="highlight"><pre><span></span><code>echo &quot;1&quot; &gt; /proc/sys/net/ipv4/ip_forward
 </code></pre></div>
@@ -197,7 +197,7 @@ Guardamos el fichero y reiniciamos el host.</p>
 </code></pre></div>
 
 <p>Guardamos el fichero y reiniciamos la máquina.</p>
-<h3><img src="/images/peli.png" alt="Se hace automáticamente" width="150"/> Método Ansible</h3>
+<h3><img src="./images/peli.png" alt="Se hace automáticamente" width="150"/> Método Ansible</h3>
 <p>Para esta ocasión tengo preparada esta maravillosa <a href="https://github.com/LaraPruna/Escenario-router-nat-ansible">receta de Ansible</a>. La receta realiza todos los pasos explicados en el método manual, salvo que de forma automatizada. Tan solo tienes que clonar el repositorio en el mismo directorio donde se encuentre el escenario, editar el fichero hosts para cambiar la dirección IP correspondiente a la interfaz eth0 de cada máquina y ejecutar el comando "ansible-playbook site.yaml".</p>
 <p>Para <strong>configurar las máquinas automáticamente desde la creación del escenario</strong>, una vez nos aseguremos de que tenemos la receta de Ansible en el mismo directorio, editamos el fichero Vagrantfile y añadimos al final el siguiente contenido:</p>
 <div class="highlight"><pre><span></span><code>    <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">provision</span> <span class="s2">&quot;</span><span class="s">ansible</span><span class="s2">&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="nv">ansible</span><span class="o">|</span>
@@ -213,12 +213,12 @@ Guardamos el fichero y reiniciamos el host.</p>
 </code></pre></div>
 
 <p>El router ya estará listo, pero para entrar por SSH en el cliente a través de eth1 necesitaremos hacer uso del <strong>agente SSH</strong>.</p>
-<p><img src="/images/pensando.png" alt="Pensando..." width="150"/> ¿Qué es eso del agente SSH?</p>
+<p><img src="./images/pensando.png" alt="Pensando..." width="150"/> ¿Qué es eso del agente SSH?</p>
 <p>Veámoslo de la siguiente forma:</p>
 <p>Queremos entrar en una zona restringida dentro de otra zona restringida. Para ello, accedemos a la primera zona llevándonos con nosotros a nuestro agente, nuestro ayudante. Como tenemos nuestras credenciales, no hay problema, nos dejan pasar.</p>
 <p>Imaginemos que, para entrar a la siguiente zona (donde nos pedirán de nuevo las credenciales), necesitamos dejar allí al agente como nuestro representante. No obstante, para que cumpla su labor, él también necesita unas credenciales, una <strong>identidad</strong>.</p>
 <p>De hecho, si ejecutamos el comando <strong>ssh-add -L</strong>, veremos todas las identidades que posee el agente en ese momento. Si aún no le hemos dado nada, nos dirán que el agente no dispone de ninguna identidad. No es nadie.</p>
-<p><img src="/images/miedo.png" alt="Qué miedo" width="150"/> Es una persona sin rostro...</p>
+<p><img src="./images/miedo.png" alt="Qué miedo" width="150"/> Es una persona sin rostro...</p>
 <p>Por eso, nos reunimos con él en casa, en el host, y le damos una copia de nuestro carnet y nuestra cara con el comando <strong>ssh-add ~/.ssh/id_rsa</strong>. Ahora el agente y nosotros somos la misma persona.</p>
 <p>A continuación, nos llevamos al agente al router, opción que activamos empleando uno de los dos siguientes procedimientos:</p>
 <ul>
@@ -241,7 +241,7 @@ Guardamos el fichero y reiniciamos el host.</p>
     </article>
 
         <div class="tags">
-            <p>tags: <a href="/tag/redes.html">Redes</a>, <a href="/tag/nat.html">NAT</a>, <a href="/tag/vagrant.html">Vagrant</a>, <a href="/tag/ansible.html">Ansible</a>, <a href="/tag/ssh.html">SSH</a></p>
+            <p>tags: <a href="./tag/redes.html">Redes</a>, <a href="./tag/nat.html">NAT</a>, <a href="./tag/vagrant.html">Vagrant</a>, <a href="./tag/ansible.html">Ansible</a>, <a href="./tag/ssh.html">SSH</a></p>
         </div>
 
     <hr>
@@ -284,13 +284,13 @@ Guardamos el fichero y reiniciamos el host.</p>
     </footer>
 
     <!-- jQuery -->
-    <script src="/theme/js/jquery.min.js"></script>
+    <script src="./theme/js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/theme/js/bootstrap.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="/theme/js/clean-blog.min.js"></script>
+        <script src="./theme/js/clean-blog.min.js"></script>
 
 </body>
 

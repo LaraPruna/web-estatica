@@ -10,13 +10,13 @@
         <title>Ejercicio de redes con Libvirt</title>
 
         <!-- Bootstrap Core CSS -->
-        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
 
         <!-- Code highlight color scheme -->
-            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
 
 
         <!-- Custom Fonts -->
@@ -45,13 +45,13 @@
 		<meta property="og:site_name" content="SysRaider">
 
 	<meta property="og:type" content="article">
-            <meta property="article:author" content="/author/lara-pruna.html">
-	<meta property="og:url" content="/ejercicio-de-redes-con-libvirt.html">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./ejercicio-de-redes-con-libvirt.html">
 	<meta property="og:title" content="Ejercicio de redes con Libvirt">
 	<meta property="article:published_time" content="2021-10-17 10:46:00+02:00">
             <meta property="og:description" content="Crearemos un dominio conectado a una red interna, lo clonaremos y uniremos ambos nodos con una red muy aislada. Sustuiremos la red...">
 
-            <meta property="og:image" content="images/covers/redes_libvirt.jpg">
+            <meta property="og:image" content=".images/covers/redes_libvirt.jpg">
 </head>
 
 <body class="article-ejercicio-de-redes-con-libvirt">
@@ -67,15 +67,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">SysRaider</a>
+                <a class="navbar-brand" href="./">SysRaider</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
 
-                            <li><a href="/pages/about.html">Sobre mí</a></li>
-                            <li><a href="/pages/pelican.html">Pelican</a></li>
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                            <li><a href="./pages/pelican.html">Pelican</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -84,14 +84,14 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('/images/covers/redes_libvirt.jpg')">
+        <header class="intro-header" style="background-image: url('./images/covers/redes_libvirt.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Ejercicio de redes con Libvirt</h1>
                         <span class="meta">Posted by
-                                <a href="/author/lara-pruna.html">Lara Pruna</a>
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
                              on dom 17 octubre 2021
                         </span>
                         
@@ -108,14 +108,14 @@
     <!-- Post Content -->
     <article>
         <p>Este es el escenario que vamos a crear en este ejercicio, para que os hagáis una idea:</p>
-<p><img src="/images/EsquemaRedes.jpg" alt="Hola" width="500"/></p>
+<p><img src="./images/EsquemaRedes.jpg" alt="Hola" width="500"/></p>
 <p><br></p>
 <h2>Crear un dominio conectado a la red interna</h2>
 <p>Primero, creamos la red interna como vimos este fabuloso <a href="https://friendly-hamilton-b0f148.netlify.app/uso-basico-de-virsh.html">artículo</a>, y cuando ya la tengamos lista, instalamos el dominio con virt-install, yo he aprovechado una imagen de Debian 11 que tenía por ahí:</p>
 <div class="highlight"><pre><span></span><code>virt-install --name nodo1_lara --disk size=10 --memory 1024 --network red_interna --cdrom ./debian-11.0.0-amd64-netinst.iso
 </code></pre></div>
 
-<p><img src="/images/durmiendo.png" alt="Esperando" width="150"/>
+<p><img src="./images/durmiendo.png" alt="Esperando" width="150"/>
 Esperamos a que termine la instalación.
 <br></p>
 <h2>Clonar un dominio con virt-clone</h2>
@@ -189,13 +189,13 @@ virsh -c qemu:///system attach-interface --domain nodo1_lara --type network --so
 </code></pre></div>
 
 <p>Al final, el nodo1 tendrá la red interna, la aislada y el puente:</p>
-<p><img src="/images/redes_libvirt/ipa_final_nodo1.png" alt="Interfaces del nodo1" width="700"/></p>
+<p><img src="./images/redes_libvirt/ipa_final_nodo1.png" alt="Interfaces del nodo1" width="700"/></p>
 <p>Mientras que en el nodo2 solo estará la aislada, conectada al nodo1:</p>
-<p><img src="/images/redes_libvirt/ipa_ej3.png" alt="Interfaz del nodo2" width="700"/></p>
+<p><img src="./images/redes_libvirt/ipa_ej3.png" alt="Interfaz del nodo2" width="700"/></p>
     </article>
 
         <div class="tags">
-            <p>tags: <a href="/tag/redes.html">Redes</a>, <a href="/tag/libvirt.html">Libvirt</a>, <a href="/tag/bridge.html">bridge</a></p>
+            <p>tags: <a href="./tag/redes.html">Redes</a>, <a href="./tag/libvirt.html">Libvirt</a>, <a href="./tag/bridge.html">bridge</a></p>
         </div>
 
     <hr>
@@ -238,13 +238,13 @@ virsh -c qemu:///system attach-interface --domain nodo1_lara --type network --so
     </footer>
 
     <!-- jQuery -->
-    <script src="/theme/js/jquery.min.js"></script>
+    <script src="./theme/js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/theme/js/bootstrap.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="/theme/js/clean-blog.min.js"></script>
+        <script src="./theme/js/clean-blog.min.js"></script>
 
 </body>
 

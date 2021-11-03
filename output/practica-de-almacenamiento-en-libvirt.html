@@ -10,13 +10,13 @@
         <title>Práctica de almacenamiento en libvirt</title>
 
         <!-- Bootstrap Core CSS -->
-        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
 
         <!-- Code highlight color scheme -->
-            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
 
 
         <!-- Custom Fonts -->
@@ -47,13 +47,13 @@
 		<meta property="og:site_name" content="SysRaider">
 
 	<meta property="og:type" content="article">
-            <meta property="article:author" content="/author/lara-pruna.html">
-	<meta property="og:url" content="/practica-de-almacenamiento-en-libvirt.html">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./practica-de-almacenamiento-en-libvirt.html">
 	<meta property="og:title" content="Práctica de almacenamiento en libvirt">
 	<meta property="article:published_time" content="2021-10-11 18:47:00+02:00">
             <meta property="og:description" content="Vamos a aprender a gestionar el almacenamiento en libvirt. Para ello, crearemos un pool de almacenamiento de tipo LVM y otro de tipo...">
 
-            <meta property="og:image" content="images/covers/almacenamiento_libvirt.jpg">
+            <meta property="og:image" content=".images/covers/almacenamiento_libvirt.jpg">
 </head>
 
 <body class="article-practica-de-almacenamiento-en-libvirt">
@@ -69,15 +69,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">SysRaider</a>
+                <a class="navbar-brand" href="./">SysRaider</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
 
-                            <li><a href="/pages/about.html">Sobre mí</a></li>
-                            <li><a href="/pages/pelican.html">Pelican</a></li>
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                            <li><a href="./pages/pelican.html">Pelican</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -86,14 +86,14 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('/images/covers/almacenamiento_libvirt.jpg')">
+        <header class="intro-header" style="background-image: url('./images/covers/almacenamiento_libvirt.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Práctica de almacenamiento en libvirt</h1>
                         <span class="meta">Posted by
-                                <a href="/author/lara-pruna.html">Lara Pruna</a>
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
                              on lun 11 octubre 2021
                         </span>
                         
@@ -110,7 +110,7 @@
     <!-- Post Content -->
     <article>
         <p>Vamos a aprender a gestionar el almacenamiento en libvirt. Para ello, crearemos un pool de almacenamiento de tipo LVM y otro de tipo directorio. En cada uno de estos grupos, generaremos nuevos volúmenes y, con ellos, máquinas virtuales. Además, emplearemos imágenes con formato raw y qcow2.</p>
-<p><img src="/images/programando.png" alt="Hora de jugar" width="150"/> Vamos a jugar un poco con el almacenamiento en libvirt.</p>
+<p><img src="./images/programando.png" alt="Hora de jugar" width="150"/> Vamos a jugar un poco con el almacenamiento en libvirt.</p>
 <h2>Pool de almacenamiento de tipo LVM</h2>
 <p>Empecemos por <strong>pool de almacenamiento de tipo LVM</strong> con "pool-define-as". Después de definirlo, lo iniciaremos con "pool-start":</p>
 <pre><code class="shell">
@@ -182,7 +182,7 @@ sudo mv /var/lib/libvirt/images/nodo2_lara_copia.qcow2 /var/lib/libvirt/images/n
 sudo virsh snapshot-create-as --domain nodo1-lara --name nodo1_snap
 </code></pre>
 
-<p><img src="/images/demonio.png" alt="Maldad" width="150"/>
+<p><img src="./images/demonio.png" alt="Maldad" width="150"/>
 Ahora sería un buen momento para maltratar un poco al nodo.</p>
 <p>Estas son algunas ideas: comenta líneas del fichero /etc/fstab, cámbiale la cantidad de memoria en el fichero xml, crea o elimina diferentes ficheros... Cuando hayamos acabado de hacer diabluras, restauraremos la máquina con la instantánea:</p>
 <pre><code class="shell">
@@ -210,7 +210,7 @@ sudo virsh -c qemu:///system attach-disk nodo2-lara ./pool_dir/vol_dir vdb
     </article>
 
         <div class="tags">
-            <p>tags: <a href="/tag/almacenamiento.html">Almacenamiento</a>, <a href="/tag/kvm.html">KVM</a>, <a href="/tag/qemu.html">QEMU</a>, <a href="/tag/libvirt.html">libvirt</a>, <a href="/tag/lvm.html">LVM</a></p>
+            <p>tags: <a href="./tag/almacenamiento.html">Almacenamiento</a>, <a href="./tag/kvm.html">KVM</a>, <a href="./tag/qemu.html">QEMU</a>, <a href="./tag/libvirt.html">libvirt</a>, <a href="./tag/lvm.html">LVM</a></p>
         </div>
 
     <hr>
@@ -253,13 +253,13 @@ sudo virsh -c qemu:///system attach-disk nodo2-lara ./pool_dir/vol_dir vdb
     </footer>
 
     <!-- jQuery -->
-    <script src="/theme/js/jquery.min.js"></script>
+    <script src="./theme/js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/theme/js/bootstrap.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="/theme/js/clean-blog.min.js"></script>
+        <script src="./theme/js/clean-blog.min.js"></script>
 
 </body>
 

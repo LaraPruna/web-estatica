@@ -5,7 +5,7 @@
 #en el mismo directorio que Pelican.
 
 #Primero se actualiza el contenido del sitio web:
-source ~/virtualenvs/pelican/bin/activate
+source /home/lpruna/virtualenvs/pelican/bin/activate
 pelican content -s pelicanconf.py
 
 #Luego se suben los cambios al repositorio de Pelican en GitHub:

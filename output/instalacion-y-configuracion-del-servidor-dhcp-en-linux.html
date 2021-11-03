@@ -10,13 +10,13 @@
         <title>Instalación y configuración del servidor DHCP en Linux</title>
 
         <!-- Bootstrap Core CSS -->
-        <link href="/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="/theme/css/clean-blog.min.css" rel="stylesheet">
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
 
         <!-- Code highlight color scheme -->
-            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
 
 
         <!-- Custom Fonts -->
@@ -46,13 +46,13 @@
 		<meta property="og:site_name" content="SysRaider">
 
 	<meta property="og:type" content="article">
-            <meta property="article:author" content="/author/lara-pruna.html">
-	<meta property="og:url" content="/instalacion-y-configuracion-del-servidor-dhcp-en-linux.html">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./instalacion-y-configuracion-del-servidor-dhcp-en-linux.html">
 	<meta property="og:title" content="Instalación y configuración del servidor DHCP en Linux">
 	<meta property="article:published_time" content="2021-10-09 19:12:00+02:00">
             <meta property="og:description" content="En este artículo veremos cómo instalar y configurar un servidor DHCP mediante una máquina de Vagrant con Debian 11 (Bullseye).">
 
-            <meta property="og:image" content="images/covers/DHCP.jpg">
+            <meta property="og:image" content=".images/covers/DHCP.jpg">
 </head>
 
 <body class="article-instalacion-y-configuracion-del-servidor-dhcp-en-linux">
@@ -68,15 +68,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">SysRaider</a>
+                <a class="navbar-brand" href="./">SysRaider</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
 
-                            <li><a href="/pages/about.html">Sobre mí</a></li>
-                            <li><a href="/pages/pelican.html">Pelican</a></li>
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                            <li><a href="./pages/pelican.html">Pelican</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -85,14 +85,14 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('/images/covers/DHCP.jpg')">
+        <header class="intro-header" style="background-image: url('./images/covers/DHCP.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Instalación y configuración del servidor DHCP en Linux</h1>
                         <span class="meta">Posted by
-                                <a href="/author/lara-pruna.html">Lara Pruna</a>
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
                              on sáb 09 octubre 2021
                         </span>
                             <span class="meta">Updated on lun 01 noviembre 2021</span>
@@ -110,7 +110,7 @@
     <!-- Post Content -->
     <article>
         <p>Empecemos por crear un escenario con dos nodos en Vagrant: uno será el servidor DHCP y otro el cliente. Ambos tendrán una red muy aislada, pero solo uno de ellos tendrá una IP estática, el servidor DHCP.</p>
-<p><img src="/images/perspicaz.png" alt="Recolocándose las gafas" width="100"/>
+<p><img src="./images/perspicaz.png" alt="Recolocándose las gafas" width="100"/>
 Veamos el fichero Vagrantfile:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">Vagrant</span>.<span class="nv">configure</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">2</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="k">do</span> <span class="o">|</span><span class="nv">config</span><span class="o">|</span>
 
@@ -165,7 +165,7 @@ sudo apt install isc-dhcp-server
 <div class="highlight"><pre><span></span><code>systemctl restart isc-dhcp-server
 </code></pre></div>
 
-<p><img src="/images/corriendo.png" alt="Nos desplazamos" width="150"/>
+<p><img src="./images/corriendo.png" alt="Nos desplazamos" width="150"/>
 Vayámonos ahora a la máquina cliente.</p>
 <p>Para que la interfaz conectada con el servidor reciba una IP de esta, hay que reiniciarla:</p>
 <div class="highlight"><pre><span></span><code>sudo ifup eth1
@@ -281,14 +281,14 @@ sudo ifdown eth1
 </code></pre></div>
 
 <p>Por último, reiniciamos el servicio isc-dhcp-server y la máquina cliente. Al ejecutar el comando <code>ip a</code>, nos saldrá el siguiente resultado:</p>
-<p><img src="/images/dhcp/dhcp_reserva_ipa.png" alt="El cliente ha recibido una IP de la reserva" width="1000"/></p>
+<p><img src="./images/dhcp/dhcp_reserva_ipa.png" alt="El cliente ha recibido una IP de la reserva" width="1000"/></p>
 <p>Si echamos un vistazo al fichero de concesiones, comprobaremos que no se ha guardado este registro, puesto que no es necesario: toda la información que deba haber sobre la reserva ya se encuentra guardada en el fichero de configuración.</p>
 <p>Vuelve a pasarte por aquí para ver más artículos y seguir aprendiendo.
-<img src="/images/gracias.png" alt="¡Gracias!" width="200"/></p>
+<img src="./images/gracias.png" alt="¡Gracias!" width="200"/></p>
     </article>
 
         <div class="tags">
-            <p>tags: <a href="/tag/redes.html">Redes</a>, <a href="/tag/dhcp.html">DHCP</a>, <a href="/tag/vagrant.html">Vagrant</a>, <a href="/tag/debian11.html">Debian11</a></p>
+            <p>tags: <a href="./tag/redes.html">Redes</a>, <a href="./tag/dhcp.html">DHCP</a>, <a href="./tag/vagrant.html">Vagrant</a>, <a href="./tag/debian11.html">Debian11</a></p>
         </div>
 
     <hr>
@@ -331,13 +331,13 @@ sudo ifdown eth1
     </footer>
 
     <!-- jQuery -->
-    <script src="/theme/js/jquery.min.js"></script>
+    <script src="./theme/js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/theme/js/bootstrap.min.js"></script>
+    <script src="./theme/js/bootstrap.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="/theme/js/clean-blog.min.js"></script>
+        <script src="./theme/js/clean-blog.min.js"></script>
 
 </body>
 
