@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Instalación de Debian 11 en LVM</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo explicaremos cómo instalar Debian 11 sobre volúmenes lógicos y particionado.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Debian">
+        <meta name="tags" content="LVM">
+        <meta name="tags" content="Bullseye">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./instalacion-de-debian-11-en-lvm.html">
+	<meta property="og:title" content="Instalación de Debian 11 en LVM">
+	<meta property="article:published_time" content="2022-01-10 20:21:00+01:00">
+            <meta property="og:description" content="En este artículo explicaremos cómo instalar Debian 11 sobre volúmenes lógicos y particionado.">
+
+            <meta property="og:image" content=".images/covers/Debian-11-Bullseye.jpg">
+</head>
+
+<body class="article-instalacion-de-debian-11-en-lvm">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="./">SysRaider</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                            <li><a href="./pages/pelican.html">Pelican</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/Debian-11-Bullseye.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Instalación de Debian 11 en LVM</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on lun 10 enero 2022
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>En esta práctica llevaré a cabo la instalación de Debian 11 Bullseye en mi equipo, que ya dispone de Windows 10. Además, en lugar de realizar un particionado estándar del disco duro, se hará en formato de LVM (volúmenes lógicos).</p>
+<p><img src="./images/perspicaz.png" alt="Anteponiéndonos a los acontecimientos" width="150"/>En un futuro podremos ampliar o reducir el espacio de cada partición.</p>
+<h2>Instalación de Debian 11 en LVM</h2>
+<p>Antes de comenzar con la instalación, he reducido el espacio que tengo asignado a Windows y he dejado libre 150GB para Linux.</p>
+<p><img src="./images/enfin.png" alt="Sorry..." width="150"/>Si estudias en el IES Gonzalo Nazareno, con eso te quedas corto.</p>
+<p>Comenzamos la instalación como haríamos normalmente, y seguimos adelante hasta que llegamos a la sección del particionado.</p>
+<p><img src="./images/InstalacionDebian/partition-disks.png" alt="Particionado de discos" width="1000"/></p>
+<p>Aquí, elegimos el espacio libre que vayamos a usar para Debian y le damos formato de LVM. A continuación, nos vamos a la configuración de volúmenes lógicos que encontraremos en la parte superior de la pantalla (<code>Configure the Logical Volume Manager</code>, o en español, <code>Configurar el Gestor de Volúmenes Lógicos</code>).</p>
+<p><img src="./images/InstalacionDebian/LVM.png" alt="Gestor de Volúmenes Lógicos" width="500"/></p>
+<p>Creamos un volumen físico con la partición que hemos seleccionado antes. Luego, creamos un grupo de volúmenes, al que damos un nombre, y de este empezamos a sacar todos los volúmenes lógicos que necesitemos en función de las particiones que vayamos a crear. En mi caso, he generado las siguientes particiones:</p>
+<ul>
+<li>raiz (40GB)</li>
+<li>home (30GB)</li>
+<li>var (80GB, puesto que voy a trabajar con máquinas virtuales y estas se guardan en dicho directorio)</li>
+<li>usr (10GB)</li>
+<li>swap (1,1GB, que es el espacio que ha quedado al final, se recomienda no darle más de 4GB)</li>
+</ul>
+<p><em>Nota: añadiría también una partición para la EFI, que sería donde instalaríamos el grub. No obstante, en mi caso no ha sido necesario porque, al tener Windows 10 en el disco, ya viene creada.</em></p>
+<p>Cuando terminemos la configuración de los volúmenes lógicos, salimos y volvemos a la pantalla de particiones. A cada una de estas le damos un sistema de ficheros, como ext4 (excepto al área de intercambio, que la establecemos como tal) y seleccionamos su punto de montaje correspondiente. Finalmente, seguimos adelante hasta que finalicemos la instalación.</p>
+<p>En mi caso, así queda el conjunto de particiones tras la instalación:</p>
+<div class="highlight"><pre><span></span><code><span class="n">NAME</span><span class="w">          </span><span class="nl">MAJ</span><span class="p">:</span><span class="nf">MIN</span><span class="w"> </span><span class="n">RM</span><span class="w">   </span><span class="k">SIZE</span><span class="w"> </span><span class="n">RO</span><span class="w"> </span><span class="n">TYPE</span><span class="w"> </span><span class="n">MOUNTPOINT</span><span class="w"></span>
+<span class="n">sda</span><span class="w">             </span><span class="mi">8</span><span class="err">:</span><span class="mi">0</span><span class="w">    </span><span class="mi">0</span><span class="w"> </span><span class="mi">894</span><span class="p">,</span><span class="mi">3</span><span class="n">G</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="k">disk</span><span class="w"> </span>
+<span class="err">├─</span><span class="n">sda1</span><span class="w">          </span><span class="mi">8</span><span class="err">:</span><span class="mi">1</span><span class="w">    </span><span class="mi">0</span><span class="w">   </span><span class="mi">260</span><span class="n">M</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="o">/</span><span class="n">boot</span><span class="o">/</span><span class="n">efi</span><span class="w"></span>
+<span class="err">├─</span><span class="n">sda2</span><span class="w">          </span><span class="mi">8</span><span class="err">:</span><span class="mi">2</span><span class="w">    </span><span class="mi">0</span><span class="w">    </span><span class="mi">16</span><span class="n">M</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">part</span><span class="w"> </span>
+<span class="err">├─</span><span class="n">sda3</span><span class="w">          </span><span class="mi">8</span><span class="err">:</span><span class="mi">3</span><span class="w">    </span><span class="mi">0</span><span class="w"> </span><span class="mi">720</span><span class="p">,</span><span class="mi">6</span><span class="n">G</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">part</span><span class="w"> </span>
+<span class="err">├─</span><span class="n">sda4</span><span class="w">          </span><span class="mi">8</span><span class="err">:</span><span class="mi">4</span><span class="w">    </span><span class="mi">0</span><span class="w">  </span><span class="mi">1000</span><span class="n">M</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">part</span><span class="w"> </span>
+<span class="err">├─</span><span class="n">sda5</span><span class="w">          </span><span class="mi">8</span><span class="err">:</span><span class="mi">5</span><span class="w">    </span><span class="mi">0</span><span class="w">  </span><span class="mi">21</span><span class="p">,</span><span class="mi">4</span><span class="n">G</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">part</span><span class="w"> </span>
+<span class="err">├─</span><span class="n">sda6</span><span class="w">          </span><span class="mi">8</span><span class="err">:</span><span class="mi">6</span><span class="w">    </span><span class="mi">0</span><span class="w">   </span><span class="mi">984</span><span class="n">M</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">part</span><span class="w"> </span>
+<span class="err">└─</span><span class="n">sda7</span><span class="w">          </span><span class="mi">8</span><span class="err">:</span><span class="mi">7</span><span class="w">    </span><span class="mi">0</span><span class="w">   </span><span class="mi">150</span><span class="n">G</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">part</span><span class="w"> </span>
+<span class="w">  </span><span class="err">├─</span><span class="n">vg01</span><span class="o">-</span><span class="n">raiz</span><span class="w"> </span><span class="mi">254</span><span class="err">:</span><span class="mi">0</span><span class="w">    </span><span class="mi">0</span><span class="w">  </span><span class="mi">37</span><span class="p">,</span><span class="mi">3</span><span class="n">G</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">lvm</span><span class="w">  </span><span class="o">/</span><span class="w"></span>
+<span class="w">  </span><span class="err">├─</span><span class="n">vg01</span><span class="o">-</span><span class="n">home</span><span class="w"> </span><span class="mi">254</span><span class="err">:</span><span class="mi">1</span><span class="w">    </span><span class="mi">0</span><span class="w">  </span><span class="mi">27</span><span class="p">,</span><span class="mi">9</span><span class="n">G</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">lvm</span><span class="w">  </span><span class="o">/</span><span class="n">home</span><span class="w"></span>
+<span class="w">  </span><span class="err">├─</span><span class="n">vg01</span><span class="o">-</span><span class="nf">var</span><span class="w">  </span><span class="mi">254</span><span class="err">:</span><span class="mi">2</span><span class="w">    </span><span class="mi">0</span><span class="w">  </span><span class="mi">74</span><span class="p">,</span><span class="mi">5</span><span class="n">G</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">lvm</span><span class="w">  </span><span class="o">/</span><span class="nf">var</span><span class="w"></span>
+<span class="w">  </span><span class="err">├─</span><span class="n">vg01</span><span class="o">-</span><span class="n">usr</span><span class="w">  </span><span class="mi">254</span><span class="err">:</span><span class="mi">3</span><span class="w">    </span><span class="mi">0</span><span class="w">   </span><span class="mi">9</span><span class="p">,</span><span class="mi">3</span><span class="n">G</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">lvm</span><span class="w">  </span><span class="o">/</span><span class="n">usr</span><span class="w"></span>
+<span class="w">  </span><span class="err">└─</span><span class="n">vg01</span><span class="o">-</span><span class="n">swap</span><span class="w"> </span><span class="mi">254</span><span class="err">:</span><span class="mi">4</span><span class="w">    </span><span class="mi">0</span><span class="w">  </span><span class="mi">1016</span><span class="n">M</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">lvm</span><span class="w">  </span><span class="o">[</span><span class="n">SWAP</span><span class="o">]</span><span class="w"></span>
+<span class="n">sr0</span><span class="w">            </span><span class="mi">11</span><span class="err">:</span><span class="mi">0</span><span class="w">    </span><span class="mi">1</span><span class="w">  </span><span class="mi">1024</span><span class="n">M</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">rom</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Búsqueda e instalación de drivers</h2>
+<p>Al iniciar el sistema y ejecutar el comando <code>hw-probe</code>, el sistema analizará nuestro hardware y devolverá un enlace con información sobre los drivers que nos faltan. En mi equipo, por ejemplo, faltaban dos drivers, el de mi <strong>tarjeta de red</strong> de Intel (Dual Band Wireless-AC 3165 Plus Bluetooth) y el de la <strong>tarjeta gráfica de AMD</strong> (Topaz XT).</p>
+<p>En el primer caso, tras realizar una búsqueda, he encontrado el driver correspondiente (iwlwifi) en la página oficial de Intel, y lo he instalado como cualquier paquete de Debian. En cuanto a la tarjeta gráfica, averigué que el driver que necesitaba era amdgpu, incluido en el paquete firmware-amd-graphics, tras lo cual me apareció como operativo en el informe de hw-probe.
+En la imagen de abajo se puede ver el resultado del comando <code>lspci</code> tras instalar los dos drivers que faltaban:</p>
+<div class="highlight"><pre><span></span><code><span class="mo">00</span><span class="o">:</span><span class="mf">00.0</span><span class="w"> </span><span class="n">Host</span><span class="w"> </span><span class="nl">bridge</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Xeon</span><span class="w"> </span><span class="n">E3</span><span class="mi">-1200</span><span class="w"> </span><span class="n">v6</span><span class="o">/</span><span class="mi">7</span><span class="n">th</span><span class="w"> </span><span class="n">Gen</span><span class="w"> </span><span class="n">Core</span><span class="w"> </span><span class="n">Processor</span><span class="w"> </span><span class="n">Host</span><span class="w"> </span><span class="n">Bridge</span><span class="o">/</span><span class="n">DRAM</span><span class="w"> </span><span class="n">Registers</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mo">02</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mf">02.0</span><span class="w"> </span><span class="n">VGA</span><span class="w"> </span><span class="n">compatible</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">HD</span><span class="w"> </span><span class="n">Graphics</span><span class="w"> </span><span class="mi">620</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mo">02</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mf">14.0</span><span class="w"> </span><span class="n">USB</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">USB</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="n">xHCI</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">21</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mf">14.2</span><span class="w"> </span><span class="n">Signal</span><span class="w"> </span><span class="n">processing</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">Thermal</span><span class="w"> </span><span class="n">subsystem</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">21</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mf">16.0</span><span class="w"> </span><span class="n">Communication</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">CSME</span><span class="w"> </span><span class="n">HECI</span><span class="w"> </span><span class="err">#</span><span class="mi">1</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">21</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mf">17.0</span><span class="w"> </span><span class="n">SATA</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">SATA</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="p">[</span><span class="n">AHCI</span><span class="w"> </span><span class="n">mode</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">21</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mi">1</span><span class="n">c</span><span class="mf">.0</span><span class="w"> </span><span class="n">PCI</span><span class="w"> </span><span class="nl">bridge</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">PCI</span><span class="w"> </span><span class="n">Express</span><span class="w"> </span><span class="n">Root</span><span class="w"> </span><span class="n">Port</span><span class="w"> </span><span class="err">#</span><span class="mi">1</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="n">f1</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mi">1</span><span class="n">c</span><span class="mf">.4</span><span class="w"> </span><span class="n">PCI</span><span class="w"> </span><span class="nl">bridge</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">PCI</span><span class="w"> </span><span class="n">Express</span><span class="w"> </span><span class="n">Root</span><span class="w"> </span><span class="n">Port</span><span class="w"> </span><span class="err">#</span><span class="mi">5</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="n">f1</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mi">1</span><span class="n">c</span><span class="mf">.5</span><span class="w"> </span><span class="n">PCI</span><span class="w"> </span><span class="nl">bridge</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">PCI</span><span class="w"> </span><span class="n">Express</span><span class="w"> </span><span class="n">Root</span><span class="w"> </span><span class="n">Port</span><span class="w"> </span><span class="err">#</span><span class="mi">6</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="n">f1</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mf">1f.0</span><span class="w"> </span><span class="n">ISA</span><span class="w"> </span><span class="nl">bridge</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">LPC</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">21</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mf">1f.2</span><span class="w"> </span><span class="n">Memory</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">PMC</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">21</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mf">1f.3</span><span class="w"> </span><span class="n">Audio</span><span class="w"> </span><span class="nl">device</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">HD</span><span class="w"> </span><span class="n">Audio</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">21</span><span class="p">)</span><span class="w"></span>
+<span class="mo">00</span><span class="o">:</span><span class="mf">1f.4</span><span class="w"> </span><span class="nl">SMBus</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Sunrise</span><span class="w"> </span><span class="n">Point</span><span class="o">-</span><span class="n">LP</span><span class="w"> </span><span class="n">SMBus</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">21</span><span class="p">)</span><span class="w"></span>
+<span class="mo">01</span><span class="o">:</span><span class="mf">00.0</span><span class="w"> </span><span class="n">Display</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Advanced</span><span class="w"> </span><span class="n">Micro</span><span class="w"> </span><span class="n">Devices</span><span class="p">,</span><span class="w"> </span><span class="n">Inc</span><span class="p">.</span><span class="w"> </span><span class="p">[</span><span class="n">AMD</span><span class="o">/</span><span class="n">ATI</span><span class="p">]</span><span class="w"> </span><span class="n">Topaz</span><span class="w"> </span><span class="n">XT</span><span class="w"> </span><span class="p">[</span><span class="n">Radeon</span><span class="w"> </span><span class="n">R7</span><span class="w"> </span><span class="n">M260</span><span class="o">/</span><span class="n">M265</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">M340</span><span class="o">/</span><span class="n">M360</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">M440</span><span class="o">/</span><span class="n">M445</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">530</span><span class="o">/</span><span class="mi">535</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">620</span><span class="o">/</span><span class="mi">625</span><span class="w"> </span><span class="n">Mobile</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">83</span><span class="p">)</span><span class="w"></span>
+<span class="mo">02</span><span class="o">:</span><span class="mf">00.0</span><span class="w"> </span><span class="n">Ethernet</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Realtek</span><span class="w"> </span><span class="n">Semiconductor</span><span class="w"> </span><span class="n">Co</span><span class="p">.,</span><span class="w"> </span><span class="n">Ltd</span><span class="p">.</span><span class="w"> </span><span class="n">RTL8111</span><span class="o">/</span><span class="mi">8168</span><span class="o">/</span><span class="mi">8411</span><span class="w"> </span><span class="n">PCI</span><span class="w"> </span><span class="n">Express</span><span class="w"> </span><span class="n">Gigabit</span><span class="w"> </span><span class="n">Ethernet</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"></span>
+<span class="mo">03</span><span class="o">:</span><span class="mf">00.0</span><span class="w"> </span><span class="n">Network</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Dual</span><span class="w"> </span><span class="n">Band</span><span class="w"> </span><span class="n">Wireless</span><span class="o">-</span><span class="n">AC</span><span class="w"> </span><span class="mi">3165</span><span class="w"> </span><span class="n">Plus</span><span class="w"> </span><span class="n">Bluetooth</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">99</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<h2>Bibliografía y enlaces de interés</h2>
+<p>Debian. (2015, 22 diciembre). es/Firmware - Debian Wiki. Debian Wiki. <a href="https://wiki.debian.org/es/Firmware">https://wiki.debian.org/es/Firmware</a></p>
+<p>Debian. (2021, 14 agosto). AtiHowTo - Debian Wiki. Debian Wiki. <a href="https://wiki.debian.org/AtiHowTo">https://wiki.debian.org/AtiHowTo</a></p>
+<p>Intel. (s. f.). Asistencia de Linux* para Adaptadores inalámbricos Intel®. Recuperado 18 de septiembre de 2021, de <a href="https://www.intel.es/content/www/es/es/support/articles/000005511/wireless.html">https://www.intel.es/content/www/es/es/support/articles/000005511/wireless.html</a></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tag/debian.html">Debian</a>, <a href="./tag/lvm.html">LVM</a>, <a href="./tag/bullseye.html">Bullseye</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
