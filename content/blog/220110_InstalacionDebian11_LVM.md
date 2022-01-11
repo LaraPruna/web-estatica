@@ -9,7 +9,7 @@ summary: En este artículo explicaremos cómo instalar Debian 11 sobre volúmene
 En esta práctica llevaré a cabo la instalación de Debian 11 Bullseye en mi equipo, que ya dispone de Windows 10. Además, en lugar de realizar un particionado estándar del disco duro, se hará en formato de LVM (volúmenes lógicos).
 
 <img src="{static}/images/perspicaz.png" alt="Anteponiéndonos a los acontecimientos" width="150"/>En un futuro podremos ampliar o reducir el espacio de cada partición.
-
+<br>
 ## Instalación de Debian 11 en LVM
 
 Antes de comenzar con la instalación, he reducido el espacio que tengo asignado a Windows y he dejado libre 150GB para Linux.
@@ -54,7 +54,7 @@ sda             8:0    0 894,3G  0 disk
   └─vg01-swap 254:4    0  1016M  0 lvm  [SWAP]
 sr0            11:0    1  1024M  0 rom
 ```
-
+<br>
 ## Búsqueda e instalación de drivers
 
 Al iniciar el sistema y ejecutar el comando `hw-probe`, el sistema analizará nuestro hardware y devolverá un enlace con información sobre los drivers que nos faltan. En mi equipo, por ejemplo, faltaban dos drivers, el de mi **tarjeta de red** de Intel (Dual Band Wireless-AC 3165 Plus Bluetooth) y el de la **tarjeta gráfica de AMD** (Topaz XT).
@@ -79,7 +79,7 @@ En la imagen de abajo se puede ver el resultado del comando `lspci` tras instala
 02:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 15)
 03:00.0 Network controller: Intel Corporation Dual Band Wireless-AC 3165 Plus Bluetooth (rev 99)
 ```
-
+<br>
 ## Bibliografía y enlaces de interés
 
 Debian. (2015, 22 diciembre). es/Firmware - Debian Wiki. Debian Wiki. <https://wiki.debian.org/es/Firmware>

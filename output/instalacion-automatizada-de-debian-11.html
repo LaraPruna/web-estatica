@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Instalación Automatizada de Debian 11</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="Vamos a instalar de forma automatizada Debian 11 Bullseye mediante un fichero preseed y mediante PXE/TFTP.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Debian">
+        <meta name="tags" content="Bullseye">
+        <meta name="tags" content="Automatizacion">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./instalacion-automatizada-de-debian-11.html">
+	<meta property="og:title" content="Instalación Automatizada de Debian 11">
+	<meta property="article:published_time" content="2022-01-11 16:51:00+01:00">
+            <meta property="og:description" content="Vamos a instalar de forma automatizada Debian 11 Bullseye mediante un fichero preseed y mediante PXE/TFTP.">
+
+            <meta property="og:image" content=".images/covers/Debian-11-Bullseye.jpg">
+</head>
+
+<body class="article-instalacion-automatizada-de-debian-11">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="./">SysRaider</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                            <li><a href="./pages/pelican.html">Pelican</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/Debian-11-Bullseye.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Instalación Automatizada de Debian 11</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on mar 11 enero 2022
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>En este artículo veremos cómo podemos instalar Debian 11 de una manera totalmente automatizada, sin que tengamos que interactuar con el sistema durante el proceso.</p>
+<p><img src="./images/durmiendo.png" alt="A relajarse" width="150"/>Vamos, que podremos dedicar el tiempo a otra cosa.
+<br></p>
+<h2>Configuración del fichero preseed</h2>
+<p>Lo primero que haremos es crear el fichero preseed.cfg, y añadimos la configuración dependiendo de nuestras necesidades:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#Indicamos el idioma de la instalación y del teclado</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">debian</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">locale</span> <span class="n">string</span> <span class="n">es_ES</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">debian</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">language</span> <span class="n">string</span> <span class="n">spanish</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">debian</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">country</span> <span class="n">string</span> <span class="n">Spain</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">debian</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">locale</span> <span class="n">string</span> <span class="n">es_ES</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">localechooser</span><span class="o">/</span><span class="n">supported</span><span class="o">-</span><span class="n">locales</span> <span class="n">es_ES</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">keyboard</span><span class="o">-</span><span class="n">configuration</span><span class="o">/</span><span class="n">toggle</span> <span class="n">select</span> <span class="n">No</span> <span class="n">toggling</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">keyboard</span><span class="o">-</span><span class="n">configuration</span><span class="o">/</span><span class="n">xkb</span><span class="o">-</span><span class="n">keymap</span> <span class="n">select</span> <span class="n">es</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">console</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">ask_detect</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">keyboard</span><span class="o">-</span><span class="n">configuration</span><span class="o">/</span><span class="n">modelcode</span> <span class="n">string</span> <span class="n">pc105</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">keyboard</span><span class="o">-</span><span class="n">configuration</span><span class="o">/</span><span class="n">layoutcode</span> <span class="n">string</span> <span class="n">es</span>
+
+<span class="c1">#Si hay más de una interfaz, se elegirá de manera automática</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">netcfg</span><span class="o">/</span><span class="n">choose_interface</span> <span class="n">select</span> <span class="n">auto</span>
+
+<span class="c1">#Aquí le damos un nombre del host y escogemos un dominio</span>
+<span class="c1">#(yo lo he dejado en blanco porque no tengo dominio)</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">netcfg</span><span class="o">/</span><span class="n">get_hostname</span> <span class="n">string</span> <span class="n">debian</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">netcfg</span><span class="o">/</span><span class="n">get_domain</span> <span class="n">string</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">hw</span><span class="o">-</span><span class="n">detect</span><span class="o">/</span><span class="n">load_firmware</span> <span class="n">boolean</span> <span class="bp">false</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">apt</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">cdrom</span><span class="o">/</span><span class="n">set</span><span class="o">-</span><span class="n">first</span> <span class="n">boolean</span> <span class="bp">false</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">apt</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">cdrom</span><span class="o">/</span><span class="n">set</span><span class="o">-</span><span class="n">next</span> <span class="n">boolean</span> <span class="bp">false</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">apt</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">cdrom</span><span class="o">/</span><span class="n">set</span><span class="o">-</span><span class="n">failed</span> <span class="n">boolean</span> <span class="bp">false</span>
+
+<span class="c1"># Elegimos el repositorio de Debian manualmente, y deshabilitamos la participación en la encuesta</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">mirror</span><span class="o">/</span><span class="n">country</span> <span class="n">string</span> <span class="n">manual</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">mirror</span><span class="o">/</span><span class="n">http</span><span class="o">/</span><span class="n">hostname</span> <span class="n">string</span> <span class="n">ftp</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">mirror</span><span class="o">/</span><span class="n">http</span><span class="o">/</span><span class="n">directory</span> <span class="n">string</span> <span class="o">/</span><span class="n">debian</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">mirror</span><span class="o">/</span><span class="n">http</span><span class="o">/</span><span class="n">proxy</span> <span class="n">string</span>
+<span class="n">popularity</span><span class="o">-</span><span class="n">contest</span> <span class="n">popularity</span><span class="o">-</span><span class="n">contest</span><span class="o">/</span><span class="n">participate</span> <span class="n">boolean</span> <span class="bp">false</span>
+
+<span class="c1"># Seleccionamos la zona horaria</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">clock</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">utc</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">time</span><span class="o">/</span><span class="n">zone</span> <span class="n">string</span> <span class="n">ES</span><span class="o">/</span><span class="n">Madrid</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">clock</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">ntp</span> <span class="n">boolean</span> <span class="bp">true</span>
+
+<span class="c1"># En la configuración de las particiones, he optado por coger el espacio libre más grande</span>
+<span class="c1"># y crear una única partición primaria, pero también se podría optar por crear particiones en LVM.</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">-</span><span class="n">auto</span><span class="o">/</span><span class="n">init_automatically_partition</span> <span class="n">select</span> <span class="n">biggest_free</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">-</span><span class="n">auto</span><span class="o">/</span><span class="n">method</span> <span class="n">string</span> <span class="n">regular</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">-</span><span class="n">auto</span><span class="o">/</span><span class="n">choose_recipe</span> <span class="n">select</span> <span class="n">atomic</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">-</span><span class="n">partitioning</span><span class="o">/</span><span class="n">confirm_write_new_label</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">/</span><span class="n">choose_partition</span> <span class="n">select</span> <span class="n">finish</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">/</span><span class="n">confirm</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">/</span><span class="n">confirm_nooverwrite</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">-</span><span class="n">md</span><span class="o">/</span><span class="n">confirm</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">-</span><span class="n">partitioning</span><span class="o">/</span><span class="n">confirm_write_new_label</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">/</span><span class="n">choose_partition</span> <span class="n">select</span> <span class="n">finish</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">/</span><span class="n">confirm</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">partman</span><span class="o">/</span><span class="n">confirm_nooverwrite</span> <span class="n">boolean</span> <span class="bp">true</span>
+
+<span class="c1"># En este apartado he descartado la creación de un superusuario.</span>
+<span class="c1"># Escribimos el nombre y la contraseña del usuario.</span>
+<span class="c1"># Esta ultima la he insertado de manera encriptada,</span>
+<span class="c1"># (podemos ejecutar previamente el comando passwd</span>
+<span class="c1"># con la contraseña para obtener la encriptación).</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">passwd</span><span class="o">/</span><span class="n">user</span><span class="o">-</span><span class="n">fullname</span> <span class="n">string</span> <span class="n">Lara</span> <span class="n">Pruna</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">passwd</span><span class="o">/</span><span class="n">username</span> <span class="n">string</span> <span class="n">lpruna</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">passwd</span><span class="o">/</span><span class="n">root</span><span class="o">-</span><span class="n">login</span> <span class="n">boolean</span> <span class="bp">false</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">passwd</span><span class="o">/</span><span class="n">user</span><span class="o">-</span><span class="n">password</span><span class="o">-</span><span class="n">crypted</span> <span class="n">password</span> <span class="o">$</span><span class="n">y</span><span class="o">$</span><span class="n">j9T</span><span class="o">$</span><span class="mi">3</span><span class="n">IDOsh0jfa5jIKABp0GS41</span><span class="o">$</span><span class="n">OURF2BOwg33zn3</span><span class="o">&gt;</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">user</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">encrypt</span><span class="o">-</span><span class="n">home</span> <span class="n">boolean</span> <span class="bp">false</span>
+
+<span class="c1"># Aquí elegimos los paquetes que queramos instalar, como el entorno gráfico.</span>
+<span class="n">tasksel</span> <span class="n">tasksel</span><span class="o">/</span><span class="n">first</span> <span class="n">multiselect</span> <span class="n">openssh</span><span class="o">-</span><span class="n">server</span><span class="p">,</span> <span class="n">kde</span><span class="o">-</span><span class="n">desktop</span>
+
+<span class="c1"># Instalamos el grub</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">grub</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">only_debian</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">grub</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">with_other_os</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">grub</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">bootdev</span> <span class="n">string</span> <span class="n">default</span>
+
+<span class="c1"># Con la siguiente línea, indicamos que reinicie al finalizar la instalación </span>
+<span class="n">d</span><span class="o">-</span><span class="n">i</span> <span class="n">finish</span><span class="o">-</span><span class="n">install</span><span class="o">/</span><span class="n">reboot_in_progress</span> <span class="n">note</span>
+
+<span class="n">xserver</span><span class="o">-</span><span class="n">xorg</span> <span class="n">xserver</span><span class="o">-</span><span class="n">xorg</span><span class="o">/</span><span class="n">autodetect_monitor</span> <span class="n">boolean</span> <span class="bp">true</span>
+<span class="n">xserver</span><span class="o">-</span><span class="n">xorg</span> <span class="n">xserver</span><span class="o">-</span><span class="n">xorg</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">monitor</span><span class="o">/</span><span class="n">selection</span><span class="o">-</span><span class="n">method</span> \
+       <span class="n">select</span> <span class="n">medium</span>
+<span class="n">xserver</span><span class="o">-</span><span class="n">xorg</span> <span class="n">xserver</span><span class="o">-</span><span class="n">xorg</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">monitor</span><span class="o">/</span><span class="n">mode</span><span class="o">-</span><span class="n">list</span> \
+       <span class="n">select</span> <span class="mi">1024</span><span class="err">×</span><span class="mi">768</span> <span class="err">@</span> <span class="mi">60</span> <span class="n">Hz</span>
+</code></pre></div>
+
+<p><br></p>
+<h2>Incrustación del preseed en el fichero iso</h2>
+<p>Creamos un directorio en /mnt y montamos la iso que hayamos descargado en dicha carpeta:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">mkdir</span> <span class="o">/</span><span class="nv">mnt</span><span class="o">/</span><span class="nv">iso</span>
+<span class="nv">mount</span> <span class="o">-</span><span class="nv">o</span> <span class="k">loop</span> <span class="nv">debian</span><span class="o">-</span><span class="mi">10</span>.<span class="mi">9</span>.<span class="mi">0</span><span class="o">-</span><span class="nv">amd64</span><span class="o">-</span><span class="nv">netinst</span>.<span class="nv">iso</span> <span class="o">/</span><span class="nv">mnt</span><span class="o">/</span><span class="nv">iso</span>
+</code></pre></div>
+
+<p>Ahora podemos ver todo el contenido de la iso, del cual solo necesitaremos 5 ficheros y directorios. Creamos un enlace simbólico a estos en un directorio aparte:</p>
+<div class="highlight"><pre><span></span><code>mkdir iso-preseed
+cd iso-preseed
+cp -pr /mnt/iso/install.amd install.amd
+cp -pr /mnt/iso/dists dists
+cp -pr /mnt/iso/pool pool
+cp -pr /mnt/iso/.disk .disk
+cp -pr /mnt/iso/isolinux isolinux
+ln -s .debian
+</code></pre></div>
+
+<p>Entramos en la carpeta isolinux, editamos el fichero txt.cgf y añadimos el siguiente texto:</p>
+<div class="highlight"><pre><span></span><code>default install
+label install
+        menu label ^Install
+        kernel /install.amd/vmlinuz
+        append vga=788 initrd=/install.amd/initrd.gz -- quiet
+label unattended-gnome
+ menu label ^Instalacion desatendida de Debian
+ kernel /install.amd/gtk/vmlinuz
+ append vga=788 initrd=/install.amd/gtk/initrd.gz preseed/file=/cdrom/respuestas/preseed.cfg locale=es_ES console-setup/ask_detect=false keyboard-configuration/xkb-keymap=es --
+</code></pre></div>
+
+<p>Al realizar cambios en el directorio isolinux, hay que regenerar el archivo md5sum (fichero que comprueba la integridad de ficheros y detecta si se ha realizado algún cambio):</p>
+<div class="highlight"><pre><span></span><code>md5sum `find ! -name &quot;md5sum.txt&quot; ! -path &quot;./isolinux/*&quot; -follow -type f` &gt; md5sum.txt
+</code></pre></div>
+
+<p>Por último, creamos la iso con el preseed incrustado:</p>
+<div class="highlight"><pre><span></span><code><span class="n">genisoimage</span> <span class="o">-</span><span class="n">o</span> <span class="n">cd</span><span class="o">-</span><span class="n">preseed</span><span class="o">.</span><span class="n">iso</span> <span class="o">-</span><span class="n">l</span> <span class="o">-</span><span class="n">r</span> <span class="o">-</span><span class="n">J</span> <span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="n">emul</span><span class="o">-</span><span class="n">boot</span> <span class="o">-</span><span class="n">boot</span><span class="o">-</span><span class="nb">load</span><span class="o">-</span><span class="n">size</span> <span class="mi">4</span> <span class="o">-</span><span class="n">boot</span><span class="o">-</span><span class="n">info</span><span class="o">-</span><span class="n">table</span> <span class="o">-</span><span class="n">b</span> <span class="n">isolinux</span><span class="o">/</span><span class="n">isolinux</span><span class="o">.</span><span class="n">bin</span> <span class="o">-</span><span class="n">c</span> <span class="n">isolinux</span><span class="o">/</span><span class="n">boot</span><span class="o">.</span><span class="n">cat</span> <span class="n">iso</span><span class="o">-</span><span class="n">preseed</span>
+</code></pre></div>
+
+<p><img src="./images/peli.png" alt="Nos vemos" width="150"/> ¡Id preparando las palomitas!</p>
+<p>Ya solo nos queda entrar en el instalador de Debian y, en lugar de pulsar "Install", seleccionamos "Instalacion desatendida de Debian" (que es la etiqueta que le hemos puesto en el fichero txt.cfg).</p>
+<p><img src="./images/InstalacionDebian/instalacion-desatendida-debian.jpg" alt="Instalación desatendida" width="500"/></p>
+<p><br></p>
+<h2>Instalación con arranque por red (PXE/TFTP)</h2>
+<p>Creamos una máquina de vagrant, donde alojaremos el servidor DHCP.</p>
+<div class="highlight"><pre><span></span><code>mkdir servidorDHCP
+cd servidorDHCP
+vagrant init
+nano Vagrantfile
+</code></pre></div>
+
+<p>El contenido del fichero Vagrantfile será el siguiente:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">Vagrant</span>.<span class="nv">configure</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">2</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="k">do</span> <span class="o">|</span><span class="nv">config</span><span class="o">|</span>
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span> #<span class="nv">Seleccionamos</span> <span class="nv">el</span> <span class="nv">box</span> <span class="nv">que</span> <span class="nv">vamos</span> <span class="nv">a</span> <span class="nv">utilizar</span>, <span class="nv">yo</span> <span class="nv">he</span> <span class="nv">elegido</span> <span class="nv">Debian</span> <span class="mi">11</span> <span class="ss">(</span><span class="nv">Bullseye</span><span class="ss">)</span>
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">servidorDHCP</span><span class="s2">&quot;</span> #<span class="nv">Le</span> <span class="nv">ponemos</span> <span class="nv">un</span> <span class="nv">nombre</span> <span class="nv">a</span> <span class="nv">la</span> <span class="nv">m</span>á<span class="nv">quina</span>.
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,  #<span class="nv">Como</span> <span class="nv">la</span> <span class="nv">m</span>á<span class="nv">quina</span> <span class="nv">ser</span>á <span class="nv">un</span> <span class="nv">servidor</span> <span class="nv">DHCP</span>, <span class="nv">creamos</span> <span class="nv">una</span> <span class="nv">interfaz</span> <span class="nv">de</span> <span class="nv">red</span> <span class="nv">aislada</span>, <span class="nv">con</span> <span class="nv">una</span> <span class="nv">direcci</span>ó<span class="nv">n</span> <span class="nv">IP</span> <span class="nv">est</span>á<span class="nv">tica</span>
+    :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">red1</span><span class="s2">&quot;</span>, #<span class="nv">Le</span> <span class="nv">damos</span> <span class="nv">un</span> <span class="nv">nombre</span> <span class="nv">a</span> <span class="nv">la</span> <span class="nv">nueva</span> <span class="nv">red</span> <span class="nv">que</span> <span class="nv">crear</span>á <span class="nv">Vagrant</span>
+    :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>, #<span class="nv">Desactivamos</span> <span class="nv">el</span> <span class="nv">direccionamiento</span> <span class="nv">din</span>á<span class="nv">mico</span>
+    :<span class="nv">ip</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">192.168.100.5</span><span class="s2">&quot;</span>,
+    :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">none</span><span class="s2">&quot;</span> #<span class="nv">Aqu</span>í <span class="nv">indicamos</span> <span class="nv">que</span> <span class="nv">la</span> <span class="nv">red</span> <span class="nv">ser</span>á <span class="nv">aislada</span>
+<span class="k">end</span>
+</code></pre></div>
+
+<p>Iniciamos el servidor y entramos por ssh:</p>
+<div class="highlight"><pre><span></span><code>vagrant up
+vagrant ssh
+</code></pre></div>
+
+<p>Con el comando <code>ip a</code> comprobamos que tenemos dos interfaces en el servidor:
+* eth0: conectada por NAT a un router virtual, y con el que accedemos al exterior.
+* eth1: red interna a la que se conectará la nueva máquina virtual en la instalaremos Debian por red.</p>
+<div class="highlight"><pre><span></span><code><span class="mi">1</span><span class="o">:</span> <span class="n">lo</span><span class="o">:</span> <span class="o">&lt;</span><span class="n">LOOPBACK</span><span class="o">,</span><span class="n">UP</span><span class="o">,</span><span class="n">LOWER_UP</span><span class="o">&gt;</span> <span class="n">mtu</span> <span class="mi">65536</span> <span class="n">qdisc</span> <span class="n">noqueue</span> <span class="n">state</span> <span class="n">UNKNOWN</span> <span class="n">group</span> <span class="k">default</span> <span class="n">qlen</span> 
+    <span class="n">link</span><span class="o">/</span><span class="n">loopback</span> <span class="mi">00</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="mi">00</span> <span class="n">brd</span> <span class="mi">00</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="mi">00</span>
+    <span class="n">inet</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="o">/</span><span class="mi">8</span> <span class="n">scope</span> <span class="n">host</span> <span class="n">lo</span>
+       <span class="n">valid_lft</span> <span class="n">forever</span> <span class="n">preferred_lft</span> <span class="n">forever</span>
+    <span class="n">inet6</span> <span class="o">::</span><span class="mi">1</span><span class="o">/</span><span class="mi">128</span> <span class="n">scope</span> <span class="n">host</span> 
+       <span class="n">valid_lft</span> <span class="n">forever</span> <span class="n">preferred_lft</span> <span class="n">forever</span>
+<span class="mi">2</span><span class="o">:</span> <span class="n">eth0</span><span class="o">:</span> <span class="o">&lt;</span><span class="n">BROADCAST</span><span class="o">,</span><span class="n">MULTICAST</span><span class="o">,</span><span class="n">UP</span><span class="o">,</span><span class="n">LOWER_UP</span><span class="o">&gt;</span> <span class="n">mtu</span> <span class="mi">1500</span> <span class="n">qdisc</span> <span class="n">pfifo_fast</span> <span class="n">state</span> <span class="n">UP</span> <span class="n">group</span> <span class="n">def</span>
+    <span class="n">link</span><span class="o">/</span><span class="n">ether</span> <span class="mi">52</span><span class="o">:</span><span class="mi">54</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="n">f8</span><span class="o">:</span><span class="n">fd</span><span class="o">:</span><span class="mi">75</span> <span class="n">brd</span> <span class="n">ff</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">ff</span>
+    <span class="n">altname</span> <span class="n">enp0s5</span>
+    <span class="n">altname</span> <span class="n">ens5</span>
+    <span class="n">inet</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">121.237</span><span class="o">/</span><span class="mi">24</span> <span class="n">brd</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">121.255</span> <span class="n">scope</span> <span class="n">global</span> <span class="kd">dynamic</span> <span class="n">eth0</span>
+       <span class="n">valid_lft</span> <span class="mi">2873</span><span class="n">sec</span> <span class="n">preferred_lft</span> <span class="mi">2873</span><span class="n">sec</span>
+    <span class="n">inet6</span> <span class="n">fe80</span><span class="o">::</span><span class="mi">5054</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">fef8</span><span class="o">:</span><span class="n">fd75</span><span class="o">/</span><span class="mi">64</span> <span class="n">scope</span> <span class="n">link</span> 
+       <span class="n">valid_lft</span> <span class="n">forever</span> <span class="n">preferred_lft</span> <span class="n">forever</span>
+<span class="mi">3</span><span class="o">:</span> <span class="n">eth1</span><span class="o">:</span> <span class="o">&lt;</span><span class="n">BROADCAST</span><span class="o">,</span><span class="n">MULTICAST</span><span class="o">,</span><span class="n">UP</span><span class="o">,</span><span class="n">LOWER_UP</span><span class="o">&gt;</span> <span class="n">mtu</span> <span class="mi">1500</span> <span class="n">qdisc</span> <span class="n">pfifo_fast</span> <span class="n">state</span> <span class="n">UP</span> <span class="n">group</span> <span class="n">def</span>
+    <span class="n">link</span><span class="o">/</span><span class="n">ether</span> <span class="mi">52</span><span class="o">:</span><span class="mi">54</span><span class="o">:</span><span class="mi">00</span><span class="o">:</span><span class="mi">35</span><span class="o">:</span><span class="n">d6</span><span class="o">:</span><span class="mi">49</span> <span class="n">brd</span> <span class="n">ff</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">ff</span>
+    <span class="n">altname</span> <span class="n">enp0s6</span>
+    <span class="n">altname</span> <span class="n">ens6</span>
+    <span class="n">inet</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.5</span><span class="o">/</span><span class="mi">24</span> <span class="n">brd</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.255</span> <span class="n">scope</span> <span class="n">global</span> <span class="n">eth1</span>
+       <span class="n">valid_lft</span> <span class="n">forever</span> <span class="n">preferred_lft</span> <span class="n">forever</span>
+    <span class="n">inet6</span> <span class="n">fe80</span><span class="o">::</span><span class="mi">5054</span><span class="o">:</span><span class="n">ff</span><span class="o">:</span><span class="n">fe35</span><span class="o">:</span><span class="n">d649</span><span class="o">/</span><span class="mi">64</span> <span class="n">scope</span> <span class="n">link</span> 
+       <span class="n">valid_lft</span> <span class="n">forever</span> <span class="n">preferred_lft</span> <span class="n">forever</span>
+</code></pre></div>
+
+<p>Actualizamos el sistema e instalamos el paquete dnsmasq, con la que crearemos el servicio DHCP y TFTP:</p>
+<div class="highlight"><pre><span></span><code>sudo su
+apt update -y &amp;&amp; apt upgrade -y &amp;&amp; apt install -y dnsmasq
+</code></pre></div>
+
+<p>Modificamos el fichero de configuración /etc/dnsmasq y añadimos el siguiente contenido:</p>
+<div class="highlight"><pre><span></span><code>#Activamos el servidor DHCP y establecemos el rango de direcciones que puede conceder,
+#la máscara de red y la duración de dichas concesiones.
+
+dhcp-range=192.168.100.50,192.168.100.150,255.255.255.0,12h
+
+#Establecemos el fichero que los clientes van a usar para arrancar a través de la red.
+
+dhcp-boot=pxelinux.0
+
+#Habilitamos el servidor TFTP.
+
+enable-tftp
+
+#Especificamos el directorio que contendrá los ficheros que se van a servir por TFTP.
+
+tftp-root=/srv/tftp
+</code></pre></div>
+
+<p>Creamos el directorio /srv/tftp, que aún no existe, y reiniciamos el servicio de dnsmasq:</p>
+<div class="highlight"><pre><span></span><code>mkdir /srv/tftp
+systemctl restart dnsmasq
+</code></pre></div>
+
+<p>Comprobamos que el servicio dnsmasq está activado:</p>
+<div class="highlight"><pre><span></span><code>systemctl status dnsmasq
+</code></pre></div>
+
+<p>El resultado será el siguiente:</p>
+<div class="highlight"><pre><span></span><code><span class="err">●</span> <span class="n">dnsmasq</span><span class="o">.</span><span class="n">service</span> <span class="o">-</span> <span class="n">dnsmasq</span> <span class="o">-</span> <span class="n">A</span> <span class="n">lightweight</span> <span class="n">DHCP</span> <span class="ow">and</span> <span class="n">caching</span> <span class="n">DNS</span> <span class="n">server</span>
+     <span class="n">Loaded</span><span class="p">:</span> <span class="n">loaded</span> <span class="p">(</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">dnsmasq</span><span class="o">.</span><span class="n">service</span><span class="p">;</span> <span class="n">enabled</span><span class="p">;</span> <span class="n">vendor</span> <span class="n">preset</span><span class="p">:</span> <span class="n">enab</span><span class="o">&gt;</span>
+     <span class="n">Active</span><span class="p">:</span> <span class="n">active</span> <span class="p">(</span><span class="n">running</span><span class="p">)</span> <span class="n">since</span> <span class="n">Sat</span> <span class="mi">2021</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">02</span> <span class="mi">09</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">34</span> <span class="n">UTC</span><span class="p">;</span> <span class="mi">3</span><span class="n">h</span> <span class="mi">26</span><span class="nb">min</span> <span class="n">ago</span>
+   <span class="n">Main</span> <span class="n">PID</span><span class="p">:</span> <span class="mi">7220</span> <span class="p">(</span><span class="n">dnsmasq</span><span class="p">)</span>
+      <span class="n">Tasks</span><span class="p">:</span> <span class="mi">1</span> <span class="p">(</span><span class="n">limit</span><span class="p">:</span> <span class="mi">528</span><span class="p">)</span>
+     <span class="n">Memory</span><span class="p">:</span> <span class="mf">760.0</span><span class="n">K</span>
+        <span class="n">CPU</span><span class="p">:</span> <span class="mf">1.493</span><span class="n">s</span>
+     <span class="n">CGroup</span><span class="p">:</span> <span class="o">/</span><span class="n">system</span><span class="o">.</span><span class="n">slice</span><span class="o">/</span><span class="n">dnsmasq</span><span class="o">.</span><span class="n">service</span>
+             <span class="err">└─</span><span class="mi">7220</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">dnsmasq</span> <span class="o">-</span><span class="n">x</span> <span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">dnsmasq</span><span class="o">/</span><span class="n">dnsmasq</span><span class="o">.</span><span class="n">pid</span> <span class="o">-</span><span class="n">u</span> <span class="n">dnsmasq</span> <span class="o">-</span><span class="mi">7</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">d</span><span class="o">&gt;</span>
+
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">11</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">31</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="o">-</span><span class="n">dhcp</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">DHCPDISCOVER</span><span class="p">(</span><span class="n">eth1</span><span class="p">)</span> <span class="mi">52</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">6</span><span class="n">a</span><span class="p">:</span><span class="n">c1</span><span class="p">:</span><span class="n">a7</span>
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">11</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">31</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="o">-</span><span class="n">dhcp</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">DHCPOFFER</span><span class="p">(</span><span class="n">eth1</span><span class="p">)</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.64</span> <span class="mi">52</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="o">&gt;</span>
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">11</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">31</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="o">-</span><span class="n">dhcp</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">DHCPREQUEST</span><span class="p">(</span><span class="n">eth1</span><span class="p">)</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.64</span> <span class="mi">52</span><span class="p">:</span><span class="mi">5</span><span class="o">&gt;</span>
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">11</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">31</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="o">-</span><span class="n">dhcp</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">DHCPACK</span><span class="p">(</span><span class="n">eth1</span><span class="p">)</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">100.64</span> <span class="mi">52</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mi">00</span><span class="o">&gt;</span>
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">11</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">22</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">reading</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">resolv</span><span class="o">.</span><span class="n">conf</span>
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">11</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">22</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">using</span> <span class="n">nameserver</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">121.1</span><span class="c1">#53</span>
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">12</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">01</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">reading</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">resolv</span><span class="o">.</span><span class="n">conf</span>
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">12</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">01</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">using</span> <span class="n">nameserver</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">121.1</span><span class="c1">#53</span>
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">12</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">26</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">reading</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">resolv</span><span class="o">.</span><span class="n">conf</span>
+<span class="n">Oct</span> <span class="mi">02</span> <span class="mi">12</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">26</span> <span class="n">servidorDHCP</span> <span class="n">dnsmasq</span><span class="p">[</span><span class="mi">7220</span><span class="p">]:</span> <span class="n">using</span> <span class="n">nameserver</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">121.1</span><span class="c1">#53</span>
+</code></pre></div>
+
+<p>Nos dirigimos al directorio /srv/tftp/ y descargamos ahí el archivo comprimido que necesitamos para instalar Debian por red:</p>
+<div class="highlight"><pre><span></span><code>cd /srv/tftp
+wget http://ftp.debian.org/debian/dists/bullseye/main/installer-amd64/current/images/netboot/netboot.tar.gz
+</code></pre></div>
+
+<p>Lo descomprimimos y eliminamos el archivo comprimido, ya que no volveremos a necesitarlo:</p>
+<div class="highlight"><pre><span></span><code>tar -zxf netboot.tar.gz &amp;&amp; rm netboot.tar.gz
+</code></pre></div>
+
+<p>Ahora creamos la máquina virtual en el Gestor de Máquinas Virtuales en modo manual, le asignamos la red aislada que hemos creado con Vagrant y marcamos la opción de personalizar la configuración antes de instalar:</p>
+<p><img src="./images/InstalacionDebian/ManualInstall.png" alt="Instalacion manual" width="500"/>
+<img src="./images/InstalacionDebian/RedAislada.png" alt="Listo para iniciar la instalación" width="500"/></p>
+<p>En la configuración, nos vamos a la pestaña "Opciones de arranque", marcamos el arranque por red e iniciamos la instalación:
+<img src="./images/InstalacionDebian/OpcionesArranque.png" alt="Listo para iniciar la instalación" width="500"/></p>
+<p>Veremos que la máquina arranca el instalador de Debian. Solo falta agregar el fichero preseed para que la instalación se realice de manera desatendida. Instalamos apache2 en el servidor y creamos el fichero preseed.txt, donde añadimos la preconfiguración que describimos antes.</p>
+<div class="highlight"><pre><span></span><code><span class="n">apt</span> <span class="n">install</span> <span class="n">apache2</span>
+<span class="n">nano</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">preseed</span><span class="o">.</span><span class="n">txt</span>
+</code></pre></div>
+
+<p>Activamos el bit de forward para que los paquetes puedan pasar de una interfaz a otra:</p>
+<div class="highlight"><pre><span></span><code>echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</code></pre></div>
+
+<p>Con el comando <code>iptables</code>, el servidor hará SNAT, con lo que la máquina virtual podrá instalar paquetes por red:</p>
+<div class="highlight"><pre><span></span><code>iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.121.237
+</code></pre></div>
+
+<p>Finalmente, en el instalador de Debian, entramos en las opciones avanzadas y seleccionamos la instalación automatizada. Nos pedirá una URL de la que descargar el preseed, y ahí pondremos la ip de eth1 del servidor y el fichero preseed:</p>
+<div class="highlight"><pre><span></span><code><span class="mf">192.168.100.5</span><span class="o">/</span><span class="n">preseed</span><span class="mf">.</span><span class="n">txt</span>
+</code></pre></div>
+
+<p>Como alternativa, podemos simplemente pulsar ESC y escribir en la terminal:</p>
+<div class="highlight"><pre><span></span><code>auto url=192.168.100.5/preseed.txt
+</code></pre></div>
+
+<p>Al finalizar la instalación, entramos en la terminal de la nueva máquina virtual, comprobamos que ha recibido una IP del servidor:</p>
+<p><img src="./images/InstalacionDebian/interfacesVM.png" alt="Interfaces de red" width="500"/></p>
+<p>Si hacemos ping a 8.8.8.8, veremos que también tiene conexión a Internet:
+<img src="./images/InstalacionDebian/ping.png" alt="Ping" width="500"/></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tag/debian.html">Debian</a>, <a href="./tag/bullseye.html">Bullseye</a>, <a href="./tag/automatizacion.html">Automatizacion</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>

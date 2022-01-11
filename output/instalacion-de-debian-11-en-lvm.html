@@ -108,7 +108,8 @@
     <!-- Post Content -->
     <article>
         <p>En esta práctica llevaré a cabo la instalación de Debian 11 Bullseye en mi equipo, que ya dispone de Windows 10. Además, en lugar de realizar un particionado estándar del disco duro, se hará en formato de LVM (volúmenes lógicos).</p>
-<p><img src="./images/perspicaz.png" alt="Anteponiéndonos a los acontecimientos" width="150"/>En un futuro podremos ampliar o reducir el espacio de cada partición.</p>
+<p><img src="./images/perspicaz.png" alt="Anteponiéndonos a los acontecimientos" width="150"/>En un futuro podremos ampliar o reducir el espacio de cada partición.
+<br></p>
 <h2>Instalación de Debian 11 en LVM</h2>
 <p>Antes de comenzar con la instalación, he reducido el espacio que tengo asignado a Windows y he dejado libre 150GB para Linux.</p>
 <p><img src="./images/enfin.png" alt="Sorry..." width="150"/>Si estudias en el IES Gonzalo Nazareno, con eso te quedas corto.</p>
@@ -144,6 +145,7 @@
 <span class="n">sr0</span><span class="w">            </span><span class="mi">11</span><span class="err">:</span><span class="mi">0</span><span class="w">    </span><span class="mi">1</span><span class="w">  </span><span class="mi">1024</span><span class="n">M</span><span class="w">  </span><span class="mi">0</span><span class="w"> </span><span class="n">rom</span><span class="w"></span>
 </code></pre></div>
 
+<p><br></p>
 <h2>Búsqueda e instalación de drivers</h2>
 <p>Al iniciar el sistema y ejecutar el comando <code>hw-probe</code>, el sistema analizará nuestro hardware y devolverá un enlace con información sobre los drivers que nos faltan. En mi equipo, por ejemplo, faltaban dos drivers, el de mi <strong>tarjeta de red</strong> de Intel (Dual Band Wireless-AC 3165 Plus Bluetooth) y el de la <strong>tarjeta gráfica de AMD</strong> (Topaz XT).</p>
 <p>En el primer caso, tras realizar una búsqueda, he encontrado el driver correspondiente (iwlwifi) en la página oficial de Intel, y lo he instalado como cualquier paquete de Debian. En cuanto a la tarjeta gráfica, averigué que el driver que necesitaba era amdgpu, incluido en el paquete firmware-amd-graphics, tras lo cual me apareció como operativo en el informe de hw-probe.
@@ -166,6 +168,7 @@ En la imagen de abajo se puede ver el resultado del comando <code>lspci</code> t
 <span class="mo">03</span><span class="o">:</span><span class="mf">00.0</span><span class="w"> </span><span class="n">Network</span><span class="w"> </span><span class="nl">controller</span><span class="p">:</span><span class="w"> </span><span class="n">Intel</span><span class="w"> </span><span class="n">Corporation</span><span class="w"> </span><span class="n">Dual</span><span class="w"> </span><span class="n">Band</span><span class="w"> </span><span class="n">Wireless</span><span class="o">-</span><span class="n">AC</span><span class="w"> </span><span class="mi">3165</span><span class="w"> </span><span class="n">Plus</span><span class="w"> </span><span class="n">Bluetooth</span><span class="w"> </span><span class="p">(</span><span class="n">rev</span><span class="w"> </span><span class="mi">99</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
+<p><br></p>
 <h2>Bibliografía y enlaces de interés</h2>
 <p>Debian. (2015, 22 diciembre). es/Firmware - Debian Wiki. Debian Wiki. <a href="https://wiki.debian.org/es/Firmware">https://wiki.debian.org/es/Firmware</a></p>
 <p>Debian. (2021, 14 agosto). AtiHowTo - Debian Wiki. Debian Wiki. <a href="https://wiki.debian.org/AtiHowTo">https://wiki.debian.org/AtiHowTo</a></p>
