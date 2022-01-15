@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Compilación de un programa en C utilizando un Makefile</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo aprenderemos a compilar un programa escrito en C e instalarlo en nuestra máquina.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Compilación">
+        <meta name="tags" content="C">
+        <meta name="tags" content="Makefile">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./compilacion-de-un-programa-en-c-utilizando-un-makefile.html">
+	<meta property="og:title" content="Compilación de un programa en C utilizando un Makefile">
+	<meta property="article:published_time" content="2022-01-15 19:43:00+01:00">
+            <meta property="og:description" content="En este artículo aprenderemos a compilar un programa escrito en C e instalarlo en nuestra máquina.">
+
+            <meta property="og:image" content=".images/covers/compilacion.jpg">
+</head>
+
+<body class="article-compilacion-de-un-programa-en-c-utilizando-un-makefile">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="./">SysRaider</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                            <li><a href="./pages/pelican.html">Pelican</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/compilacion.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Compilación de un programa en C utilizando un Makefile</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on sáb 15 enero 2022
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p><strong>En este artículo aprenderemos a compilar un programa escrito en C e ins
+talarlo en nuestra máquina.</strong></p>
+<p>A modo de ejemplo, he elegido el programa "parted", que nos permite particionar y redimensionar nuestros discos, así como copiar diversos sistemas de ficheros.</p>
+<p><br></p>
+<h2>Descarga y compilación del paquete</h2>
+<p>En primer lugar, para descargarnos el código fuente desde Debian, nos conectamos como root y ejecutamos el comando <code>apt source</code>:</p>
+<div class="highlight"><pre><span></span><code>sudo su
+apt source parted
+</code></pre></div>
+
+<p>En el directorio actual, se nos habrá descargado los siguientes cuatro ficheros:</p>
+<div class="highlight"><pre><span></span><code><span class="n">root</span><span class="nv">@debian</span><span class="err">:</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">lpruna</span><span class="o">/</span><span class="n">parted</span><span class="err">#</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="o">-</span><span class="n">l</span><span class="w"></span>
+<span class="n">total</span><span class="w"> </span><span class="mi">1888</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="w">  </span><span class="mi">1</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">   </span><span class="mi">56140</span><span class="w"> </span><span class="n">ene</span><span class="w"> </span><span class="mi">30</span><span class="w">  </span><span class="mi">2021</span><span class="w"> </span><span class="n">parted_3</span><span class="mf">.4</span><span class="o">-</span><span class="mf">1.</span><span class="n">debian</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">xz</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="w">  </span><span class="mi">1</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w">    </span><span class="mi">3145</span><span class="w"> </span><span class="n">ene</span><span class="w"> </span><span class="mi">30</span><span class="w">  </span><span class="mi">2021</span><span class="w"> </span><span class="n">parted_3</span><span class="mf">.4</span><span class="o">-</span><span class="mf">1.</span><span class="n">dsc</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="w">  </span><span class="mi">1</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="mi">1860300</span><span class="w"> </span><span class="n">ene</span><span class="w"> </span><span class="mi">30</span><span class="w">  </span><span class="mi">2021</span><span class="w"> </span><span class="n">parted_3</span><span class="mf">.4</span><span class="p">.</span><span class="n">orig</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">xz</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="c1">--r--  1 root root     508 ene 30  2021 parted_3.4.orig.tar.xz.asc</span>
+</code></pre></div>
+
+<p>Descomprimos el archivo con extensión <code>.orig.tar.xz</code>:</p>
+<div class="highlight"><pre><span></span><code>tar -xf parted_3.4.orig.tar.xz
+</code></pre></div>
+
+<p>Dentro del nuevo directorio, ejecutamos el archivo "configure", con el que comprobaremos que tenemos todas las dependencias instaladas:</p>
+<div class="highlight"><pre><span></span><code>cd parted-3.4
+./configure
+</code></pre></div>
+
+<p><img src="./images/alarma.png" alt="¡Ojo!" width="150"/> ¡Ojo! A mí me ha saltado un error en mitad del chequeo.</p>
+<p>El sistema me ha informado de que GNU Parted necesita <code>libuuid</code> para funcionar, y que podemos encontrarlo en los paquetes libuuid-devel, uuid-dev o similar:</p>
+<div class="highlight"><pre><span></span><code><span class="n">configure</span><span class="o">:</span> <span class="n">error</span><span class="o">:</span> <span class="n">GNU</span> <span class="n">Parted</span> <span class="n">requires</span> <span class="n">libuuid</span> <span class="o">-</span> <span class="n">a</span> <span class="n">part</span> <span class="n">of</span> <span class="n">the</span> <span class="n">util</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">ng</span> <span class="kd">package</span> <span class="o">(</span><span class="n">but</span>
+<span class="n">usually</span> <span class="n">distributed</span> <span class="n">separately</span> <span class="k">in</span> <span class="n">libuuid</span><span class="o">-</span><span class="n">devel</span><span class="o">,</span> <span class="n">uuid</span><span class="o">-</span><span class="n">dev</span> <span class="n">or</span> <span class="n">similar</span><span class="o">)</span>
+<span class="n">This</span> <span class="n">can</span> <span class="n">probably</span> <span class="n">be</span> <span class="n">found</span> <span class="n">on</span> <span class="n">your</span> <span class="n">distribution</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">CD</span> <span class="n">or</span> <span class="n">FTP</span> <span class="n">site</span> <span class="n">or</span> <span class="n">at</span><span class="o">:</span>
+    <span class="n">http</span><span class="o">://</span><span class="n">userweb</span><span class="o">.</span><span class="na">kernel</span><span class="o">.</span><span class="na">org</span><span class="sr">/~kzak/util-linux-ng/</span>
+<span class="n">Note</span><span class="o">:</span> <span class="n">originally</span><span class="o">,</span> <span class="n">libuuid</span> <span class="n">was</span> <span class="n">part</span> <span class="n">of</span> <span class="n">the</span> <span class="n">e2fsprogs</span> <span class="kd">package</span><span class="o">.</span>  <span class="n">Later</span><span class="o">,</span> <span class="n">it</span>
+<span class="n">moved</span> <span class="n">to</span> <span class="n">util</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">ng</span><span class="o">-</span><span class="mf">2.16</span><span class="o">,</span> <span class="n">and</span> <span class="n">that</span> <span class="k">package</span> <span class="nn">is</span> <span class="n">now</span> <span class="n">the</span> <span class="n">preferred</span> <span class="n">source</span><span class="o">.</span>
+</code></pre></div>
+
+<p>Por lo tanto, trataremos de instalar alguno de esos paquetes desde los repositorios:</p>
+<div class="highlight"><pre><span></span><code>apt install uuid-dev
+</code></pre></div>
+
+<p>Para asegurarnos de que no falta ninguna otra dependencia, podemos ver la lista completa en el fichero .dsc e instalarlos manualmente con <code>apt install</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">cat</span> <span class="nv">parted_3</span>.<span class="mi">4</span><span class="o">-</span><span class="mi">1</span>.<span class="nv">dsc</span>
+
+<span class="nv">Build</span><span class="o">-</span><span class="nv">Depends</span>: <span class="nv">dpkg</span><span class="o">-</span><span class="nv">dev</span> <span class="ss">(</span><span class="o">&gt;=</span> <span class="mi">1</span>.<span class="mi">15</span>.<span class="mi">7</span><span class="o">~</span><span class="ss">)</span>, <span class="nv">debhelper</span> <span class="ss">(</span><span class="o">&gt;=</span> <span class="mi">9</span>.<span class="mi">20150501</span><span class="o">~</span><span class="ss">)</span>, <span class="nv">debhelper</span><span class="o">-</span><span class="nv">compat</span> <span class="ss">(</span><span class="o">=</span> <span class="mi">9</span><span class="ss">)</span>, <span class="nv">dh</span><span class="o">-</span><span class="k">exec</span>, <span class="nv">libncurses</span><span class="o">-</span><span class="nv">dev</span> <span class="o">|</span> <span class="nv">libncurses5</span><span class="o">-</span><span class="nv">dev</span>, <span class="nv">libreadline</span><span class="o">-</span><span class="nv">dev</span> <span class="o">|</span> <span class="nv">libreadline6</span><span class="o">-</span><span class="nv">dev</span>, <span class="nv">libdevmapper</span><span class="o">-</span><span class="nv">dev</span> <span class="ss">(</span><span class="o">&gt;=</span> <span class="mi">2</span>:<span class="mi">1</span>.<span class="mi">02</span>.<span class="mi">39</span><span class="ss">)</span> [<span class="nv">linux</span><span class="o">-</span><span class="nv">any</span>], <span class="nv">uuid</span><span class="o">-</span><span class="nv">dev</span>, <span class="nv">gettext</span>, <span class="nv">texinfo</span> <span class="ss">(</span><span class="o">&gt;=</span> <span class="mi">4</span>.<span class="mi">2</span><span class="ss">)</span>, <span class="nv">debianutils</span> <span class="ss">(</span><span class="o">&gt;=</span> <span class="mi">1</span>.<span class="mi">13</span>.<span class="mi">1</span><span class="ss">)</span>, <span class="nv">libblkid</span><span class="o">-</span><span class="nv">dev</span>, <span class="nv">pkg</span><span class="o">-</span><span class="nv">config</span>, <span class="nv">check</span>, <span class="nv">dh</span><span class="o">-</span><span class="nv">autoreconf</span>, <span class="nv">autoconf</span> <span class="ss">(</span><span class="o">&gt;=</span> <span class="mi">2</span>.<span class="mi">64</span><span class="ss">)</span>, <span class="nv">automake</span> <span class="ss">(</span><span class="o">&gt;=</span> <span class="mi">1</span>:<span class="mi">1</span>.<span class="mi">11</span>.<span class="mi">6</span><span class="ss">)</span>, <span class="nv">autopoint</span>, <span class="nv">gperf</span>
+</code></pre></div>
+
+<p><img src="./images/peli.png" alt="¡Método informático!" width="150"/> O BIEN podemos hacerlo de la forma cómoda y rápida. </p>
+<p>Instalamos todas las dependencias con un solo comando:</p>
+<div class="highlight"><pre><span></span><code>apt build-dep parted
+</code></pre></div>
+
+<p>Cuando volvemos a ejecutar <code>configure</code>, se generará el fichero Makefile, que contiene un conjunto de intrucciones y reglas:</p>
+<div class="highlight"><pre><span></span><code><span class="n">configure</span><span class="o">:</span> <span class="n">creating</span> <span class="o">./</span><span class="n">config</span><span class="o">.</span><span class="na">status</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">lib</span><span class="o">/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="k">include</span><span class="o">/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="k">include</span><span class="sr">/parted/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">libparted</span><span class="o">/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">libparted</span><span class="sr">/labels/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">libparted</span><span class="sr">/fs/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">libparted</span><span class="sr">/tests/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">libparted</span><span class="o">.</span><span class="na">pc</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">libparted</span><span class="o">-</span><span class="n">fs</span><span class="o">-</span><span class="n">resize</span><span class="o">.</span><span class="na">pc</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">parted</span><span class="o">/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">partprobe</span><span class="o">/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">doc</span><span class="o">/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">doc</span><span class="sr">/C/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">doc</span><span class="sr">/pt_BR/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">debug</span><span class="o">/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">debug</span><span class="sr">/test/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">tests</span><span class="o">/</span><span class="n">Makefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">po</span><span class="o">/</span><span class="n">Makefile</span><span class="o">.</span><span class="na">in</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">lib</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="na">h</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">linking</span> <span class="o">./</span><span class="n">parted</span><span class="o">-</span><span class="mf">3.4</span><span class="o">/</span><span class="n">GNUmakefile</span> <span class="n">to</span> <span class="n">GNUmakefile</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">executing</span> <span class="n">depfiles</span> <span class="n">commands</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">executing</span> <span class="n">libtool</span> <span class="n">commands</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">executing</span> <span class="n">po</span><span class="o">-</span><span class="n">directories</span> <span class="n">commands</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">po</span><span class="o">/</span><span class="n">POTFILES</span>
+<span class="n">config</span><span class="o">.</span><span class="na">status</span><span class="o">:</span> <span class="n">creating</span> <span class="n">po</span><span class="o">/</span><span class="n">Makefile</span>
+
+<span class="n">Type</span> <span class="s1">&#39;make&#39;</span> <span class="n">to</span> <span class="n">compile</span> <span class="n">parted</span><span class="o">.</span>
+</code></pre></div>
+
+<p>Esta vez ha ido todo fluído y sin problemas. Si echamos un vistazo al directorio <code>./parted</code>, veremos que tenemos ficheros .c. Al final de la salida del comando, se nos indica que ejecutemos el comando "make" para compilar el programa. Cuando lo hagamos, se escaneará el fichero Makefile y, siguiendo sus instrucciones, compilará el programa creando ficheros .o (ficheros objeto) a partir de los archivos .c.</p>
+<div class="highlight"><pre><span></span><code>make
+</code></pre></div>
+
+<p><img src="./images/cocinando.jpg" alt="30.000 siglos después" width="250"/> Esperamos mientras el programa se cocina a fuego lento.</p>
+<p>Finalmente, para instalar el paquete y crear el binario, introducimos el siguiente comando (cuya tarea, por supuesto, también está indicada en el fichero Makefile):</p>
+<div class="highlight"><pre><span></span><code>make install
+</code></pre></div>
+
+<p>Con esto, lo que hace el sistema es coger los diferentes objetos, ordenarlos y colocarlos en los directorios que les corresponden. Sin embargo, si ejecutamos un <code>apt policy</code> del programa, nos dirá que no existe:</p>
+<div class="highlight"><pre><span></span><code>$ apt policy parted
+parted:
+  Installed: <span class="o">(</span>none<span class="o">)</span>
+  Candidate: <span class="m">3</span>.4-1
+  Version table:
+     <span class="m">3</span>.4-1 <span class="m">500</span>
+        <span class="m">500</span> http://deb.debian.org/debian bullseye/main amd64 Packages
+</code></pre></div>
+
+<p>Pero en cambio sí que existe la ayuda del comando:</p>
+<div class="highlight"><pre><span></span><code>$ man -w parted
+/usr/local/man/man8/parted.8
+</code></pre></div>
+
+<p>La razón es que lo único que hemos hecho es ordenar los diferentes ficheros que conforman el programa sin que lo hayamos registrado en la lista de paquetes instalados del sistema. Si quisiéramos desinstalar el paquete, usaríamos la directiva <code>make uninstall</code>, y para borrar los ficheros objeto (que, una vez ordenados por el sistema, ya no necesitamos) usamos <code>make clean</code>.</p>
+<p><br></p>
+<h2>Creación del paquete .deb a partir de las fuentes</h2>
+<p>Construimos el paquete .deb con el comando <code>dpkg-buildpackage</code>:</p>
+<div class="highlight"><pre><span></span><code>dpkg-buildpackage -rfakeroot -b -uc -us
+</code></pre></div>
+
+<ul>
+<li>-rfakeroot: simula privilegios de root (con lo cual evitamos problemas de permisos).</li>
+<li>-b: compila solo el paquete binario.</li>
+<li>-uc: no firma los archivos .buildinfo y .changes.</li>
+<li>-us: no firma el paquete fuente.</li>
+</ul>
+<p>"Instalamos" dicho paquete para que el sistema lo incluya en sus registros:</p>
+<div class="highlight"><pre><span></span><code>dpkg -i parted_3.4-1_amd64.deb
+</code></pre></div>
+
+<p>Nos saldrá el siguiente resultado:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Selecting</span> <span class="nt">previously</span> <span class="nt">unselected</span> <span class="nt">package</span> <span class="nt">parted</span><span class="o">.</span>
+<span class="o">(</span><span class="nt">Reading</span> <span class="nt">database</span> <span class="o">...</span> <span class="nt">34940</span> <span class="nt">files</span> <span class="nt">and</span> <span class="nt">directories</span> <span class="nt">currently</span> <span class="nt">installed</span><span class="o">.)</span>
+<span class="nt">Preparing</span> <span class="nt">to</span> <span class="nt">unpack</span> <span class="nt">parted_3</span><span class="p">.</span><span class="nc">4-1_amd64</span><span class="p">.</span><span class="nc">deb</span> <span class="o">...</span>
+<span class="nt">Unpacking</span> <span class="nt">parted</span> <span class="o">(</span><span class="nt">3</span><span class="p">.</span><span class="nc">4-1</span><span class="o">)</span> <span class="o">...</span>
+<span class="nt">dpkg</span><span class="o">:</span> <span class="nt">dependency</span> <span class="nt">problems</span> <span class="nt">prevent</span> <span class="nt">configuration</span> <span class="nt">of</span> <span class="nt">parted</span><span class="o">:</span>
+ <span class="nt">parted</span> <span class="nt">depends</span> <span class="nt">on</span> <span class="nt">libparted2</span> <span class="o">(=</span> <span class="nt">3</span><span class="p">.</span><span class="nc">4-1</span><span class="o">);</span> <span class="nt">however</span><span class="o">:</span>
+  <span class="nt">Package</span> <span class="nt">libparted2</span> <span class="nt">is</span> <span class="nt">not</span> <span class="nt">installed</span><span class="o">.</span>
+
+<span class="nt">dpkg</span><span class="o">:</span> <span class="nt">error</span> <span class="nt">processing</span> <span class="nt">package</span> <span class="nt">parted</span> <span class="o">(</span><span class="nt">--install</span><span class="o">):</span>
+ <span class="nt">dependency</span> <span class="nt">problems</span> <span class="nt">-</span> <span class="nt">leaving</span> <span class="nt">unconfigured</span>
+<span class="nt">Processing</span> <span class="nt">triggers</span> <span class="nt">for</span> <span class="nt">man-db</span> <span class="o">(</span><span class="nt">2</span><span class="p">.</span><span class="nc">9</span><span class="p">.</span><span class="nc">4-2</span><span class="o">)</span> <span class="o">...</span>
+<span class="nt">Errors</span> <span class="nt">were</span> <span class="nt">encountered</span> <span class="nt">while</span> <span class="nt">processing</span><span class="o">:</span>
+ <span class="nt">parted</span>
+</code></pre></div>
+
+<p><img src="./images/asombrada.png" alt="Ups" width="150"/>...Ejem, al parecer, falta por resolver una dependencia.</p>
+<p>Instalamos la que se nos indica en el mensaje, cuyo paquete .deb se encuentra en el mismo directorio:</p>
+<div class="highlight"><pre><span></span><code>$ dpkg -i libparted2_3.4-1_amd64.deb 
+Selecting previously unselected package libparted2:amd64.
+<span class="o">(</span>Reading database ... <span class="m">34949</span> files and directories currently installed.<span class="o">)</span>
+Preparing to unpack libparted2_3.4-1_amd64.deb ...
+Unpacking libparted2:amd64 <span class="o">(</span><span class="m">3</span>.4-1<span class="o">)</span> ...
+Setting up libparted2:amd64 <span class="o">(</span><span class="m">3</span>.4-1<span class="o">)</span> ...
+Processing triggers <span class="k">for</span> libc-bin <span class="o">(</span><span class="m">2</span>.31-13<span class="o">)</span> ...
+</code></pre></div>
+
+<p>Y ahora ya podemos instalar el paquete principal de parted:</p>
+<div class="highlight"><pre><span></span><code>$ dpkg -i parted_3.4-1_amd64.deb 
+<span class="o">(</span>Reading database ... <span class="m">34955</span> files and directories currently installed.<span class="o">)</span>
+Preparing to unpack parted_3.4-1_amd64.deb ...
+Unpacking parted <span class="o">(</span><span class="m">3</span>.4-1<span class="o">)</span> over <span class="o">(</span><span class="m">3</span>.4-1<span class="o">)</span> ...
+Setting up parted <span class="o">(</span><span class="m">3</span>.4-1<span class="o">)</span> ...
+Processing triggers <span class="k">for</span> man-db <span class="o">(</span><span class="m">2</span>.9.4-2<span class="o">)</span> ...
+</code></pre></div>
+
+<p>Esta vez, si ejecutamos un <code>apt policy</code> de parted, nos aparecerá como instalado:</p>
+<div class="highlight"><pre><span></span><code><span class="n">apt</span> <span class="n">policy</span> <span class="n">parted</span>
+<span class="n">parted</span><span class="p">:</span>
+  <span class="n">Installed</span><span class="p">:</span> <span class="mf">3.4</span><span class="o">-</span><span class="mi">1</span>
+  <span class="n">Candidate</span><span class="p">:</span> <span class="mf">3.4</span><span class="o">-</span><span class="mi">1</span>
+  <span class="n">Version</span> <span class="n">table</span><span class="p">:</span>
+ <span class="o">***</span> <span class="mf">3.4</span><span class="o">-</span><span class="mi">1</span> <span class="mi">500</span>
+        <span class="mi">500</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">bullseye</span><span class="o">/</span><span class="n">main</span> <span class="n">amd64</span> <span class="n">Packages</span>
+        <span class="mi">100</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">dpkg</span><span class="o">/</span><span class="n">status</span>
+</code></pre></div>
+
+<p><br></p>
+<h2>Enlaces de interés</h2>
+<p>Sk. (2021, 7 septiembre). How To Build Debian Packages From Source. OSTechNix. <a href="https://ostechnix.com/how-to-build-debian-packages-from-source/">https://ostechnix.com/how-to-build-debian-packages-from-source/</a></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tag/compilacion.html">Compilación</a>, <a href="./tag/c.html">C</a>, <a href="./tag/makefile.html">Makefile</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
