@@ -1,6 +1,6 @@
 Title: Pull Request en Github
 Date: 2021-10-21 16:45
-Category: Git
+Category: Implantación de Aplicaciones Web
 lang: es
 tags: GitHub
 modified: 2021-11-01 20:01

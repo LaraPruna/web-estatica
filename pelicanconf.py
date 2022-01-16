@@ -18,6 +18,13 @@ THEME = 'theme/pelican-clean-blog/'
 NEWEST_FIRST_ARCHIVES = True
 DISPLAY_CATEGORIES_ON_MENU = True
 
+CATEGORY_SAVE_AS = 'categories/{slug}.html'
+CATEGORY_URL = 'categories/{slug}'
+TAG_SAVE_AS = 'tags/{slug}.html'
+TAG_URL = 'tags/{slug}'
+CATEGORIES_SAVE_AS = 'categories/index.html'
+TAGS_SAVE_AS = 'tags/index.html'
+
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None

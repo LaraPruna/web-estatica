@@ -1,6 +1,6 @@
 Title: Creación y configuración de un escenario Router-NAT con Vagrant y Ansible
 Date: 2021-10-10 15:01
-Category: Automatización
+Category: Servicios de Red e Internet
 lang: es
 tags: Redes,NAT,Vagrant,Ansible,SSH
 Header_Cover: images/covers/vagrant_ansible.png

@@ -1,6 +1,6 @@
 Title: Ejercicio de redes con Libvirt
 Date: 2021-10-17 10:46
-Category: Redes
+Category: Cloud Computing
 lang: es
 tags: Redes,Libvirt,bridge
 Header_Cover: images/covers/redes_libvirt.jpg

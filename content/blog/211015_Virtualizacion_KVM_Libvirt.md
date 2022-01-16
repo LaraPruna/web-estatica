@@ -1,6 +1,6 @@
 Title: Uso básico de virsh
 Date: 2021-10-15 18:55
-Category: KVM/QEMU
+Category: Cloud Computing
 lang: es
 tags: Virtualización,KVM,QEMU,libvirt
 Header_Cover: images/covers/qemu.jpg
