@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Creación de una web estática con Pelican</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo aprenderás lo básico para generar tu propia página web estática con Pelican.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Pelican">
+        <meta name="tags" content="Web">
+        <meta name="tags" content="Markdown">
+        <meta name="tags" content="Python">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./creacion-de-una-web-estatica-con-pelican.html">
+	<meta property="og:title" content="Creación de una web estática con Pelican">
+	<meta property="article:published_time" content="2021-10-06 14:28:00+02:00">
+            <meta property="og:description" content="En este artículo aprenderás lo básico para generar tu propia página web estática con Pelican.">
+
+            <meta property="og:image" content=".images/covers/pelican.jpg">
+</head>
+
+<body class="article-creacion-de-una-web-estatica-con-pelican">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="/categories">Categorías</a>
+                <a class="navbar-brand" href="/pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/pelican.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Creación de una web estática con Pelican</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on mié 06 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <h1>¿Te interesa crear tu propia web estática con Pelican en Debian?</h1>
+<p>Aquí aprenderás a hacerlo sin problemas. Como sabrás, Pelican es un generador de páginas estáticas basado en Python, y es bastante fácil de usar. Sigue con atención los siguientes pasos:</p>
+<h2>Primeros pasos en Pelican</h2>
+<p>Es muy recomendable que instalemos pelican en un entorno virtual, pues de lo contrario podría darnos problemas a la hora de desplegar el sitio. Por lo tanto, primero crearemos el entorno virtual, y después instalaremos el paquete con pip, y opcionalmente, con markdown. Si no tienes pip, puedes instalarlo como cualquier paquete de Debian:</p>
+<div class="highlight"><pre><span></span><code><span class="n">apt</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">python3</span><span class="o">-</span><span class="n">pip</span><span class="w"></span>
+<span class="n">virtualenv</span><span class="w"> </span><span class="o">~/</span><span class="n">virtualenvs</span><span class="o">/</span><span class="n">pelican</span><span class="w"></span>
+<span class="n">cd</span><span class="w"> </span><span class="o">~/</span><span class="n">virtualenvs</span><span class="o">/</span><span class="n">pelican</span><span class="w"></span>
+<span class="n">source</span><span class="w"> </span><span class="n">bin</span><span class="o">/</span><span class="n">activate</span><span class="w"></span>
+<span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="ss">&quot;pelican[markdown]&quot;</span><span class="w"></span>
+</code></pre></div>
+
+<p>Genera tu sitio web:</p>
+<div class="highlight"><pre><span></span><code>pelican-quickstart
+</code></pre></div>
+
+<p>El programa te preguntará el nombre de tu nueva web, en qué directorio quieres guardarlo, nombre completo del creador, si quieres activar la paginación, etc.</p>
+<p><img src="./images/yes.png" alt="Conseguido" width="150"/>
+Ya tienes lo básico.</p>
+<p>Ahora puedes probar a escribir un artículo. Tan solo tienes que crear un fichero en markdown o en el lenguaje que hayas elegido y guardarlo en el directorio "content". Veamos un ejemplo:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Title</span><span class="o">:</span> <span class="n">Mi</span> <span class="n">primer</span> <span class="n">artículo</span>
+<span class="n">Date</span><span class="o">:</span> <span class="mi">2021</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">05</span> <span class="mi">9</span><span class="o">:</span><span class="mi">10</span>
+<span class="n">Category</span><span class="o">:</span> <span class="n">Review</span>
+<span class="n">lang</span><span class="o">:</span> <span class="n">es</span>
+
+<span class="n">Hola</span><span class="o">,</span> <span class="n">esto</span> <span class="n">es</span> <span class="n">una</span> <span class="n">prueba</span><span class="o">.</span>
+</code></pre></div>
+
+<p>Después, ejecuta el siguiente comando para guardar los cambios que hayas hecho en la carpeta:</p>
+<div class="highlight"><pre><span></span><code>pelican content
+</code></pre></div>
+
+<p>Es posible que, al generar el sitio web, no se haya creado automáticamente el directorio "images" dentro de la carpeta "content". En ese caso, al ejecutar el comando anterior saltará una alerta de tipo "Warning". Para solucionarlo, simplemente tendríamos que crear la carpeta a mano. Ya solo nos quedaría desplegar la previsualización en el navegador. Para ello, introducimos el comando:</p>
+<div class="highlight"><pre><span></span><code>pelican --listen
+</code></pre></div>
+
+<p>El programa nos devolverá una dirección http (http://localhost:8000). Copiamos dicha dirección en el navegador y ¡voila!</p>
+<p><img src="./images/primer_articulo.png" alt="Mi primer articulo" width="700" align="middle"/></p>
+<p>Para dejar de utilizar el entorno virtual, introducimos <code>deactivate</code>.</p>
+<p><br></p>
+<h2>Configuración de Pelican</h2>
+<p>Dentro del fichero de configuración de Pelican, pelicanconf.py, se indicarán datos relativos al propietario del sitio web, el nombre, la URL, la zona horaria y el idioma.</p>
+<div class="highlight"><pre><span></span><code>AUTHOR = &#39;Lara Pruna&#39;
+SITENAME = &#39;SysRaider&#39;
+SITEURL = &#39;&#39;
+
+PATH = &#39;content&#39;
+
+TIMEZONE = &#39;Europe/Paris&#39;
+
+DEFAULT_LANG = &#39;es&#39;
+</code></pre></div>
+
+<p>Aunque no aparezcan por defecto, aquí también incluiremos la ruta de las páginas estáticas (imágenes y extras), así como la dirección del favicon.</p>
+<div class="highlight"><pre><span></span><code>STATIC_PATHS = [&#39;images&#39;, &#39;extra&#39;]
+
+EXTRA_PATH_METADATA = {&#39;extra/favicon.ico&#39;: {&#39;path&#39;:&#39;favicon.ico&#39;}}
+</code></pre></div>
+
+<p>También pondremos aquí el tema que vayamos a utilizar...</p>
+<p><img src="./images/silencio.png" alt="Eso para luego" width="150"/> Pero eso lo veremos en la siguiente sección.</p>
+<p>Finalmente, en la parte inferior del fichero podemos añadir todos los enlaces y redes sociales que queremos exponer en nuestra página. Además, tenemos la opción de habilitar o deshabilitar la paginación.</p>
+<div class="highlight"><pre><span></span><code># Blogroll
+LINKS = ((&#39;Pelican&#39;, &#39;https://getpelican.com/&#39;),
+         (&#39;Python.org&#39;, &#39;https://www.python.org/&#39;),
+         (&#39;Jinja2&#39;, &#39;https://palletsprojects.com/p/jinja/&#39;),)
+
+# Social widget
+SOCIAL = ((&#39;LinkedIn&#39;, &#39;https://www.linkedin.com/in/lara-pruna-ternero-97887911b/&#39;),
+          (&#39;GitHub&#39;, &#39;https://github.com/LaraPruna/&#39;),)
+
+DEFAULT_PAGINATION = False
+</code></pre></div>
+
+<p><br></p>
+<h2>Aplicación de una hoja de estilo</h2>
+<p>Pelican dispone de un <a href="https://github.com/getpelican/pelican-themes">repositorio</a> en GitHub con todos los temas disponibles. Para instalar el tema, nos descargamos el que más nos guste con <code>git clone</code> y lo instalamos con pelican-themes:</p>
+<pre>
+mkdir themes && cd themes
+git clone https://github.com/gilsondev/pelican-clean-blog.git
+pelican-themes --install ./pelican-clean-blog
+</pre>
+
+<p>Al ejecutar el comando <code>pelican-themes -l</code>, ahora aparecerá el tema que acabamos de instalar:</p>
+<pre>
+lpruna@debian:~/github/web-estatica-pelican$ pelican-themes -l
+pelican-clean-blog
+notmyidea
+simple
+</pre>
+
+<p>A continuación, creamos un submódulo en el repositorio de GitHub, para que, a la hora de desplegar el sitio web, cargue también la hoja de estilo:</p>
+<pre>
+git submodule add https://github.com/gilsondev/pelican-clean-blog.git theme/pelican-clean-blog
+</pre>
+
+<p>Además, para que siempre se utlice esa hoja de estilo por defecto y no tengamos que especificarlo como parámetro, lo he metemos en el fichero de configuración (pelicanconf.py) de la siguiente forma:</p>
+<pre>
+THEME = 'theme/pelican-clean-blog'
+</pre>
+
+<p>Cuando volvamos a visualizar el sitio con <code>pelican content</code> y <code>pelican --listen</code>, veremos aplicado el tema en nuestra página.</p>
+<p><img src="./images/coqueta.png" alt="Modo coqueta" width="150"/> Este sitio es un ejemplo de ello.</p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/pelican">Pelican</a>, <a href="./tags/web">Web</a>, <a href="./tags/markdown">Markdown</a>, <a href="./tags/python">Python</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>

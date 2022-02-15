@@ -1,7 +1,10 @@
-Title: Pelican
+Title: Creación de una web estática con Pelican
 Date: 2021-10-06 14:28
-Slug: pelican
-Authors: Lara Pruna
+Category: Implantación de Aplicaciones Web
+lang: es
+tags: Pelican,Web,Markdown,Python
+Header_Cover: images/covers/pelican.jpg
+summary: En este artículo aprenderás lo básico para generar tu propia página web estática con Pelican.
 
 # ¿Te interesa crear tu propia web estática con Pelican en Debian?
 
