@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Instalación y acceso remoto de bases de datos</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo se documenta la instalación y el acceso remoto de Oracle, MariaDB, PostgreSQL y MongoDB.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Oracle">
+        <meta name="tags" content="MariaDB">
+        <meta name="tags" content="PostgreSQL">
+        <meta name="tags" content="MongoDB">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./instalacion-y-acceso-remoto-de-bases-de-datos.html">
+	<meta property="og:title" content="Instalación y acceso remoto de bases de datos">
+	<meta property="article:published_time" content="2022-02-16 15:55:00+01:00">
+            <meta property="og:description" content="En este artículo se documenta la instalación y el acceso remoto de Oracle, MariaDB, PostgreSQL y MongoDB.">
+
+            <meta property="og:image" content=".images/covers/database.png">
+</head>
+
+<body class="article-instalacion-y-acceso-remoto-de-bases-de-datos">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="./categories">Categorías</a>
+                <a class="navbar-brand" href="./pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/database.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Instalación y acceso remoto de bases de datos</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on mié 16 febrero 2022
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>En este artículo vamos a instalar Oracle 19c, MariaDB, PostgreSQL y MongoDB en Debian, y una vez instalados, configuraremos dichos gestores de bases de datos para que podamos acceder de forma remota. Instalaremos Oracle en Centos 8, y el resto de gestores, en Debian.</p>
+<h2><img src="./images/BaseDatos/icono_oracle.png" alt="Una nubecita" width="100"/> Oracle 19c</h2>
+<p>En primer lugar, bajamos el archivo rpm de Oracle 19c desde su <a href="https://www.oracle.com/es/database/technologies/oracle19c-linux-downloads.html">página oficial</a>. Antes de instalarlo, hay que descargar las dependencias del paquete:</p>
+<div class="highlight"><pre><span></span><code>curl -o oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm https://yum.oracle.com/repo/OracleLinux/OL8/appstream/x86_64/getPackage/oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm
+yum -y localinstall oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm
+</code></pre></div>
+
+<p>Posteriormente, instalamos el paquete rpm:</p>
+<div class="highlight"><pre><span></span><code>rpm -Uhv oracle-database-ee-19c-1.0-1.x86_64.rpm
+</code></pre></div>
+
+<p>Finalizada la instalación, podemos abrir el fichero de configuración (<code>/etc/sysconfig/oracledb_ORCLCDB-19c.conf</code>) y cambiar los parámetros que consideremos. En mi caso, he dejado la configuración tal y como viene por defecto:</p>
+<div class="highlight"><pre><span></span><code>#This is a configuration file to setup the Oracle Database.
+#It is used when running &#39;/etc/init.d/oracledb_ORCLCDB configure&#39;.
+#Please use this file to modify the default listener port and the
+#Oracle data location.
+# LISTENER_PORT: Database listener
+# El servidor estará a la escucha de los clientes a través de este puerto
+LISTENER_PORT=1521
+# ORACLE_DATA_LOCATION: Database oradata location
+# En esta ruta se guardarán las bases de datos de Oracle
+ORACLE_DATA_LOCATION=/opt/oracle/oradata
+# EM_EXPRESS_PORT: Oracle EM Express listener
+EM_EXPRESS_PORT=5500
+</code></pre></div>
+
+<p>Después de editar el fichero de configuración, generamos la base de datos de prueba, ORCLCDB:</p>
+<div class="highlight"><pre><span></span><code>/etc/init.d/oracledb_ORCLCDB-19c configure
+</code></pre></div>
+
+<p>Ahora podemos empezar a utilizar tanto la base de datos de prueba como los binarios. Como estos últimos se encuentran en <code>/opt/oracle/product/19c/dbhome_1/bin/</code>, para no tener que escribir la ruta cada vez que ejecutemos uno, añadiremos las variables necesarias en el fichero <code>.bash_profile</code>. Empezamos por conectarnos con el usuario oracle (después de cambiarle la contraseña con <code>passwd</code>) y editar dicho archivo:</p>
+<div class="highlight"><pre><span></span><code>su oracle
+nano ~/.bash_profile
+</code></pre></div>
+
+<p>Dentro, establecemos unos permisos predeterminados para el usuario oracle (todos los ficheros y directorios que cree tendrán, por defecto, los permisos 644). Asimismo, creamos variables de entorno para la base de datos de prueba, el nombre de la misma, la ruta de los binarios y un nuevo valor a la variable $PATH, para que busque los comandos en dicho directorio:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="p">[</span> <span class="o">-</span><span class="n">f</span> <span class="o">~/.</span><span class="n">bashrc</span> <span class="p">];</span> <span class="n">then</span>
+<span class="o">.</span> <span class="o">~/.</span><span class="n">bashrc</span>
+<span class="n">fi</span>
+
+<span class="n">umask</span> <span class="mi">022</span>
+<span class="k">export</span> <span class="n">ORACLE_SID</span><span class="o">=</span><span class="n">ORCLCDB</span>
+<span class="k">export</span> <span class="n">ORACLE_BASE</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">oradata</span>
+<span class="k">export</span> <span class="n">ORACLE_HOME</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">product</span><span class="o">/</span><span class="mi">19</span><span class="n">c</span><span class="o">/</span><span class="n">dbhome_1</span>
+<span class="k">export</span> <span class="n">PATH</span><span class="o">=$</span><span class="n">PATH</span><span class="p">:</span><span class="o">$</span><span class="n">ORACLE_HOME</span><span class="o">/</span><span class="n">bin</span>
+</code></pre></div>
+
+<p>Guardamos el fichero y volvemos a leerlo con el comando <code>source</code> para que se cargue en memoria:</p>
+<div class="highlight"><pre><span></span><code>source ~/.bash_profile
+</code></pre></div>
+
+<p>Accedemos a Oracle con el usuario sysdba, con el que tendremos los privilegios para ejecutar determinadas acciones:</p>
+<div class="highlight"><pre><span></span><code>sqlplus / as sysdba
+</code></pre></div>
+
+<p>Introducimos la siguiente consulta para comprobar que la base de datos está montada y funcionaadecuadamente:</p>
+<div class="highlight"><pre><span></span><code>SELECT instance_name, host_name, version, startup_time FROM v$instance;
+</code></pre></div>
+
+<p>El resultado debería ser el siguiente (nombre de la base de datos, el nombre de la máquina en la que se está ejecutando, la versión de Oracle y la fecha de arranque):</p>
+<div class="highlight"><pre><span></span><code><span class="c">INSTANCE_NAME</span>
+<span class="nb">----------------</span><span class="c"></span>
+<span class="c">HOST_NAME</span>
+<span class="nb">----------------------------------------------------------------</span><span class="c"></span>
+<span class="c">VERSION     STARTUP_</span>
+<span class="nb">-----------------</span><span class="c"> </span><span class="nb">--------</span><span class="c"></span>
+<span class="c">ORCLCDB</span>
+<span class="c">localhost</span><span class="nt">.</span><span class="c">localdomain</span>
+<span class="c">19</span><span class="nt">.</span><span class="c">0</span><span class="nt">.</span><span class="c">0</span><span class="nt">.</span><span class="c">0</span><span class="nt">.</span><span class="c">0  03/10/21</span>
+</code></pre></div>
+
+<p>¿En lugar de eso te devuelve un error y te avisa de que Oracle no está disponible?</p>
+<p><img src="./images/silencio.png" alt="No temas" width="150"/> Que no cunda el pánico.</p>
+<p>Seguramente la base de datos no está iniciada, de modo que ejecutamos el comando <code>startup</code>. Una vez solucionado, creamos un usuario común (usuario que podrá realizar acciones tanto en la base de datos contenedora como en las bases de datos "enchufables" que se creen en adelante), y le damos todos los privilegios:</p>
+<div class="highlight"><pre><span></span><code>create user c##usuariolara IDENTIFIED BY lara;
+GRANT ALL PRIVILEGES TO c##usuariolara;
+</code></pre></div>
+
+<p><strong>Cuidado: por seguridad, en la realidad no es recomendable darle todos los privilegios al usuario.</strong></p>
+<p><center>
+<img src="./images/cuidao.gif" alt="Seamos cautos" width="300"/>
+</center></p>
+<p>Finalmente, nos desconectamos de sysdba y entramos como el usuario que acabamos de crear,
+tras lo cual podemos comenzar a crear tablas (yo he introducido las tablas de <a href="https://pastebin.com/Q7b1xW07">esta página</a>):</p>
+<div class="highlight"><pre><span></span><code><span class="k">DISCONNECT</span>
+<span class="k">CONNECT</span> <span class="nv">c</span>##<span class="nv">usuariolara</span>
+</code></pre></div>
+
+<p>Cuando terminemos de insertar tablas y registros, nos dirigimos al fichero <code>$ORACLE_HOME/network/admin/listener.ora</code> y cambiamos <code>localhost</code> por la IP del servidor. Lo mismo hacemos en el fichero <code>tnsnames.ora</code>. A continuación, iniciamos el listener de oracle:</p>
+<div class="highlight"><pre><span></span><code>lsnr start
+</code></pre></div>
+
+<p>Al ejecutar <code>netstat -tln</code>, debería aparecer una línea con la IP especificada en el fichero <code>listener.ora</code>, seguida del puerto 1521 y en modo escucha ("LISTEN").</p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">oracle@localhost lpruna</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">netstat</span><span class="w"> </span><span class="o">-</span><span class="n">tln</span><span class="w"></span>
+<span class="n">Active</span><span class="w"> </span><span class="n">Internet</span><span class="w"> </span><span class="n">connections</span><span class="w"> </span><span class="p">(</span><span class="k">only</span><span class="w"> </span><span class="n">servers</span><span class="p">)</span><span class="w"></span>
+<span class="n">Proto</span><span class="w"> </span><span class="n">Recv</span><span class="o">-</span><span class="n">Q</span><span class="w"> </span><span class="n">Send</span><span class="o">-</span><span class="n">Q</span><span class="w"> </span><span class="k">Local</span><span class="w"> </span><span class="n">Address</span><span class="w">    </span><span class="k">Foreign</span><span class="w"> </span><span class="n">Address</span><span class="w">        </span><span class="k">State</span><span class="w"></span>
+<span class="n">tcp</span><span class="w">  </span><span class="mi">0</span><span class="w">   </span><span class="mi">0</span><span class="w">  </span><span class="mf">0.0.0.0</span><span class="err">:</span><span class="mi">111</span><span class="w">      </span><span class="mf">0.0.0.0</span><span class="err">:</span><span class="o">*</span><span class="w">              </span><span class="n">LISTEN</span><span class="w"></span>
+<span class="n">tcp</span><span class="w">      </span><span class="mi">0</span><span class="w">       </span><span class="mi">0</span><span class="w">  </span><span class="mf">192.168.122.52</span><span class="err">:</span><span class="mi">1521</span><span class="w">  </span><span class="mf">0.0.0.0</span><span class="err">:</span><span class="o">*</span><span class="w">          </span><span class="n">LISTEN</span><span class="w"></span>
+<span class="n">tcp</span><span class="w">  </span><span class="mi">0</span><span class="w">   </span><span class="mi">0</span><span class="w">  </span><span class="mf">0.0.0.0</span><span class="err">:</span><span class="mi">22</span><span class="w">       </span><span class="mf">0.0.0.0</span><span class="err">:</span><span class="o">*</span><span class="w">          </span><span class="n">LISTEN</span><span class="w"></span>
+<span class="n">tcp6</span><span class="w">     </span><span class="mi">0</span><span class="w">   </span><span class="mi">0</span><span class="w">  </span><span class="o">::</span><span class="err">:</span><span class="mi">111</span><span class="w">       </span><span class="o">::</span><span class="err">:</span><span class="o">*</span><span class="w">               </span><span class="n">LISTEN</span><span class="w"></span>
+<span class="n">tcp6</span><span class="w">     </span><span class="mi">0</span><span class="w">   </span><span class="mi">0</span><span class="w">  </span><span class="o">::</span><span class="err">:</span><span class="mi">22</span><span class="w">        </span><span class="o">::</span><span class="err">:</span><span class="o">*</span><span class="w">               </span><span class="n">LISTEN</span><span class="w"></span>
+<span class="n">tcp6</span><span class="w">     </span><span class="mi">0</span><span class="w">   </span><span class="mi">0</span><span class="w">  </span><span class="o">::</span><span class="err">:</span><span class="mi">16029</span><span class="w">         </span><span class="o">::</span><span class="err">:</span><span class="o">*</span><span class="w">               </span><span class="n">LISTEN</span><span class="w"></span>
+</code></pre></div>
+
+<p>Además, con el comando <code>lsnr status</code> veremos que la base de datos de prueba “ORCLCDB” se
+encuentra activa y en modo escucha.</p>
+<div class="highlight"><pre><span></span><code>[oracle@localhost lpruna]$ lsnrctl status
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 09-OCT-2021 15:57:39
+
+Copyright (c) 1991, 2019, Oracle. All rights reserved.
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.122.52)
+(PORT=1521)))
+
+STATUS of the LISTENER
+------------------------
+Alias            LISTENER
+Version          TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+Start Date       09-OCT-2021 15:55:53
+Uptime           0 days 0 hr. 1 min. 45 sec
+Trace Level      off
+Security         ON: Local OS Authentication
+SNMP             OFF
+Listener         Parameter       File /opt/oracle/product/19c/dbhome_1/network/admin/listener.ora
+Listener         Log             File /opt/oracle/diag/tnslsnr/localhost/listener/alert/log.xml
+Listening Endpoints Summary...
+(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=192.168.122.52)(PORT=1521)))
+(DESCRIPTION=(ADDRESS=(PROTOCOL=ipc)(KEY=EXTPROC1521)))
+Services Summary...
+Service &quot;<span class="cp">${</span><span class="n">ORACLE_SID</span><span class="cp">}</span>&quot; has 1 instance(s).
+Instance &quot;<span class="cp">${</span><span class="n">ORACLE_SID</span><span class="cp">}</span>&quot;, status UNKNOWN, has 1 handler(s) for this service...
+The command completed successfully
+
+[oracle@localhost lpruna]$ echo <span class="nv">$ORACLE_SID</span>
+ORCLCDB
+</code></pre></div>
+
+<p>Entramos en la base de datos una vez más y cambiamos los parámetros de la base de datos:</p>
+<div class="highlight"><pre><span></span><code>SQL&gt; alter system set LOCAL_LISTENER=&#39;(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.122.52)(PORT=1521))&#39; SCOPE=BOTH;
+</code></pre></div>
+
+<p>Por último, si no lo hemos hecho ya, nos conectamos como root y deshabilitamos el cortafuegos que viene preinstalado en Centos 8, para que el cliente pueda acceder de forma remota:</p>
+<div class="highlight"><pre><span></span><code>systemctl stop firewalld
+systemctl disable firewalld
+</code></pre></div>
+
+<p>En la máquina cliente, nos conectamos a la base de datos especificando el usuario, la IP del
+servidor, el puerto y el nombre del servicio:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sqlplus</span><span class="w"> </span><span class="n">c</span><span class="err">##</span><span class="n">usuariolara</span><span class="mf">@192.168.122.179</span><span class="o">:</span><span class="mi">1521</span><span class="o">/</span><span class="n">ORCLCDB</span><span class="w"></span>
+</code></pre></div>
+
+<p>Esta es la forma más sencilla de acceder de manera remota al servidor de Oracle. Existe otro procedimiento un poco más complejo, pero más cómodo a la larga, y es editar el fichero tnsnames.ora, que se encuentra en el directorio <code>$ORACLE_HOME/network/admin</code>. Dentro de dicho de fichero añadiríamos un bloque como el siguiente:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Nombre_de_instancia</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>
+<span class="w"> </span><span class="p">(</span><span class="n">DESCRIPTION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>
+<span class="w">   </span><span class="p">(</span><span class="n">ADDRESS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">PROTOCOL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">protocolo</span><span class="o">]</span><span class="p">)(</span><span class="k">HOST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">IP o dominio del servidor que escucha</span><span class="o">]</span><span class="p">)(</span><span class="n">PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">puerto desde el que escuchará</span><span class="o">]</span><span class="p">))</span><span class="w"></span>
+<span class="w">   </span><span class="p">(</span><span class="n">CONNECT_DATA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>
+<span class="w">     </span><span class="p">(</span><span class="n">SERVICE_NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">servicio al que queremos acceder</span><span class="o">]</span><span class="p">)))</span><span class="w"></span>
+</code></pre></div>
+
+<p>En este caso, indicaríamos la IP pública y el puerto del servidor (1521 por defecto), desde los cuales escuchará las peticiones de conexión, y especificaríamos al final el servicio de la base de datos de prueba, para que conecte a los clientes a la misma:</p>
+<div class="highlight"><pre><span></span><code>REMOTO = 
+ (DESCRIPTION = 
+   (ADDRESS = (PROTOCOL = tcp)(HOST = 192.168.122.179)(PORT = 1521))
+   (CONNECT_DATA = 
+     (SERVER = DEDICATED)
+     (SERVICE_NAME = ORCLCDB))) 
+</code></pre></div>
+
+<p>Desde el cliente realizaríamos la conexión de la siguiente manera:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sqlplus</span><span class="w"> </span><span class="n">c</span><span class="err">##</span><span class="n">usuariolara</span><span class="mf">@192.168.122.179</span><span class="o">/</span><span class="n">REMOTO</span><span class="w"></span>
+</code></pre></div>
+
+<p>Ya tendríamos acceso al servidor desde un cliente remoto. Solo me queda contaros una cosa más, que os puede facilitar muchísimo la vida si vais a trabajar con cierta frecuencia con Oracle. Os daréis cuenta de que, una vez dentro de la consola de Oracle, no podéis moveros libremente por la línea de comandos ni acceder al historial.</p>
+<p><img src="./images/guiño.jpg" alt="No temáis, Lara está aquí" width="250"/> Pues eso tiene fácil solución.</p>
+<p>Instalamos el siguiente paquete:</p>
+<div class="highlight"><pre><span></span><code>dnf install rlwrap
+</code></pre></div>
+
+<p>Después, añadimos las siguientes líneas en el fichero <code>.bash_profile</code> del usuario de oracle:</p>
+<div class="highlight"><pre><span></span><code>alias rlsqlplus=&#39;rlwrap sqlplus&#39;
+</code></pre></div>
+
+<p>A partir de ahora, si entramos en la consola con el comando <code>rlsqlplus</code> o <code>rlwrap sqlplus</code>, podremos editar la línea que estemos escribiendo y acceder a comandos anteriormente ejecutados.</p>
+<p><center>
+<img src="./images/de_nada.gif" alt="Qué puedo decir salvo de nada" width="300"/>
+</center></p>
+<p></br></p>
+<h2><img src="./images/BaseDatos/mariadb_icono.png" alt="Una foquita" width="100"/> MariaDB</h2>
+<p>Para empezar, actualizamos el sistema e instalamos el servidor de mariadb como cualquier paquete .deb:</p>
+<div class="highlight"><pre><span></span><code>sudo apt update
+sudo apt install mariadb-server
+</code></pre></div>
+
+<p>Accedemos al fichero de configuración de mariadb (<code>/etc/mysql/mariadb.conf.d/50-server.cnf</code>) y comentamos la línea de “bind-address” para poder conectarnos desde fuera:</p>
+<div class="highlight"><pre><span></span><code># bind-address = 127.0.0.1
+</code></pre></div>
+
+<p>O bien, ponemos la IP 0.0.0.0:</p>
+<div class="highlight"><pre><span></span><code>bind-address = 0.0.0.0
+</code></pre></div>
+
+<p>Como hemos modificado la configuración, reiniciamos el servicio de mariadb:</p>
+<div class="highlight"><pre><span></span><code>sudo service mariadb restart
+</code></pre></div>
+
+<p>Entramos en el gestor de base de datos como root, creamos una base de datos y le damos privilegios a nuestro usuario remoto:</p>
+<div class="highlight"><pre><span></span><code>sudo mysql -u root -p
+SQL&gt; GRANT ALL PRIVILEGES ON *.* TO &#39;lara&#39;@&#39;10.0.0.40&#39; IDENTIFIED BY &#39;lara&#39;;
+</code></pre></div>
+
+<p>Creamos una base de datos de prueba y lo poblamos. Finalmente, nos vamos a otra máquina en la misma red e instalamos el cliente de mariadb:</p>
+<div class="highlight"><pre><span></span><code>sudo apt install mariadb-client
+</code></pre></div>
+
+<p>Ahora podemos acceder al servidor especificando la IP del servidor y nuestro usuario en la base de datos:</p>
+<div class="highlight"><pre><span></span><code>mysql -h 10.0.0.20 -u lara -p
+</code></pre></div>
+
+<ul>
+<li><strong>-h</strong>: host</li>
+<li><strong>-u</strong>: usuario</li>
+<li><strong>-p</strong>: nos pide la contraseña si no se lo especificamos nosotros (si es así, escribimos la contraseña pegada al parámetro -p).</li>
+</ul>
+<p></br></p>
+<h2><img src="./images/BaseDatos/postgresql_icono.png" alt="Un elefantito" width="100"/> PostgreSQL</h2>
+<p>Primero actualizamos el sistema, instalamos postgresql como cualquier paquete .deb e iniciamos el servidor de base de datos:</p>
+<div class="highlight"><pre><span></span><code>sudo apt update
+sudo apt install postgresql
+</code></pre></div>
+
+<p>Comprobamos si el servicio se encuentra activo:</p>
+<div class="highlight"><pre><span></span><code>sudo systemctl status postgresql
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code> <span class="err">●</span> <span class="n">postgresql</span><span class="o">.</span><span class="n">service</span> <span class="o">-</span> <span class="n">PostgreSQL</span> <span class="n">RDBMS</span>
+    <span class="n">Loaded</span><span class="p">:</span> <span class="n">loaded</span> <span class="p">(</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">postgresql</span><span class="o">.</span><span class="n">service</span><span class="p">;</span> <span class="n">enabled</span><span class="p">;</span> <span class="n">vendor</span> <span class="n">preset</span><span class="p">:</span> <span class="o">&gt;</span>
+    <span class="n">Active</span><span class="p">:</span> <span class="n">active</span> <span class="p">(</span><span class="n">exited</span><span class="p">)</span> <span class="n">since</span> <span class="n">Mon</span> <span class="mi">2021</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">04</span> <span class="mi">16</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">50</span> <span class="n">UTC</span><span class="p">;</span> <span class="mi">12</span><span class="nb">min</span> <span class="n">ago</span>
+    <span class="n">Main</span> <span class="n">PID</span><span class="p">:</span> <span class="mi">15812</span> <span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">exited</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="mi">0</span><span class="o">/</span><span class="n">SUCCESS</span><span class="p">)</span>
+    <span class="n">Tasks</span><span class="p">:</span> <span class="mi">0</span> <span class="p">(</span><span class="n">limit</span><span class="p">:</span> <span class="mi">528</span><span class="p">)</span>
+    <span class="n">Memory</span><span class="p">:</span> <span class="mi">0</span><span class="n">B</span>
+    <span class="n">CPU</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="n">CGroup</span><span class="p">:</span> <span class="o">/</span><span class="n">system</span><span class="o">.</span><span class="n">slice</span><span class="o">/</span><span class="n">postgresql</span><span class="o">.</span><span class="n">service</span>
+
+    <span class="n">Oct</span> <span class="mi">04</span> <span class="mi">16</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">50</span> <span class="n">postgresql</span> <span class="n">systemd</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">Starting</span> <span class="n">PostgreSQL</span> <span class="n">RDBMS</span><span class="o">...</span>
+    <span class="n">Oct</span> <span class="mi">04</span> <span class="mi">16</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">50</span> <span class="n">postgresql</span> <span class="n">systemd</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">Finished</span> <span class="n">PostgreSQL</span> <span class="n">RDBMS</span><span class="o">.</span>
+</code></pre></div>
+
+<p>Si es así, le cambiamos la contraseña al usuario "postgres", nos conectamos con el mismo y creamos un nuevo usuario, al que le asignaremos privilegios de superusuario:</p>
+<div class="highlight"><pre><span></span><code>sudo passwd postgres
+su postgres
+createuser -s lara -P
+</code></pre></div>
+
+<p>Ahora podemos crear una base de datos, al que accederemos posteriormente con el usuario remoto:</p>
+<div class="highlight"><pre><span></span><code>createdb prueba
+psql prueba
+</code></pre></div>
+
+<p>Y procedemos a crear tablas y realizar inserciones. Cuando terminemos, nos dirigimos al fichero de configuración:</p>
+<div class="highlight"><pre><span></span><code>sudo nano /etc/postgresql/13/main/postgresql.conf
+</code></pre></div>
+
+<p>En la siguiente línea cambiamos <code>localhost</code> por <code>*</code> para que el servidor escuche a cualquier
+máquina externa que intente conectarse:</p>
+<div class="highlight"><pre><span></span><code>listen_addresses = ‘*’
+</code></pre></div>
+
+<p>A continuación, entramos en el fichero <code>pg_hba.conf</code>:</p>
+<div class="highlight"><pre><span></span><code>sudo nano /etc/postgresql/13/main/pg_hba.conf
+</code></pre></div>
+
+<p>Y cambiamos la dirección IP en la siguiente línea:</p>
+<div class="highlight"><pre><span></span><code>host    all all 0.0.0.0/0   md5
+</code></pre></div>
+
+<p>Reiniciamos el servicio de postgresql:</p>
+<div class="highlight"><pre><span></span><code>sudo service postgresql restart
+</code></pre></div>
+
+<p>Vamos a la máquina cliente, instalamos el cliente de postgresql y tratamos de entrar en la base de datos que hemos creado en el servidor (agregamos la IP y el puerto del servidor, el usuario que hemos creado y la base de datos a la que queremos conectarnos):</p>
+<div class="highlight"><pre><span></span><code>sudo apt install postgresql-client
+psql -h 10.0.0.30 -p 5432 -U lara -d prueba
+</code></pre></div>
+
+<p></br></p>
+<h2><img src="./images/BaseDatos/mongodb_icono.png" alt="Una hojita" width="100"/> MongoDB</h2>
+<p>El primer paso será actualizar el sistema e instalamos el paquete gnupg que necesitaremos para montar nuestro servidor de MongoDB:</p>
+<div class="highlight"><pre><span></span><code>sudo apt update
+sudo apt install -y gnupg
+</code></pre></div>
+
+<p>Puesto que MongoDB no se encuentra en la paquetería de Debian, tendremos que añadir el repositorio oficial de este. Para ello, nos descargamos la clave pública de MongoDB:</p>
+<div class="highlight"><pre><span></span><code>wget https://www.mongodb.org/static/pgp/server-4.4.asc -qO- | sudo apt-key add -
+</code></pre></div>
+
+<p>En siguiente lugar, creamos el fichero de repositorios:</p>
+<div class="highlight"><pre><span></span><code>sudo nano /etc/apt/sources.list.d/mongodb-org.list
+</code></pre></div>
+
+<p>Y le añadimos la siguiente línea:</p>
+<div class="highlight"><pre><span></span><code><span class="k">deb</span> <span class="s">http://repo.mongodb.org/apt/debian</span> <span class="kp">buster/mongodb-org/4.4</span> <span class="kp">main</span>
+</code></pre></div>
+
+<p>Ahora que tenemos un nuevo repositorio, actualizamos la lista de paquetes e instalamos el paquete mongodb-org:</p>
+<div class="highlight"><pre><span></span><code>sudo apt update
+sudo apt install -y mongodb-org
+</code></pre></div>
+
+<p>Habilitamos el servicio de MondoDB y comprobamos si se ha activado:</p>
+<div class="highlight"><pre><span></span><code>sudo systemctl enable --now mongod
+sudo systemctl status mongod
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code> <span class="err">●</span> <span class="n">mongod</span><span class="o">.</span><span class="n">service</span> <span class="o">-</span> <span class="n">MongoDB</span> <span class="n">Database</span> <span class="n">Server</span>
+    <span class="n">Loaded</span><span class="p">:</span> <span class="n">loaded</span> <span class="p">(</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">mongod</span><span class="o">.</span><span class="n">service</span><span class="p">;</span> <span class="n">enabled</span><span class="p">;</span> <span class="n">vendor</span> <span class="n">preset</span><span class="p">:</span> <span class="n">enab</span><span class="o">&gt;</span>
+    <span class="n">Active</span><span class="p">:</span> <span class="n">active</span> <span class="p">(</span><span class="n">running</span><span class="p">)</span> <span class="n">since</span> <span class="n">Mon</span> <span class="mi">2021</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">04</span> <span class="mi">17</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">23</span> <span class="n">UTC</span><span class="p">;</span> <span class="mi">4</span><span class="nb">min</span> <span class="mi">5</span><span class="n">s</span> <span class="n">ago</span>
+    <span class="n">Docs</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="o">.</span><span class="n">mongodb</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">manual</span>
+    <span class="n">Main</span> <span class="n">PID</span><span class="p">:</span> <span class="mi">16056</span> <span class="p">(</span><span class="n">mongod</span><span class="p">)</span>
+    <span class="n">Memory</span><span class="p">:</span> <span class="mf">99.0</span><span class="n">M</span>
+    <span class="n">CPU</span><span class="p">:</span> <span class="mf">3.541</span><span class="n">s</span>
+    <span class="n">CGroup</span><span class="p">:</span> <span class="o">/</span><span class="n">system</span><span class="o">.</span><span class="n">slice</span><span class="o">/</span><span class="n">mongod</span><span class="o">.</span><span class="n">service</span>
+    <span class="err">└─</span><span class="mi">16056</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">mongod</span> <span class="o">--</span><span class="n">config</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">mongod</span><span class="o">.</span><span class="n">conf</span>
+
+    <span class="n">Oct</span> <span class="mi">04</span> <span class="mi">17</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">23</span> <span class="n">mongodb</span> <span class="n">systemd</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">Started</span> <span class="n">MongoDB</span> <span class="n">Database</span> <span class="n">Server</span><span class="o">.</span>
+</code></pre></div>
+
+<p>Al ejecutar el cliente mongo, comprobamos la conexión con los servidores:</p>
+<div class="highlight"><pre><span></span><code>  <span class="n">MongoDB</span> <span class="nb">shell</span> <span class="nb">version</span> <span class="n">v4</span><span class="mf">.4.9</span>
+  <span class="n">connecting</span> <span class="n">to:</span> <span class="n">mongodb:</span>//<span class="mf">127.0.0.1</span>:<span class="mi">27017</span>/?<span class="n">compressors</span>=<span class="n">disabled</span><span class="nv">&amp;gssapiServiceName</span>=<span class="n">mongodb</span>
+  <span class="n">Implicit</span> <span class="n">session:</span> <span class="n">session</span> { <span class="s">&quot;id&quot;</span> : <span class="n">UUID</span>(<span class="s">&quot;3e618527-b5b0-4d7b-a4e7-92b80dcd5603&quot;</span>) }
+  <span class="n">MongoDB</span> <span class="n">server</span> <span class="n">version:</span> <span class="mf">4.4.9</span>
+  <span class="n">Welcome</span> <span class="nb">to</span> <span class="n">the</span> <span class="n">MongoDB</span> <span class="nb">shell</span>.
+  <span class="n">For</span> <span class="n">interactive</span> <span class="n">help</span>, <span class="nb">type</span> <span class="s">&quot;help&quot;</span>.
+  <span class="n">For</span> <span class="n">more</span> <span class="n">comprehensive</span> <span class="n">documentation</span>, <span class="n">see</span>
+    <span class="n">https:</span>//<span class="n">docs</span>.<span class="n">mongodb</span>.<span class="n">com</span>/
+  <span class="n">Questions</span>? <span class="n">Try</span> <span class="n">the</span> <span class="n">MongoDB</span> <span class="n">Developer</span> <span class="n">Community</span> <span class="n">Forums</span>
+    <span class="n">https:</span>//<span class="n">community</span>.<span class="n">mongodb</span>.<span class="n">com</span>
+---
+  <span class="n">The</span> <span class="n">server</span> <span class="n">generated</span> <span class="n">these</span> <span class="n">startup</span> <span class="n">warnings</span> <span class="k">when</span> <span class="n">booting:</span>
+    <span class="mi">2021</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mo">04</span><span class="n">T17:58:23</span><span class="mf">.381</span><span class="o">+</span><span class="mo">00</span>:<span class="mo">00</span>: <span class="n">Using</span> <span class="n">the</span> <span class="n">XFS</span> <span class="n">filesystem</span> <span class="k">is</span> <span class="n">strongly</span> <span class="n">recommended</span> <span class="k">with</span> <span class="n">the</span> <span class="n">WiredTiger</span> <span class="n">storage</span> <span class="n">engine</span>. <span class="n">See</span> <span class="n">http:</span>//<span class="n">dochub</span>.<span class="n">mongodb</span>.<span class="n">org</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">prodnotes-filesystem</span>
+    <span class="mi">2021</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mo">04</span><span class="n">T17:58:24</span><span class="mf">.068</span><span class="o">+</span><span class="mo">00</span>:<span class="mo">00</span>: <span class="n">Access</span> <span class="n">control</span> <span class="k">is</span> <span class="nb">not</span> <span class="n">enabled</span> <span class="k">for</span> <span class="n">the</span> <span class="n">database</span>. <span class="n">Read</span> <span class="o">and</span> <span class="nb">write</span> <span class="n">access</span> <span class="nb">to</span> <span class="n">data</span> <span class="o">and</span> <span class="n">configuration</span> <span class="k">is</span> <span class="n">unrestricted</span>
+---
+---
+    <span class="n">Enable</span> <span class="n">MongoDB&#39;s</span> <span class="n">free</span> <span class="n">cloud-based</span> <span class="n">monitoring</span> <span class="n">service</span>, <span class="n">which</span> <span class="n">will</span> <span class="nb">then</span> <span class="nb">receive</span> <span class="o">and</span> <span class="n">display</span> <span class="n">metrics</span> <span class="n">about</span> <span class="n">your</span> <span class="n">deployment</span> (<span class="n">disk</span> <span class="n">utilization</span>, <span class="n">CPU</span>, <span class="nb">operation</span> <span class="n">statistics</span>, <span class="n">etc</span>).
+
+
+    <span class="n">The</span> <span class="n">monitoring</span> <span class="n">data</span> <span class="n">will</span> <span class="n">be</span> <span class="n">available</span> <span class="n">on</span> <span class="n">a</span> <span class="n">MongoDB</span> <span class="n">website</span> <span class="k">with</span> <span class="n">a</span> <span class="nb">unique</span> <span class="n">URL</span> <span class="n">accessible</span> <span class="nb">to</span> <span class="n">you</span> <span class="o">and</span> <span class="n">anyone</span> <span class="n">you</span> <span class="nb">share</span> <span class="n">the</span> <span class="n">URL</span> <span class="k">with</span>. <span class="n">MongoDB</span> <span class="n">may</span> <span class="k">use</span> <span class="n">this</span> <span class="n">information</span> <span class="nb">to</span> <span class="k">make</span> <span class="n">product</span> <span class="n">improvements</span> <span class="o">and</span> <span class="nb">to</span> <span class="n">suggest</span> <span class="n">MongoDB</span> <span class="n">products</span> <span class="o">and</span> <span class="n">deployment</span> <span class="n">options</span> <span class="nb">to</span> <span class="n">you</span>.
+
+
+    <span class="n">To</span> <span class="n">enable</span> <span class="n">free</span> <span class="n">monitoring</span>, <span class="nb">run</span> <span class="n">the</span> <span class="n">following</span> <span class="n">command:</span>
+<span class="n">db</span>.<span class="n">enableFreeMonitoring</span>()
+    <span class="n">To</span> <span class="n">permanently</span> <span class="n">disable</span> <span class="n">this</span> <span class="n">reminder</span>, <span class="nb">run</span> <span class="n">the</span> <span class="n">following</span> <span class="n">command:</span>
+<span class="n">db</span>.<span class="n">disableFreeMonitoring</span>()
+---
+</code></pre></div>
+
+<p>Entramos en la base de datos del administrador y creamos un usuario con privilegios de root:</p>
+<div class="highlight"><pre><span></span><code>&gt; use admin
+switched to db admin
+&gt; db.createUser({user: &quot;lara&quot;, pwd: &quot;******&quot;, roles: [{role: &quot;root&quot;, db: &quot;admin&quot;}]})
+Successfully added user: {
+    &quot;user&quot; : &quot;lara&quot;,
+    &quot;roles&quot; : [
+        {
+            &quot;role&quot; : &quot;root&quot;,
+            &quot;db&quot; : &quot;admin&quot;
+        }
+    ]
+}
+</code></pre></div>
+
+<p>Salimos con <code>exit</code>. Ahora podemos entrar con nuestro nuevo usuario con el parámetro -u:</p>
+<div class="highlight"><pre><span></span><code>mongo -u lara
+</code></pre></div>
+
+<p>Por último, accedemos al fichero de configuración de MongoDB:</p>
+<div class="highlight"><pre><span></span><code>sudo nano /etc/mongod.conf
+</code></pre></div>
+
+<p>Para securizar nuestra base de datos editaremos la siguiente sección:</p>
+<div class="highlight"><pre><span></span><code><span class="n">security</span><span class="o">:</span>
+  <span class="n">authorization</span><span class="o">:</span> <span class="n">enabled</span>
+</code></pre></div>
+
+<p>Para poder acceder remotamente, debemos cambiar el valor del campo “bindIP”, dejando que cualquier IP (0.0.0.0) pueda acceder en lugar de solo el localhost:</p>
+<div class="highlight"><pre><span></span><code><span class="n">net</span><span class="o">:</span>
+  <span class="n">port</span><span class="o">:</span> <span class="mi">27017</span>
+  <span class="n">bindIp</span><span class="o">:</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span>
+</code></pre></div>
+
+<p>Guardamos el fichero y reiniciamos el servicio:</p>
+<div class="highlight"><pre><span></span><code>sudo systemctl restart mongod
+</code></pre></div>
+
+<p>Finalmente, podremos acceder al servidor desde la máquina cliente especificando el nombre dela máquina donde se encuentra el servidor, o la dirección IP, y el usuario que hemos creado:</p>
+<div class="highlight"><pre><span></span><code>mongo --host mongodb -u lara
+</code></pre></div>
+
+<p>!Espero que este artículo os haya ayudado!</p>
+<p><img src="./images/gracias.png" alt="Gracias por leerme" width="150"/></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/oracle">Oracle</a>, <a href="./tags/mariadb">MariaDB</a>, <a href="./tags/postgresql">PostgreSQL</a>, <a href="./tags/mongodb">MongoDB</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
