@@ -283,8 +283,9 @@ servidor, el puerto y el nombre del servicio:</p>
 
 <p>Ya tendríamos acceso al servidor desde un cliente remoto. Solo me queda contaros una cosa más, que os puede facilitar muchísimo la vida si vais a trabajar con cierta frecuencia con Oracle. Os daréis cuenta de que, una vez dentro de la consola de Oracle, no podéis moveros libremente por la línea de comandos ni acceder al historial.</p>
 <p><img src="./images/guiño.jpg" alt="No temáis, Lara está aquí" width="250"/> Pues eso tiene fácil solución.</p>
-<p>Instalamos el siguiente paquete:</p>
-<div class="highlight"><pre><span></span><code>dnf install rlwrap
+<p>Instalamos el repositorio EPEL y el paquete rlwrap de dicho repositorio:</p>
+<div class="highlight"><pre><span></span><code>dnf install epel-release
+dnf install rlwrap
 </code></pre></div>
 
 <p>Después, añadimos las siguientes líneas en el fichero <code>.bash_profile</code> del usuario de oracle:</p>

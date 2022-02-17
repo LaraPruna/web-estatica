@@ -209,8 +209,9 @@ Ya tendríamos acceso al servidor desde un cliente remoto. Solo me queda contaro
 
 <img src="{static}/images/guiño.jpg" alt="No temáis, Lara está aquí" width="250"/> Pues eso tiene fácil solución.
 
-Instalamos el siguiente paquete:
+Instalamos el repositorio EPEL y el paquete rlwrap de dicho repositorio:
 ```
+dnf install epel-release
 dnf install rlwrap
 ```
 

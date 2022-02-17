@@ -137,7 +137,7 @@ lease {
 
 ¡Ya tendríamos un servidor DHCP básico completamente operativo!
 
-## Congifiguración de una reserva
+## Configuración de una reserva
 
 Añadimos un segundo cliente en el fichero Vagrantfile:
 ```
