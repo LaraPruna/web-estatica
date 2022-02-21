@@ -1,5 +1,5 @@
 Title: Compilación de un programa en C utilizando un Makefile
-Date: 2022-01-15 19:43
+Date: 2021-10-04 19:43
 Category: Administración de Sistemas Operativos
 lang: es
 tags: Compilación,C,Makefile

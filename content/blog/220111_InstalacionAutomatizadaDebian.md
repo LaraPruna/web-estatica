@@ -1,5 +1,5 @@
 Title: Instalación Automatizada de Debian 11
-Date: 2022-01-11 16:51
+Date: 2021-09-27 16:51
 Category: Administración de Sistemas Operativos
 lang: es
 tags: Debian,Bullseye,Automatizacion

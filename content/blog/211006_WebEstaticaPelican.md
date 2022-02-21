@@ -1,5 +1,5 @@
 Title: Creación de una web estática con Pelican
-Date: 2021-10-06 14:28
+Date: 2021-09-28 14:28
 Category: Implantación de Aplicaciones Web
 lang: es
 tags: Pelican,Web,Markdown,Python

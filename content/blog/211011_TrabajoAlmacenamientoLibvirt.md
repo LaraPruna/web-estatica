@@ -1,5 +1,5 @@
 Title: Práctica de almacenamiento en libvirt
-Date: 2021-10-11 18:47
+Date: 2021-09-30 20:00
 Category: Cloud Computing
 lang: es
 tags: Almacenamiento,KVM,QEMU,libvirt,LVM

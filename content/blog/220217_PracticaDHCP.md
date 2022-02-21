@@ -1,12 +1,12 @@
 Title: Creación de un servidor DHCP en un escenario con libvirt/KVM
-Date: 2022-02-17 16:36
+Date: 2021-10-13 16:36
 Category: Servicios de Red e Internet
 lang: es
 tags: Redes,DHCP,KVM,libvirt,Debian11
 Header_Cover: images/covers/DHCP.jpg
 summary: En esta práctica, montaremos un router con un servidor DHCP sobre un escenario de KVM de tres nodos.
 
-En esta práctica, crearemos un escenario de tres nodos en libvirt/KVM con las siguientes características:
+Teniendo cuenta lo que vimos en el artículo [Instalación y configuración del servidor DHCP en Linux](https://www.sysraider.es/principal/instalacion-y-configuracion-del-servidor-dhcp-en-linux.html), crearemos un escenario de tres nodos en libvirt/KVM con las siguientes características:
 
 * Máquina **Servidor**: tiene tres tarjetas de red, una que le da acceso a internet (NAT o pública) y dos redes privadas (muy aisladas). Al mismo tiempo, hará de router-nat para los clientes de ambas redes.
 * Máquina **nodo_lan1**: un cliente linux conectado a la primera red privada.
@@ -290,4 +290,3 @@ Todos estos pasos los he plasmado en una [receta de ansible](https://github.com/
 <center>
 <img src="{static}/images/cocinando.jpg" alt="Preparando la receta" width="300"/>
 </center>
-

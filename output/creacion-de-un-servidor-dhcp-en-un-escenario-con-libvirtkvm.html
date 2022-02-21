@@ -50,7 +50,7 @@
             <meta property="article:author" content="./author/lara-pruna.html">
 	<meta property="og:url" content="./creacion-de-un-servidor-dhcp-en-un-escenario-con-libvirtkvm.html">
 	<meta property="og:title" content="Creación de un servidor DHCP en un escenario con libvirt/KVM">
-	<meta property="article:published_time" content="2022-02-17 16:36:00+01:00">
+	<meta property="article:published_time" content="2021-10-13 16:36:00+02:00">
             <meta property="og:description" content="En esta práctica, montaremos un router con un servidor DHCP sobre un escenario de KVM de tres nodos.">
 
             <meta property="og:image" content=".images/covers/DHCP.jpg">
@@ -95,7 +95,7 @@
                         <h1>Creación de un servidor DHCP en un escenario con libvirt/KVM</h1>
                         <span class="meta">Posted by
                                 <a href="./author/lara-pruna.html">Lara Pruna</a>
-                             on jue 17 febrero 2022
+                             on mié 13 octubre 2021
                         </span>
                         
                     </div>
@@ -110,7 +110,7 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
     <!-- Post Content -->
     <article>
-        <p>En esta práctica, crearemos un escenario de tres nodos en libvirt/KVM con las siguientes características:</p>
+        <p>Teniendo cuenta lo que vimos en el artículo <a href="https://www.sysraider.es/principal/instalacion-y-configuracion-del-servidor-dhcp-en-linux.html">Instalación y configuración del servidor DHCP en Linux</a>, crearemos un escenario de tres nodos en libvirt/KVM con las siguientes características:</p>
 <ul>
 <li>Máquina <strong>Servidor</strong>: tiene tres tarjetas de red, una que le da acceso a internet (NAT o pública) y dos redes privadas (muy aisladas). Al mismo tiempo, hará de router-nat para los clientes de ambas redes.</li>
 <li>Máquina <strong>nodo_lan1</strong>: un cliente linux conectado a la primera red privada.</li>

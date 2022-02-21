@@ -1,5 +1,5 @@
 Title: Instalación y configuración del servidor DHCP en Linux
-Date: 2021-10-09 19:12
+Date: 2021-10-08 19:12
 Category: Servicios de Red e Internet
 lang: es
 tags: Redes,DHCP,Vagrant,Debian11

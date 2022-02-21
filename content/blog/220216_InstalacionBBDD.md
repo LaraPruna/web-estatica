@@ -1,5 +1,5 @@
 Title: Instalación y acceso remoto de bases de datos
-Date: 2022-02-16 15:55
+Date: 2021-09-27 15:55
 Category: Administración de Bases de Datos
 lang: es
 tags: Oracle,MariaDB,PostgreSQL,MongoDB

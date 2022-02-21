@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Instalación de un servidor LAMP y phpmyadmin</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo aprenderemos a instalar un LAMP en Debian, además de la aplicación web de MySQL/MariaDB.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="MariaDB">
+        <meta name="tags" content="Apache">
+        <meta name="tags" content="Debian">
+        <meta name="tags" content="PHP">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./instalacion-de-un-servidor-lamp-y-phpmyadmin.html">
+	<meta property="og:title" content="Instalación de un servidor LAMP y phpmyadmin">
+	<meta property="article:published_time" content="2021-10-13 16:55:00+02:00">
+            <meta property="og:description" content="En este artículo aprenderemos a instalar un LAMP en Debian, además de la aplicación web de MySQL/MariaDB.">
+
+            <meta property="og:image" content=".images/covers/LAMP.png">
+</head>
+
+<body class="article-instalacion-de-un-servidor-lamp-y-phpmyadmin">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="./categories">Categorías</a>
+                <a class="navbar-brand" href="./pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/LAMP.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Instalación de un servidor LAMP y phpmyadmin</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on mié 13 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>LAMP es el acrónimo que forman las siglas de cuatro tecnologías empleadas comúnmente para la implantación de aplicaciones web: el sistema operativo <strong>Linux</strong>, el servidor web <strong>Apache</strong>, la base de datos <strong>MySQL</strong> (o MariaDB), y el lenguaje de programación <strong>PHP</strong> (o Perl o Python).</p>
+<p><center>
+<img src="./images/LAMP/acronimo.jpeg" alt="LAMP significa lámpara en inglés." width="400"/>
+</center></p>
+<p>En este caso, instalaremos el LAMP con Linux, Apache, MariaDB y PHP para poder desplegar phpmyadmin, la aplicación web de MySQL/MariaDB escrita en PHP que nos permite gestionar nuestra base de datos desde un entorno gráfico. Para ello, necesitaremos instalar dichos paquetes. En el caso de MariaDB, puedes seguir la guía de instalación que desarrollé en este <a href="https://www.sysraider.es/principal/instalacion-y-acceso-remoto-de-bases-de-datos.html">artículo</a>. Una vez instalado el servidor de bases de datos, pasamos a instalar Apache desde los repositorios:</p>
+<div class="highlight"><pre><span></span><code>apt update &amp;&amp; apt install apache2
+</code></pre></div>
+
+<p>Después, instalamos PHP junto con otros paquetes necesarios para la aplicación:</p>
+<div class="highlight"><pre><span></span><code>apt install php libapache2-mod-php php-mysql
+</code></pre></div>
+
+<p>A la hora de hacer peticiones web a los directorios de la aplicación, para que Apache priorice los archivos PHP antes que otros, editamos el fichero “dir.conf”:</p>
+<div class="highlight"><pre><span></span><code>nano /etc/apache2/mods-enabled/dir.conf
+</code></pre></div>
+
+<p>Añadimos "index.php" justo después de "DirectoryIndex":</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;IfModule</span> <span class="err">mod_dir.c</span><span class="nt">&gt;</span>
+DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
+<span class="nt">&lt;/IfModule&gt;</span>
+</code></pre></div>
+
+<p>Al haber cambiado la configuración, reiniciamos el servicio de Apache:</p>
+<div class="highlight"><pre><span></span><code>systemctl restart apache2
+</code></pre></div>
+
+<p><img src="./images/yes.png" alt="Ya estamos preparados" width="150"/> Ya estaríamos listos para desplegar una aplicación web PHP.</p>
+<p>Ahora accedemos como root a MariaDB y creamos una base de datos y un usuario con privilegios sobre ella. A continuación, instalamos phpmyadmin desde los repositorios:</p>
+<div class="highlight"><pre><span></span><code>apt install pypmyadmin
+</code></pre></div>
+
+<p>Ahora, al acceder al directorio phpmyadmin, nos aparecerá el control de acceso de la aplicación:</p>
+<p><center>
+<img src="./images/LAMP/login.png" alt="Inicio de sesión con usuario y contraseña" width="750"/>
+</center></p>
+<p>Sin embargo, si listamos el contenido del directorio raíz, no encontraremos ese directorio:</p>
+<p><center>
+<img src="./images/LAMP/documentroot.png" alt="Ni rastro del directorio phpmyadmin" width="400"/>
+</center></p>
+<p><img src="./images/pensando.png" alt="Misterio..." width="150"/> ¿Cómo es que entonces podemos acceder a él?</p>
+<p>Pues porque la instalación de phpmyadmin ha creado un fichero de configuración en apache2, <code>/etc/apache2/conf-available/myphpadmin.conf</code>, que es un enlace simbólico a /etc/phpmyadmin/apache.conf. La primera línea del fichero es:</p>
+<div class="highlight"><pre><span></span><code>Alias /phpmyadmin /usr/share/phpmyadmin
+</code></pre></div>
+
+<p>Esta directiva nos permite crear una ruta <code>phpmyadmin</code>, donde se nos muestra el contenido de un directorio que se encuentra fuera del directorio raíz, en este caso, <code>/usr/share/phpmyadmin</code>. Eso significa que la aplicación está realmente en ese directorio. De hecho, si descomentamos esa línea y reiniciamos el servicio de apache2, ya no podremos acceder.</p>
+<p>Para no tener que entrar siempre a través de la dirección IP, podemos crear un <em>virtualhost</em> como el siguiente:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;VirtualHost</span> <span class="err">*:80</span><span class="nt">&gt;</span>
+
+        ServerName viajes.lara.org
+        ServerAdmin webmaster@localhost
+        DocumentRoot /usr/share/phpmyadmin
+        ErrorLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/viajeslara.error.log
+        CustomLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/viajeslara.access.log combined
+
+<span class="nt">&lt;Directory</span> <span class="err">/usr/share/phpmyadmin</span><span class="nt">&gt;</span>
+    Options SymLinksIfOwnerMatch
+    DirectoryIndex index.php
+
+    <span class="nt">&lt;IfModule</span> <span class="err">mod_php7.c</span><span class="nt">&gt;</span>
+        php_admin_value upload_tmp_dir /var/lib/phpmyadmin/tmp
+        php_admin_value open_basedir /usr/share/phpmyadmin/:/usr/share/doc/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/:/usr/share/php/:/usr/share/javascript/
+    <span class="nt">&lt;/IfModule&gt;</span>
+
+<span class="nt">&lt;/Directory&gt;</span>
+
+<span class="nt">&lt;Directory</span> <span class="err">/usr/share/phpmyadmin/templates</span><span class="nt">&gt;</span>
+    Require all denied
+<span class="nt">&lt;/Directory&gt;</span>
+
+<span class="nt">&lt;Directory</span> <span class="err">/usr/share/phpmyadmin/libraries</span><span class="nt">&gt;</span>
+    Require all denied
+<span class="nt">&lt;/Directory&gt;</span>
+
+<span class="nt">&lt;/VirtualHost&gt;</span>
+</code></pre></div>
+
+<p>Añadimos una resolución estática en <code>/etc/hosts</code> y ya podremos acceder a la aplicación a través de un dominio:</p>
+<p><center>
+<img src="./images/LAMP/viajeslara.png" alt="Inicio de sesión" width="750"/>
+<img src="./images/LAMP/accesoviajes.png" alt="Gestión gráfica de la base de datos" width="750"/>
+</center></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/mariadb">MariaDB</a>, <a href="./tags/apache">Apache</a>, <a href="./tags/debian">Debian</a>, <a href="./tags/php">PHP</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>

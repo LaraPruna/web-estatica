@@ -1,5 +1,5 @@
 Title: Instalación de Debian 11 en LVM
-Date: 2022-01-10 20:21
+Date: 2021-09-23 20:21
 Category: Administración de Sistemas Operativos
 lang: es
 tags: Debian,LVM,Bullseye
