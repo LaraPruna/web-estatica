@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Infraestructura de red router-nat desde OpenStack Client (OSC)</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo montaremos una infraestructura de red router-nat desde el cliente de Openstack en línea de comandos.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Openstack">
+        <meta name="tags" content="CLI">
+        <meta name="tags" content="router-nat">
+        <meta name="tags" content="Redes">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./infraestructura-de-red-router-nat-desde-openstack-client-osc.html">
+	<meta property="og:title" content="Infraestructura de red router-nat desde OpenStack Client (OSC)">
+	<meta property="article:published_time" content="2021-10-28 18:07:00+02:00">
+            <meta property="og:description" content="En este artículo montaremos una infraestructura de red router-nat desde el cliente de Openstack en línea de comandos.">
+
+            <meta property="og:image" content=".images/covers/openstack.png">
+</head>
+
+<body class="article-infraestructura-de-red-router-nat-desde-openstack-client-osc">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="./categories">Categorías</a>
+                <a class="navbar-brand" href="./pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/openstack.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Infraestructura de red router-nat desde OpenStack Client (OSC)</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on jue 28 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>Vamos a crear la siguiente infraestructura:</p>
+<p><center>
+<img src="./images/Openstack/topologia.png" alt="Esquema de red" width="750"/>
+</center></p>
+<p>El esquema de red tendrá las siguientes características:</p>
+<ul>
+<li>Dispondrá de una <strong>red interna</strong> con direccionamiento 192.168.0.0/24, tendrá el DHCP activado, la puerta de enlace será el 192.168.0.1 y el DNS que reparte el 192.168.202.2 (nuestro servidor DNS interno).</li>
+<li>Crearemos una instancia a partir de una imagen, que hará de <strong>router</strong> y estárá conectado a nuestra red y a la red interna en la dirección 192.168.0.1. Esta máquina será la puerta de enlace de la otra máquina.</li>
+<li>También crearemos una instancia a partir de un volumen, que será el <strong>cliente</strong> y que tendrá la IP 192.168.0.100, evidentemente conectada a la red interna.</li>
+</ul>
+<p>Una vez descrita la infraestructura, ya podemos ponernos en marcha.</p>
+<p><center>
+<img src="./images/vespa.gif" alt="En marcha" width="300"/>
+</center></p>
+<p>Lo primero que haremos es crear la red interna:</p>
+<div class="highlight"><pre><span></span><code>openstack network create red_interna
+openstack subnet create --network red_interna --subnet-range 192.168.0.0/24 --dhcp --gateway 192.168.0.1 --dns-nameserver 192.168.202.2 subred_interna.
+</code></pre></div>
+
+<p>A continuación, creamos una instancia llamada "router" que estará conectada a nuestra red:</p>
+<div class="highlight"><pre><span></span><code>openstack server create --flavor m1.mini \
+--image &quot;Debian 11.0 - Bullseye&quot; \
+--key-name clave_lara \
+--network &quot;red de lara.pruna&quot; \
+router
+</code></pre></div>
+
+<p>Añadimos una nueva interfaz al router conectada a la red interna con la IP 192.168.0.1.</p>
+<div class="highlight"><pre><span></span><code>openstack port create --network red_interna --fixed-ip ip-address=192.168.0.1 puerto_router
+</code></pre></div>
+
+<p>Para añadir el puerto al router, introducimos el siguiente comando:</p>
+<div class="highlight"><pre><span></span><code>openstack server add port router puerto_router
+</code></pre></div>
+
+<p>Le añadimos una IP flotante al router (yo ya tengo una disponible, pero si quisiéramos generar una nueva, lo haríamos con <code>openstack floating ip create ext-net</code>):</p>
+<div class="highlight"><pre><span></span><code>openstack server add floating ip router 172.22.200.191
+</code></pre></div>
+
+<p>Creamos otro puerto con la dirección 192.168.0.100, que será la IP del cliente conectada a la red interna:</p>
+<div class="highlight"><pre><span></span><code>openstack port create --network red_interna --fixed-ip ip-address=192.168.0.100 puerto_cliente
+</code></pre></div>
+
+<p>Generamos un volumen con Debian 11 y 10GB para crear posteriormente el cliente:</p>
+<div class="highlight"><pre><span></span><code>openstack volume create --image &quot;Debian 11.0 - Bullseye&quot; --size 10 --bootable volumen_cliente
+</code></pre></div>
+
+<p>Creamos el cliente basado en dicho volumen:</p>
+<div class="highlight"><pre><span></span><code>openstack server create --flavor vol.mini \                            
+--volume volumen_cliente \
+--key-name clave_lara \
+--port puerto_cliente \
+cliente
+</code></pre></div>
+
+<p>Puesto que las instancias se crean con el grupo de seguridad "default" por defecto, lo quitamos en ambas máquinas:</p>
+<div class="highlight"><pre><span></span><code>openstack server remove security group router default
+openstack server remove security group cliente default
+</code></pre></div>
+
+<p>Ahora eliminamos la seguridad de los dos puertos conectados a la red interna y del puerto del router conectado a la red externa:</p>
+<div class="highlight"><pre><span></span><code>openstack port set --disable-port-security puerto_router
+openstack port set --disable-port-security puerto_cliente
+</code></pre></div>
+
+<p>Para deshabilitar la seguridad del puerto conectado a la red externa del router, como no tiene nombre, lo buscamos primero con el siguiente comando:</p>
+<div class="highlight"><pre><span></span><code>openstack port list --server router
+</code></pre></div>
+
+<p>Copiamos la ID y ejecutamos el comando anterior identificando el puerto con esta:</p>
+<div class="highlight"><pre><span></span><code>openstack port set --disable-port-security 3f00269f-391b-4c29-a49f-7820f1a9919f
+</code></pre></div>
+
+<p>Entramos en el router por SSH para configurar el router-NAT:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="s">&quot;/home/lpruna/.ssh/known_hosts&quot;</span><span class="w"> </span><span class="o">-</span><span class="n">R</span><span class="w"> </span><span class="s">&quot;172.22.200.191&quot;</span><span class="w"> </span>
+<span class="n">ssh</span><span class="w"> </span><span class="n">debian</span><span class="mf">@172.22.200.191</span><span class="w"></span>
+<span class="n">sudo</span><span class="w"> </span><span class="n">su</span><span class="w"></span>
+<span class="n">echo</span><span class="w"> </span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">ipv4</span><span class="o">/</span><span class="n">ip_forward</span><span class="w"></span>
+<span class="n">iptables</span><span class="w"> </span><span class="o">-</span><span class="n">t</span><span class="w"> </span><span class="n">nat</span><span class="w"> </span><span class="o">-</span><span class="n">A</span><span class="w"> </span><span class="n">POSTROUTING</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="mf">192.168.0.0</span><span class="o">/</span><span class="mi">24</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">ens3</span><span class="w"> </span><span class="o">-</span><span class="n">j</span><span class="w"> </span><span class="n">MASQUERADE</span><span class="w"></span>
+</code></pre></div>
+
+<p>Por último, salimos del router, añadimos nuestra clave pública en el agente SSH y volvemos a acceder al router con <code>ssh -A</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="o">-</span><span class="n">add</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="w"></span>
+<span class="n">ssh</span><span class="w"> </span><span class="o">-</span><span class="n">A</span><span class="w"> </span><span class="n">debian</span><span class="mf">@172.22.200.191</span><span class="w"></span>
+</code></pre></div>
+
+<p>Después, entramos por SSH normal al cliente y hacemos ping a google.es para probar la conexión a Internet y el funcionamiento del servidor DNS:</p>
+<p><center>
+<img src="./images/Openstack/prueba_cliente.png" alt="El cliente accede a Internet" width="750"/>
+</center></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/openstack">Openstack</a>, <a href="./tags/cli">CLI</a>, <a href="./tags/router-nat">router-nat</a>, <a href="./tags/redes">Redes</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
