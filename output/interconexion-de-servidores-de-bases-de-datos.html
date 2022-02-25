@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Interconexión de servidores de bases de datos</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo realizamos una interconexión entre dos servidores de Oracle, dos de PostgreSQL, y entre uno de Oracle y otro de PostgreSQL.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Oracle">
+        <meta name="tags" content="Centos">
+        <meta name="tags" content="PostgreSQL">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./interconexion-de-servidores-de-bases-de-datos.html">
+	<meta property="og:title" content="Interconexión de servidores de bases de datos">
+	<meta property="article:published_time" content="2021-11-01 14:48:00+01:00">
+            <meta property="og:description" content="En este artículo realizamos una interconexión entre dos servidores de Oracle, dos de PostgreSQL, y entre uno de Oracle y otro de PostgreSQL.">
+
+            <meta property="og:image" content=".images/covers/database.png">
+</head>
+
+<body class="article-interconexion-de-servidores-de-bases-de-datos">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="./categories">Categorías</a>
+                <a class="navbar-brand" href="./pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/database.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Interconexión de servidores de bases de datos</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on lun 01 noviembre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>La interconexión de bases de datos es una práctica muy útil que nos permite <strong>vincular</strong> dos o más servidores para poder relacionar los datos y gestionarlos en conjunto. En este artículo, aprenderemos a interconectar dos servidores de bases de datos: dos servidores de Oracle, dos servidores de PostgreSQL, y uno de Oracle y otro de PostgreSQL.</p>
+<h2><img src="./images/BaseDatos/icono_oracle.png" alt="Una nubecita" width="100"/> Dos servidores de Oracle <img src="./images/BaseDatos/icono_oracle.png" alt="Otra nubecita" width="100"/></h2>
+<p>Para empezar, contamos con dos servidores Oracle 19c sobre Centos 8, ambas configuradas para el acceso remoto y con una base de datos. El objetivo de esta estructura es que un mismo cliente pueda acceder a las dos bases de datos de manera simultánea e indirecta, de modo que ambos servidores estén conectados entre sí. El primer servidor tiene la IP 172.22.7.169, y el segundo servidor tiene la IP 172.22.0.27.</p>
+<p>Una vez preparadas las máquinas, lo primero que he hecho es conectarme con el usuario oracle y crear un usuario nuevo en cada servidor:</p>
+<ul>
+<li><strong>Servidor 1</strong>:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">create</span> <span class="nv">user</span> <span class="nv">c</span>##<span class="nv">lara1</span> <span class="nv">identified</span> <span class="nv">by</span> <span class="nv">lara1</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="k">connect</span> <span class="nv">to</span> <span class="nv">c</span>##<span class="nv">lara1</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="nv">resource</span> <span class="nv">to</span> <span class="nv">c</span>##<span class="nv">lara1</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="nv">unlimited</span> <span class="nv">tablespace</span> <span class="nv">to</span> <span class="nv">c</span>##<span class="nv">lara1</span><span class="c1">;</span>
+</code></pre></div>
+
+<ul>
+<li><strong>Servidor 2</strong>:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">create</span> <span class="nv">user</span> <span class="nv">c</span>##<span class="nv">lara2</span> <span class="nv">identified</span> <span class="nv">by</span> <span class="nv">lara2</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="k">connect</span> <span class="nv">to</span> <span class="nv">c</span>##<span class="nv">lara2</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="nv">resource</span> <span class="nv">to</span> <span class="nv">c</span>##<span class="nv">lara2</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="nv">unlimited</span> <span class="nv">tablespace</span> <span class="nv">to</span> <span class="nv">c</span>##<span class="nv">lara2</span><span class="c1">;</span>
+</code></pre></div>
+
+<p>A continuación, comprobamos que el segundo servidor tiene conectividad:</p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">oracle@servidor1 ~</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">tnsping</span><span class="w"> </span><span class="mf">172.22.0.27</span><span class="w"></span>
+
+<span class="n">TNS</span><span class="w"> </span><span class="n">Ping</span><span class="w"> </span><span class="n">Utility</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nl">Linux</span><span class="p">:</span><span class="w"> </span><span class="n">Version</span><span class="w"> </span><span class="mf">19.0.0.0.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Production</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="mi">22</span><span class="o">-</span><span class="n">OCT</span><span class="o">-</span><span class="mi">2021</span><span class="w"> </span><span class="mi">12</span><span class="err">:</span><span class="mi">39</span><span class="err">:</span><span class="mi">48</span><span class="w"></span>
+
+<span class="n">Copyright</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="mi">1997</span><span class="p">,</span><span class="w"> </span><span class="mi">2019</span><span class="p">,</span><span class="w"> </span><span class="n">Oracle</span><span class="p">.</span><span class="w"> </span><span class="ow">All</span><span class="w"> </span><span class="n">rights</span><span class="w"> </span><span class="n">reserved</span><span class="p">.</span><span class="w"></span>
+
+<span class="n">Used</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="nl">files</span><span class="p">:</span><span class="w"></span>
+<span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">product</span><span class="o">/</span><span class="mi">19</span><span class="n">c</span><span class="o">/</span><span class="n">dbhome_1</span><span class="o">/</span><span class="n">network</span><span class="o">/</span><span class="k">admin</span><span class="o">/</span><span class="n">sqlnet</span><span class="p">.</span><span class="n">ora</span><span class="w"></span>
+
+<span class="n">Used</span><span class="w"> </span><span class="n">HOSTNAME</span><span class="w"> </span><span class="n">adapter</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">resolve</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">alias</span><span class="w"></span>
+
+<span class="n">Attempting</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">contact</span><span class="w"> </span><span class="p">(</span><span class="n">DESCRIPTION</span><span class="o">=</span><span class="p">(</span><span class="n">CONNECT_DATA</span><span class="o">=</span><span class="p">(</span><span class="n">SERVICE_NAME</span><span class="o">=</span><span class="p">))(</span><span class="n">ADDRESS</span><span class="o">=</span><span class="p">(</span><span class="n">PROTOCOL</span><span class="o">=</span><span class="n">tcp</span><span class="p">)(</span><span class="k">HOST</span><span class="o">=</span><span class="mf">172.22.0.27</span><span class="p">)(</span><span class="n">PORT</span><span class="o">=</span><span class="mi">1521</span><span class="p">)))</span><span class="w"></span>
+<span class="n">OK</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="w"> </span><span class="n">msec</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">oracle@servidor2 dbhome_1</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">tnsping</span><span class="w"> </span><span class="mf">172.22.7.169</span><span class="w"></span>
+
+<span class="n">TNS</span><span class="w"> </span><span class="n">Ping</span><span class="w"> </span><span class="n">Utility</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nl">Linux</span><span class="p">:</span><span class="w"> </span><span class="n">Version</span><span class="w"> </span><span class="mf">19.0.0.0.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Production</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="mi">22</span><span class="o">-</span><span class="n">OCT</span><span class="o">-</span><span class="mi">2021</span><span class="w"> </span><span class="mi">12</span><span class="err">:</span><span class="mi">38</span><span class="err">:</span><span class="mi">43</span><span class="w"></span>
+
+<span class="n">Copyright</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="mi">1997</span><span class="p">,</span><span class="w"> </span><span class="mi">2019</span><span class="p">,</span><span class="w"> </span><span class="n">Oracle</span><span class="p">.</span><span class="w"> </span><span class="ow">All</span><span class="w"> </span><span class="n">rights</span><span class="w"> </span><span class="n">reserved</span><span class="p">.</span><span class="w"></span>
+
+<span class="n">Used</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="nl">files</span><span class="p">:</span><span class="w"></span>
+<span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">product</span><span class="o">/</span><span class="mi">19</span><span class="n">c</span><span class="o">/</span><span class="n">dbhome_1</span><span class="o">/</span><span class="n">network</span><span class="o">/</span><span class="k">admin</span><span class="o">/</span><span class="n">sqlnet</span><span class="p">.</span><span class="n">ora</span><span class="w"></span>
+
+<span class="n">Used</span><span class="w"> </span><span class="n">HOSTNAME</span><span class="w"> </span><span class="n">adapter</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">resolve</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">alias</span><span class="w"></span>
+
+<span class="n">Attempting</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">contact</span><span class="w"> </span><span class="p">(</span><span class="n">DESCRIPTION</span><span class="o">=</span><span class="p">(</span><span class="n">CONNECT_DATA</span><span class="o">=</span><span class="p">(</span><span class="n">SERVICE_NAME</span><span class="o">=</span><span class="p">))(</span><span class="n">ADDRESS</span><span class="o">=</span><span class="p">(</span><span class="n">PROTOCOL</span><span class="o">=</span><span class="n">tcp</span><span class="p">)(</span><span class="k">HOST</span><span class="o">=</span><span class="mf">172.22.7.169</span><span class="p">)(</span><span class="n">PORT</span><span class="o">=</span><span class="mi">1521</span><span class="p">)))</span><span class="w"></span>
+<span class="n">OK</span><span class="w"> </span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="n">msec</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<p><img src="./images/yes.png" alt="Vamos bien" width="150"/> Vemos que ambos servidores están conectados entre sí.</p>
+<p>El siguiente paso es añadir una entrada en el fichero tnsnames.ora, para que cada servidor <strong>conozca la ruta hacia el otro</strong>. En el fichero del primer servidor he añadido una entrada referida al segundo servidor a la que llamado “ORACLE2”, y donde he especificado el puerto y la IP del primer servidor:</p>
+<div class="highlight"><pre><span></span><code>ORACLE2 =
+    (DESCRIPTION =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = 172.22.0.27)(PORT = 1521))
+        (CONNECT_DATA =
+            (SERVER = DEDICATED)
+            (SERVICE_NAME = ORCLCDB)
+        )
+    )
+</code></pre></div>
+
+<p>Mientras que en el fichero tnsnames.ora del segundo servidor para acceder al primer servidor con los datos de este:</p>
+<div class="highlight"><pre><span></span><code>ORACLE1 =
+    (DESCRIPTION =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = 172.22.7.169)(PORT = 1521))
+        (CONNECT_DATA =
+            (SERVER = DEDICATED)
+            (SERVICE_NAME = ORCLCDB)
+        )
+    )
+</code></pre></div>
+
+<p>Ahora entramos en cada servidor para crear el enlace especificando el usuario y contraseña que hemos creado en la otra máquina, así como el alias que le hemos puesto en el fichero tnsnames.ora:</p>
+<ul>
+<li>En el servidor 1:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">SQL</span><span class="o">&gt;</span> <span class="nv">create</span> <span class="nv">database</span> <span class="nv">link</span> <span class="nv">oracle2link</span> <span class="k">connect</span> <span class="nv">to</span> <span class="nv">c</span>##<span class="nv">lara2</span> <span class="nv">identified</span> <span class="nv">by</span> <span class="nv">lara2</span> <span class="nv">using</span> <span class="s1">&#39;</span><span class="s">oracle2</span><span class="s1">&#39;</span><span class="c1">;</span>
+</code></pre></div>
+
+<ul>
+<li>En el servidor 2:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">SQL</span><span class="o">&gt;</span> <span class="nv">create</span> <span class="nv">database</span> <span class="nv">link</span> <span class="nv">oracle1link</span> <span class="k">connect</span> <span class="nv">to</span> <span class="nv">c</span>##<span class="nv">lara1</span> <span class="nv">identified</span> <span class="nv">by</span> <span class="nv">lara1</span> <span class="nv">using</span> <span class="s1">&#39;</span><span class="s">oracle1</span><span class="s1">&#39;</span><span class="c1">;</span>
+</code></pre></div>
+
+<p>Para probar su funcionamiento, he creado tablas distintas en cada servidor, en la primera tengo la tabla de empleados, y en la segunda, la de departamentos. Si hacemos una consulta desde el primer servidor a tablas del segundo servidor, veremos que nos devuelve dichos datos:</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="n">emp</span><span class="p">.</span><span class="n">ename</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">Nombre</span><span class="p">,</span><span class="w"> </span><span class="n">dept</span><span class="p">.</span><span class="n">dname</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">Departamentos</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">emp</span><span class="p">,</span><span class="n">dept</span><span class="nv">@oracle2link</span><span class="w"> </span><span class="n">dept</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">emp</span><span class="p">.</span><span class="n">deptno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dept</span><span class="p">.</span><span class="n">deptno</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+
+<p><img src="./images/BaseDatos/select_link_oracle.png" alt="Se muestra el nombre y departamento de cada empleado" width="750"/></p>
+<p>Como vemos en la imagen, se han unido ambos servidores para mostrarnos datos que están relacionados entre sí.</p>
+<p><center>
+<img src="./images/colaboracion.gif" alt="Trabajo en equipo" width="500"/>
+</center></p>
+<p></br></p>
+<h2><img src="./images/BaseDatos/postgresql_icono.png" alt="Un elefantito" width="100"/> Dos servidores de PostgreSQL <img src="./images/BaseDatos/postgresql_icono.png" alt="Otro elefantito" width="100"/></h2>
+<p>Esta vez, he creado un escenario en Vagrant con dos nodos, que tienen las siguientes direcciones IP:</p>
+<ul>
+<li>Servidor 1: 192.168.121.136</li>
+<li>Servidor 2: 192.168.121.190</li>
+</ul>
+<p>En ambas máquinas tengo un servidor PostgreSQL instalado y configurado para el acceso remoto. En el primer servidor he metido la tablas de departamentos de Scott, mientras que en el segundo servidor he insertado la de empleados. A continuación, he creado un usuario distinto en cada nodo:</p>
+<ul>
+<li>Servidor 1:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">create</span> <span class="nv">user</span> <span class="nv">lara1</span> <span class="nv">with</span> <span class="nv">password</span> <span class="s1">&#39;</span><span class="s">lara1</span><span class="s1">&#39;</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="k">connect</span> <span class="nv">on</span> <span class="nv">database</span> <span class="nv">departamentos</span> <span class="nv">to</span> <span class="nv">lara1</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="nv">usage</span> <span class="nv">on</span> <span class="nv">schema</span> <span class="nv">public</span> <span class="nv">to</span> <span class="nv">lara1</span><span class="c1">;</span>
+</code></pre></div>
+
+<ul>
+<li>Servidor 2:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">create</span> <span class="nv">user</span> <span class="nv">lara2</span> <span class="nv">with</span> <span class="nv">password</span> <span class="s1">&#39;</span><span class="s">lara2</span><span class="s1">&#39;</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="k">connect</span> <span class="nv">on</span> <span class="nv">database</span> <span class="nv">empleados</span> <span class="nv">to</span> <span class="nv">lara2</span><span class="c1">;</span>
+<span class="nv">grant</span> <span class="nv">usage</span> <span class="nv">on</span> <span class="nv">schema</span> <span class="nv">public</span> <span class="nv">to</span> <span class="nv">lara2</span><span class="c1">;</span>
+</code></pre></div>
+
+<p>Con el comando netstat, nos aseguramos de que ambas máquinas se encuentran en escucha (recordad que el puerto por defecto de PostgreSQL es 5432):</p>
+<p><img src="./images/BaseDatos/netstat.png" alt="Puertos abiertos" width="750"/></p>
+<p>Ahora que ya están listos los dos servidores, procederemos a crear el enlace entre ambos. Para ello, es necesario que tengan instalado el paquete postgresql-contrib:</p>
+<div class="highlight"><pre><span></span><code>sudo apt install postgresql-contrib
+</code></pre></div>
+
+<p>Una vez instalado el paquete en ambos nodos, nos conectamos con el usuario <code>postgres</code>, entramos en nuestra base de datos y creamos el enlace:</p>
+<ul>
+<li>Servidor 1:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>su postgres
+psql -d departamentos
+departamentos=# create extension dblink;
+</code></pre></div>
+
+<ul>
+<li>Servidor 2:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>su postgres
+psql -d empleados
+empleados=# create extension dblink;
+</code></pre></div>
+
+<p><img src="./images/victoria.png" alt="Ahí está" width="100"/> Al ejecutar <code>\dx</code>, comprobaremos que hemos creado la extensión “dblink”:</p>
+<p><img src="./images/BaseDatos/lista_extensiones.png" alt="Puertos abiertos" width="750"/></p>
+<p>Salimos de la base de datos y volvemos a entrar pero con el usuario que hemos creado antes, con el que probaremos el enlace con el otro servidor, mostrando los nombres de empleados junto con el de su departamento correspondiente:</p>
+<ul>
+<li>Servidor 1:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>psql -h localhost -U lara1 -d departamentos
+</code></pre></div>
+
+<p><img src="./images/BaseDatos/select_postgres.png" alt="Se muestran los datos de ambos servidores" width="750"/></p>
+<ul>
+<li>Servidor 2:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>psql -h localhost -U lara2 -d empleados
+</code></pre></div>
+
+<p><img src="./images/BaseDatos/select_postgres2.png" alt="Se muestran los datos de ambos servidores" width="750"/></p>
+<p><img src="./images/guiño.jpg" alt="Idea" width="250"/> <strong>Consejo para una mayor comodidad</strong></p>
+<p>En lugar de tener que definir siempre el enlace en la propia consulta, podemos hacer un select del mismo una sola vez y darle un nombre:</p>
+<div class="highlight"><pre><span></span><code>SELECT dblink_connect(&#39;dblink1&#39;,&#39;dbname=departamentos host=192.168.121.136 user=lara1 password=lara1&#39;);
+</code></pre></div>
+
+<p>Después, solo sacaríamos los datos dando el nombre del enlace:</p>
+<div class="highlight"><pre><span></span><code>SELECT * FROM dblink(&#39;dblink1&#39;,&#39;SELECT dname,deptno FROM dept&#39;) AS dept (dname VARCHAR,deptno INTEGER);
+</code></pre></div>
+
+<p></br></p>
+<h2><img src="./images/BaseDatos/icono_oracle.png" alt="Una nubecita" width="100"/> Un Oracle y un PostgreSQL <img src="./images/BaseDatos/postgresql_icono.png" alt="Un elefantito" width="100"/></h2>
+<p>Para esta última parte, he creado una máquina de Vagrant con Debian Buster, que he configurado como en el apartado anterior, y también he aprovechado la primera máquina de Centos 8 con Oracle del primer apartado.</p>
+<p>Estas son las direcciones IP de los servidores:</p>
+<ul>
+<li><strong>Servidor de Oracle</strong>: 192.168.122.179</li>
+<li><strong>Servidor de PostgreSQL</strong>: 192.168.122.172</li>
+</ul>
+<p>En el servidor de Oracle tengo creado el usuario <code>c##lara1</code> y la tabla de Empleados (emp), mientras que en PostgreSQL he generado el usuario <code>lara2</code> y la tabla de Departamentos (dept). Partiendo de la base de que ambos servidores se encuentran listos y configurados para el acceso remoto, ahora tendríamos que solventar el problema de enlazar dos gestores de bases de datos distintas.</p>
+<p><center>
+<img src="./images/rollo.png" alt="Vaya rollo" width="200"/>
+</center></p>
+<p>El método es distinto dependiendo del gestor desde el que realicemos el enlace.</p>
+<h3>De Oracle a PostgreSQL</h3>
+<p>Para permitir el acceso de Oracle a PostgreSQL, recurriremos al <em>driver</em> ODBC (<em>Open Database Connectivity</em>), con el que podremos acceder a cualquier dato de cualquier gestor de bases de datos. Primero, instalaremos en Oracle las últimas versiones del paquete <code>unixODBC</code> y, puesto que queremos acceder a PostgreSQL, también el paquete <code>postgresql-odbc</code>:</p>
+<div class="highlight"><pre><span></span><code>sudo su
+dnf update &amp;&amp; dnf install unixODBC postgresql-odbc
+</code></pre></div>
+
+<p>Una vez finalizada la instalación, modificamos el fichero <code>/etc/odbcinst.ini</code>, que contiene la configuración de todos los <em>drivers</em> ODBC:</p>
+<div class="highlight"><pre><span></span><code>nano /etc/odbcinst.ini
+</code></pre></div>
+
+<p>Como solo necesitaremos el <em>driver</em> ODBC de PostgreSQL, nos quedaremos solo con este y comentaremos el resto de ellos. En la configuración de PostgreSQL, veremos una descripción del mismo y una serie de rutas a las diferentes librerías:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[PostgreSQL]</span>
+<span class="na">Description</span>     <span class="o">=</span> <span class="s">ODBC for PostgreSQL</span>
+<span class="na">Driver</span>          <span class="o">=</span> <span class="s">/usr/lib/psqlodbcw.so</span>
+<span class="na">Setup</span>           <span class="o">=</span> <span class="s">/usr/lib/libodbcpsqlS.so</span>
+<span class="na">Driver64</span>        <span class="o">=</span> <span class="s">/usr/lib64/psqlodbcw.so</span>
+<span class="na">Setup64</span>         <span class="o">=</span> <span class="s">/usr/lib64/libodbcpsqlS.so</span>
+<span class="na">FileUsage</span>       <span class="o">=</span> <span class="s">1</span>
+</code></pre></div>
+
+<p>A continuación, creamos un DSN (<em>Data Source Name</em>) en el fichero <code>/etc/odbc.ini</code>, donde se indica el modo de conexión con el gestor de bases de datos:</p>
+<div class="highlight"><pre><span></span><code>nano /etc/odbc.ini
+</code></pre></div>
+
+<p>Dentro del fichero, introducimos el <em>driver</em> de PostgreSQL (el que hemos visto en el fichero anterior), la dirección IP del servidor de PostgreSQL, el usuario y contraseña que hemos creado en dicho gestor, y el nombre de la base de datos a la que queremos acceder:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[PSQLU]</span>
+
+<span class="na">Debug</span> <span class="o">=</span> <span class="s">0</span>
+<span class="na">CommLog</span> <span class="o">=</span> <span class="s">0</span>
+<span class="na">ReadOnly</span> <span class="o">=</span> <span class="s">0</span>
+<span class="na">Driver</span> <span class="o">=</span> <span class="s">PostgreSQL</span>
+<span class="na">Servername</span> <span class="o">=</span> <span class="s">192.168.122.172</span>
+<span class="na">Username</span> <span class="o">=</span> <span class="s">lara2</span>
+<span class="na">Password</span> <span class="o">=</span> <span class="s">lara2</span>
+<span class="na">Port</span> <span class="o">=</span> <span class="s">5432</span>
+<span class="na">Database</span> <span class="o">=</span> <span class="s">departamentos</span>
+<span class="na">Trace</span> <span class="o">=</span> <span class="s">0</span>
+<span class="na">TraceFile</span> <span class="o">=</span> <span class="s">/tmp/sql.log</span>
+</code></pre></div>
+
+<p><img src="./images/rock.png" alt="Todo OK hasta ahora" width="150"/> Ya hemos finalizado con la configuración del <em>driver</em>.</p>
+<p>Ahora procederemos a probar la conexión con el binario <em>isql</em> que viene con el paquete que hemos instalado:</p>
+<p><img src="./images/BaseDatos/connected.png" alt="Conectado" width="350"/>
+<img src="./images/BaseDatos/isql_select.png" alt="Conectado" width="350"/></p>
+<p>Comprobamos que podemos conectarnos a PostgreSQL y que podemos sacar los datos de la tabla. Lo siguiente que haremos es crear un fichero en <code>$ORACLE_HOME/hs/admin</code> con los parámetros necesarios para que Oracle pueda hacer uso del <em>driver</em>.</p>
+<div class="highlight"><pre><span></span><code>nano /opt/oracle/product/19c/dbhome_1/hs/admin/initPSQLU.ora
+</code></pre></div>
+
+<p>Añadimos el siguiente contenido:</p>
+<div class="highlight"><pre><span></span><code>HS_FDS_CONNECT_INFO = PSQLU
+HS_FDS_TRACE_LEVEL = DEBUG
+HS_FDS_SHAREABLE_NAME = /usr/lib64/psqlodbcw.so
+HS_LANGUAGE = AMERICAN_AMERICA.WE8ISO8859P1
+set ODBCINI=/etc/odbc.ini
+</code></pre></div>
+
+<p>A continuación, configuramos el <em>listener</em> de Oracle, especificando el <em>driver</em> que tendrá en cuenta a la hora de escuchar peticiones:</p>
+<div class="highlight"><pre><span></span><code>nano /opt/oracle/product/19c/dbhome_1/network/admin/listener.ora
+</code></pre></div>
+
+<p>Dentro del fichero, introducimos una entrada para el <em>driver</em> ODBC:</p>
+<div class="highlight"><pre><span></span><code>LISTENER =
+    (DESCRIPTION_LIST =
+        (DESCRIPTION =
+            (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.122.179)(PORT = 1521))
+            (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1521))
+        )
+    )
+
+SID_LIST_LISTENER =
+    (SID_LIST =
+        (SID_DESC =
+            (SID_NAME = PSQLU)
+            (ORACLE_HOME=/opt/oracle/product/19c/dbhome_1)
+            (PROGRAM=dg4odbc)
+        )
+    )
+</code></pre></div>
+
+<p>Después, incluimos una entrada en el fichero tnsnames.ora:</p>
+<div class="highlight"><pre><span></span><code>nano /opt/oracle/product/19c/dbhome_1/network/admin/tnsnames.ora
+</code></pre></div>
+
+<p>Esta es el contenido que he añadido:</p>
+<div class="highlight"><pre><span></span><code>PSQLU =
+    (DESCRIPTION=
+        (ADDRESS=(PROTOCOL=tcp)(HOST=192.168.121.136)(PORT=1521))
+        (CONNECT_DATA=(SID=PSQLU))
+        (HS=OK)
+    )
+</code></pre></div>
+
+<p>Nos conectamos con el usuario oracle y reiniciamos el <em>listener</em>:</p>
+<div class="highlight"><pre><span></span><code>su oracle
+lsnrctl stop
+lsnrctl start
+</code></pre></div>
+
+<p><center>
+<img src="./images/cansado.gif" alt="No puedo más..." width="300"/> ¡Tranqui, ya queda poco!
+</center></p>
+<p>Solo nos queda crear el enlace, por lo que accedemos a sqlplus:</p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">oracle@servidor1 lpruna</span><span class="o">]</span><span class="err">$</span><span class="w"> </span><span class="n">sqlplus</span><span class="w"> </span><span class="n">c##lara1</span><span class="w"></span>
+<span class="k">SQL</span><span class="o">*</span><span class="nl">Plus</span><span class="p">:</span><span class="w"> </span><span class="k">Release</span><span class="w"> </span><span class="mf">19.0.0.0.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Production</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">Sun</span><span class="w"> </span><span class="n">Oct</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="mi">19</span><span class="err">:</span><span class="mi">39</span><span class="err">:</span><span class="mi">17</span><span class="w"> </span><span class="mi">2021</span><span class="w"></span>
+<span class="n">Version</span><span class="w"> </span><span class="mf">19.3.0.0.0</span><span class="w"></span>
+<span class="n">Copyright</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="mi">1982</span><span class="p">,</span><span class="w"> </span><span class="mi">2019</span><span class="p">,</span><span class="w"> </span><span class="n">Oracle</span><span class="p">.</span><span class="w"></span>
+<span class="w"> </span><span class="ow">All</span><span class="w"> </span><span class="n">rights</span><span class="w"> </span><span class="n">reserved</span><span class="p">.</span><span class="w"></span>
+<span class="n">Enter</span><span class="w"> </span><span class="nl">password</span><span class="p">:</span><span class="w"></span>
+<span class="n">Hora</span><span class="w"> </span><span class="n">de</span><span class="w"> </span><span class="n">Ultima</span><span class="w"> </span><span class="n">Conexion</span><span class="w"> </span><span class="nl">Correcta</span><span class="p">:</span><span class="w"> </span><span class="n">Dom</span><span class="w"> </span><span class="n">Oct</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="mi">2021</span><span class="w"> </span><span class="mi">11</span><span class="err">:</span><span class="mi">02</span><span class="err">:</span><span class="mi">10</span><span class="w"> </span><span class="o">+</span><span class="mi">01</span><span class="err">:</span><span class="mi">00</span><span class="w"></span>
+<span class="n">Conectado</span><span class="w"> </span><span class="nl">a</span><span class="p">:</span><span class="w"></span>
+<span class="n">Oracle</span><span class="w"> </span><span class="k">Database</span><span class="w"> </span><span class="mi">19</span><span class="n">c</span><span class="w"> </span><span class="n">Enterprise</span><span class="w"> </span><span class="n">Edition</span><span class="w"> </span><span class="k">Release</span><span class="w"> </span><span class="mf">19.0.0.0.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Production</span><span class="w"></span>
+<span class="n">Version</span><span class="w"> </span><span class="mf">19.3.0.0.0</span><span class="w"></span>
+
+
+<span class="k">SQL</span><span class="o">&gt;</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">link</span><span class="w"> </span><span class="n">postgreslink</span><span class="w"> </span><span class="k">connect</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="ss">&quot;lara2&quot;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="ss">&quot;lara2&quot;</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="s1">&#39;PSQLU&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="n">Enlace</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="n">de</span><span class="w"> </span><span class="n">datos</span><span class="w"> </span><span class="n">creado</span><span class="p">.</span><span class="w"></span>
+</code></pre></div>
+
+<p>Finalmente, probamos el funcionamiento del enlace realizando una consulta de ambas tablas:</p>
+<p><img src="./images/BaseDatos/select_oracle-postgres.png" alt="Se muestran los datos" width="750"/></p>
+<p><img src="./images/ojo.png" alt="OJO" width="200"/> <strong>¡Ojo cuidao!</strong></p>
+<p>Es importante que las columnas y tablas pertenecientes al servidor remoto las pongamos entre comillas dobles, y que la directiva <code>SELECT</code> se encuentre en mayúscula.</p>
+<p></br></p>
+<h3>De PostgreSQL a Oracle</h3>
+<p>Para realizar la conexión desde PostgreSQL, emplearemos <code>oracle_fdw</code> para poder acceder a una base de datos de Oracle desde otro gestor. Empecemos por instalar los siguientes paquetes:</p>
+<div class="highlight"><pre><span></span><code>apt update &amp;&amp; apt install libaio1 postgresql-server-dev-all build-essential git
+</code></pre></div>
+
+<p>En siguiente lugar, descargaremos los paquetes de Oracle Instant Client, para instalar en el servidor un cliente Oracle y poder conectarnos a la base de datos del otro servidor. Como posteriormente usaremos los binarios con el usuario postgres, nos conectamos como tal:</p>
+<div class="highlight"><pre><span></span><code><span class="n">su</span> <span class="n">postgres</span>
+<span class="n">cd</span> <span class="o">~</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">oracle</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">otn_software</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">instantclient</span><span class="o">/</span><span class="mi">211000</span><span class="o">/</span><span class="n">instantclient</span><span class="o">-</span><span class="n">basic</span><span class="o">-</span><span class="n">linux</span><span class="o">.</span><span class="n">x64</span><span class="o">-</span><span class="mf">21.1</span><span class="o">.</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.</span><span class="n">zip</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">oracle</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">otn_software</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">instantclient</span><span class="o">/</span><span class="mi">211000</span><span class="o">/</span><span class="n">instantclient</span><span class="o">-</span><span class="n">sdk</span><span class="o">-</span><span class="n">linux</span><span class="o">.</span><span class="n">x64</span><span class="o">-</span><span class="mf">21.1</span><span class="o">.</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.</span><span class="n">zip</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">oracle</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">otn_software</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">instantclient</span><span class="o">/</span><span class="mi">211000</span><span class="o">/</span><span class="n">instantclient</span><span class="o">-</span><span class="n">sqlplus</span><span class="o">-</span><span class="n">linux</span><span class="o">.</span><span class="n">x64</span><span class="o">-</span><span class="mf">21.1</span><span class="o">.</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.</span><span class="n">zip</span>
+</code></pre></div>
+
+<p>Descomprimimos los ficheros .zip, y después, como ya no nos harán falta, los borraremos:</p>
+<div class="highlight"><pre><span></span><code>unzip instantclient-basic-linux.x64-21.1.0.0.0.zip
+unzip instantclient-sdk-linux.x64-21.1.0.0.0.zip
+unzip instantclient-sqlplus-linux.x64-21.1.0.0.0.zip
+rm *.zip
+</code></pre></div>
+
+<p>Ya tendremos nuestros binarios a disposición, aunque, para usarlos, tendríamos que introducir la ruta completa. Para ahorrarnos tiempo y para mayor comodidad, crearemos variables de entorno con la ruta del directorio principal de Oracle, y anexaremos la variable a <code>$LD_LIBRARY_PATH</code> y <code>$PATH</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">export</span> <span class="n">ORACLE_HOME</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">postgres</span><span class="o">/</span><span class="n">instantclient_21_1</span>
+<span class="k">export</span> <span class="n">LD_LIBRARY_PATH</span><span class="o">=$</span><span class="n">LD_LIBRARY_PATH</span><span class="p">:</span><span class="o">$</span><span class="n">ORACLE_HOME</span>
+<span class="k">export</span> <span class="n">PATH</span><span class="o">=$</span><span class="n">PATH</span><span class="p">:</span><span class="o">$</span><span class="n">ORACLE_HOME</span>
+</code></pre></div>
+
+<p>Comprobamos que podemos acceder a los binarios sin escribir la ruta completa:</p>
+<p><center>
+<img src="./images/BaseDatos/which.png" alt="Ruta completa de sqlplus" width="450"/>
+</center></p>
+<p>Ahora podemos realizar la conexión remota a la base de datos del servidor de Oracle:</p>
+<p><img src="./images/BaseDatos/acceso_oracle.png" alt="Acceso a Oracle desde PostgreSQL" width="750"/></p>
+<p><center>
+<img src="./images/fiesta.png" alt="¡Podemos acceder!" width="200"/>
+</center></p>
+<p>El siguiente paso consistirá en realizar la compilación de <code>oracle_fdw</code>, por lo que descargamos el repositorio de GitHub con el código fuente. Debido a que la última versión me ha dado muchos problemas, me descargado el anterior release:</p>
+<div class="highlight"><pre><span></span><code>wget https://github.com/laurenz/oracle_fdw/archive/refs/tags/ORACLE_FDW_2_3_0.zip
+unzip ORACLE_FDW_2_3_0.zip
+</code></pre></div>
+
+<p>Para evitar futuros problemas, le cambiamos el nombre al directorio extraído por <code>oracle_fdw</code>:</p>
+<div class="highlight"><pre><span></span><code>mv oracle_fdw-ORACLE_FDW_2_3_0/ oracle_fdw
+</code></pre></div>
+
+<p>Entramos en el directorio oracle_fdw, compilamos el código y realizamos la instalación:</p>
+<div class="highlight"><pre><span></span><code>cd oracle_fdw
+make
+make install
+</code></pre></div>
+
+<p>Al entrar en la base de datos e intentar crear la extensión, nos informarán de que el sistema no encuentra las librerías de oracle:</p>
+<p><center>
+<img src="./images/BaseDatos/error_extension.png" alt="No se pudo cargar la librería de Oracle" width="600"/>
+</center></p>
+<p>De modo que salimos y creamos el fichero <code>/etc/ld.so.conf.d/oracle.conf</code> y dentro añadimos las rutas a los directorios que contengan los ficheros .so, para que el sistema sepa llegar hasta las librerías y pueda cargarlas:</p>
+<div class="highlight"><pre><span></span><code>/home/postgres/instantclient_21_1
+/usr/share/postgresql/11/extension
+</code></pre></div>
+
+<p>Ejecutamos el comando ldconfig, con el que se crearán los vínculos y caché necesarios a las librerías que se encuentren en los directorios que hemos especificado en el fichero creado, y reiniciamos el servicio de PostgreSQL:</p>
+<div class="highlight"><pre><span></span><code>sudo ldconfig
+sudo systemctl restart postgresql
+</code></pre></div>
+
+<p>Ahora podremos crear la extensión:</p>
+<p><center>
+<img src="./images/BaseDatos/create_extension.png" alt="Creamos la extensión" width="600"/>
+</center></p>
+<p>Después de comprobar que tenemos nuestra extensión con <code>\dx</code>, creamos un nuevo esquema al que importaremos las tablas de la base de datos Oracle:</p>
+<div class="highlight"><pre><span></span><code>departamentos=# create schema oracle;
+CREATE SCHEMA
+</code></pre></div>
+
+<p>Como el esquema que hemos creado está vacío, definiremos un servidor remoto que use la extensión que hemos generado antes, indicando la dirección IP y la base de datos que tenemos en Oracle:</p>
+<div class="highlight"><pre><span></span><code>departamentos=# create server oracle foreign data wrapper oracle_fdw options (dbserver &#39;//192.168.122.179/ORCLCDB&#39;);
+CREATE SERVER
+</code></pre></div>
+
+<p>En siguiente lugar, necesitamos mapear nuestro usuario local a uno existente en Oracle con los privilegios necesarios para acceder a las tablas. En otras palabras, haremos que nuestro usuario de PostgreSQL pueda acceder como el usuario de Oracle en las tablas en las que tiene privilegios:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">departamentos</span><span class="o">=</span># <span class="nv">create</span> <span class="nv">user</span> <span class="nv">mapping</span> <span class="k">for</span> <span class="nv">lara2</span> <span class="nv">server</span> <span class="nv">oracle</span> <span class="nv">options</span> <span class="ss">(</span><span class="nv">user</span> <span class="s1">&#39;</span><span class="s">c##lara1</span><span class="s1">&#39;</span>, <span class="nv">password</span> <span class="s1">&#39;</span><span class="s">lara1</span><span class="s1">&#39;</span><span class="ss">)</span><span class="c1">;</span>
+<span class="nv">CREATE</span> <span class="nv">USER</span> <span class="nv">MAPPING</span>
+</code></pre></div>
+
+<p>Otorgamos a nuestro usuario de PostgreSQL los privilegios para utilizar el esquema de Oracle y el servidor remoto:</p>
+<div class="highlight"><pre><span></span><code>departamentos=# grant all privileges on schema oracle to lara2;
+GRANT
+departamentos=# grant all privileges on foreign server oracle to lara2;
+GRANT
+</code></pre></div>
+
+<p>Salimos del gestor y volvemos a entrar con el usuario que hemos creado antes para comprobar que podemos utilizar el enlace. Una vez dentro, importamos las tablas existentes en el esquema remoto al local, es decir, que el servidor de PostgreSQL accederá al de Oracle y realizará una copia de las tablas:</p>
+<div class="highlight"><pre><span></span><code><span class="n">departamentos</span><span class="o">=&gt;</span> <span class="kn">import</span> <span class="nn">foreign</span> <span class="n">schema</span> <span class="s2">&quot;C##LARA1&quot;</span> <span class="kn">from</span> <span class="nn">server</span> <span class="n">oracle</span> <span class="n">into</span> <span class="n">oracle</span><span class="p">;</span> 
+<span class="n">IMPORT</span> <span class="n">FOREIGN</span> <span class="n">SCHEMA</span>
+</code></pre></div>
+
+<p>Finalmente, hacemos la prueba y realizamos una consulta de ambas tablas:</p>
+<p><img src="./images/BaseDatos/select_postgres-oracle.png" alt="Interconectando PostgreSQL y Oracle" width="750"/></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/oracle">Oracle</a>, <a href="./tags/centos">Centos</a>, <a href="./tags/postgresql">PostgreSQL</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
