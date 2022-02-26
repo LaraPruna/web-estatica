@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Mapear URL a ubicaciones de un sistema de ficheros</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo emplearemos diferentes recursos de Apache para mapear direcciones URL a ubicaciones de un sistema de ficheros.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="HTTP">
+        <meta name="tags" content="URL">
+        <meta name="tags" content="Mapeo">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./mapear-url-a-ubicaciones-de-un-sistema-de-ficheros.html">
+	<meta property="og:title" content="Mapear URL a ubicaciones de un sistema de ficheros">
+	<meta property="article:published_time" content="2021-10-21 16:17:00+02:00">
+            <meta property="og:description" content="En este artículo emplearemos diferentes recursos de Apache para mapear direcciones URL a ubicaciones de un sistema de ficheros.">
+
+            <meta property="og:image" content=".images/covers/url.jpg">
+</head>
+
+<body class="article-mapear-url-a-ubicaciones-de-un-sistema-de-ficheros">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="./categories">Categorías</a>
+                <a class="navbar-brand" href="./pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/url.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Mapear URL a ubicaciones de un sistema de ficheros</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on jue 21 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>En este artículo vamos a utilizar diferentes recursos de Apache para <strong>mapear</strong> direcciones URL a ubicaciones de un sistema de ficheros, es decir, crear rutas hacia ficheros del sistema externos a nuestra aplicación web. Para ello, crearemos un host virtual al que accederemos con el dominio <code>www.mapeo.com</code> y cuyo directorio raíz estará en <code>/srv/mapeo</code>.</p>
+<p><center>
+<img src="./images/vespa.gif" alt="Marchamos hacia la zona apache" width="200"/> ¡Rumbo a la zona apache!
+</center></p>
+<p></br></p>
+<h2>Directorio raíz en /srv</h2>
+<p>En primer lugar, para que nuestra aplicación web pueda ubicarse en dicho directorio, es necesario que editemos el fichero de configuración de Apache (<code>/etc/apache2/apache2.conf</code>) y descomentamos las líneas referentes al directorio /srv:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;Directory</span> <span class="err">/srv</span><span class="nt">/&gt;</span>
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+<span class="nt">&lt;/Directory&gt;</span>
+</code></pre></div>
+
+<p>Después, creamos un fichero de <em>VirtualHost</em> en <code>/etc/apache2/sites-available/</code> con el siguiente contenido:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;VirtualHost</span> <span class="err">*:80</span><span class="nt">&gt;</span>
+        ServerName www.mapeo.com
+        ServerAdmin webmaster@localhost
+        DocumentRoot /srv/mapeo        
+        ErrorLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/mapeo.error.log
+        CustomLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/mapeo.access.log combined
+<span class="nt">&lt;/VirtualHost&gt;</span>
+</code></pre></div>
+
+<p>A continuación, creamos el enlace simbólico en <code>/etc/apache2/sites-enabled/</code> para activar el <em>VirtualHost</em> y recargamos el servicio de apache2:</p>
+<div class="highlight"><pre><span></span><code><span class="n">a2ensite</span> <span class="n">mapeo</span>
+<span class="n">systemctl</span> <span class="n">reload</span> <span class="n">apache2</span>
+</code></pre></div>
+
+<p>Añadimos una resolución estática en <code>/etc/hosts</code> para que nuestra máquina sepa cómo llegar a la aplicación:</p>
+<div class="highlight"><pre><span></span><code><span class="mf">172.22.0.77</span>     <span class="n">www</span><span class="mf">.</span><span class="n">mapeo</span><span class="mf">.</span><span class="n">com</span>
+</code></pre></div>
+
+<p></br></p>
+<h2>Redirección al directorio principal</h2>
+<p>Vamos a crear la redirección en el fichero del host virtual, de tal manera que los usuarios que intenten acceder al directorio raíz serán redirigidos a la carpeta principal. En otras palabras, cuando se entre a la dirección <code>www.mapeo.com</code> se redireccionará automáticamente a <code>www.mapeo.com/principal</code>. Añadimos la siguiente línea dentro del <em>VirtualHost</em>:</p>
+<div class="highlight"><pre><span></span><code>RedirectMatch &quot;^/$&quot; &quot;/principal&quot;
+</code></pre></div>
+
+<p></br></p>
+<h2>Opciones de denegación</h2>
+<p>Podemos impedir a los usuarios que vean determinados ficheros o enlaces de la aplicación. En el <em>VirtualHost</em>, añadimos el siguiente contenido:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;Directory</span> <span class="err">/srv/mapeo/principal</span><span class="nt">&gt;</span>
+   Options -Indexes -FollowSymLinks -MultiViews
+<span class="nt">&lt;/Directory&gt;</span>
+</code></pre></div>
+
+<p>Con esto, conseguimos que los usuarios no puedan ver la lista de ficheros del directorio principal cuando accedan a este, ni seguir los enlaces simbólicos que pueda haber. Con <code>-MultiViews</code> no permitimos la negociación de contenido, es decir, que se sirvan diferentes versiones de un mismo documento en el mismo URI.</p>
+<p>Para comprobar su funcionamiento, crearemos un enlace simbólico en el directorio principal:</p>
+<div class="highlight"><pre><span></span><code>touch ~/enlace.txt
+ln -s /srv/mapeo/principal/enlace.txt ~/enlace.txt
+</code></pre></div>
+
+<p>Reiniciamos el servicio de apache2 y comprobamos que no podemos acceder al documento de texto:</p>
+<p><center>
+<img src="./images/http/denegacion.png" alt="Acceso denegado" width="500"/>
+</center></p>
+<p></br></p>
+<h2>Listado de fichero y seguimiento de enlaces permitidos</h2>
+<p>Cuando accedamos a la página <code>www.mapeo.com/principal/documentos</code>, queremos que se visualicen los documentos que hay en <code>/home/usuario/doc</code>. Por lo tanto, permitiremos el listado de ficheros y el seguimiento de enlaces simbólicos siempre que el propietario del enlace y del fichero al que apunta sean el mismo usuario.</p>
+<p>Creamos un directorio en el home llamado docs:</p>
+<div class="highlight"><pre><span></span><code>mkdir /home/lpruna/docs
+</code></pre></div>
+
+<p>Entramos en el fichero del <em>VirtualHost</em> y añadimos un alias en el directorio principal del servidor:</p>
+<div class="highlight"><pre><span></span><code>Alias &quot;/principal/documentos&quot; &quot;/home/lpruna/docs/&quot;
+</code></pre></div>
+
+<p>Habiendo comentado antes las líneas en las que denegábamos estas opciones, reiniciamos el servicio y accedemos a la página <code>www.mapeo.com/principal/documentos</code>:</p>
+<p><center>
+<img src="./images/http/permitido.png" alt="Acceso permitido" width="500"/>
+</center></p>
+<p></br></p>
+<h2>Redefinición de mensajes de error</h2>
+<p>En todo el host virtual redefiniremos los mensajes de error de objeto no encontrado y no permitido. Para ello, crearemos dos ficheros html dentro del directorio error. Por otro lado, en el fichero del <em>VirtualHost</em> añadiremos las siguientes líneas:</p>
+<div class="highlight"><pre><span></span><code>ErrorDocument 403 /principal/error/403.html
+ErrorDocument 404 /principal/error/404.html
+</code></pre></div>
+
+<p>Tras reiniciar el servicio de apache, si intentamos acceder a una página que no nos esté permitida, nos aparecerá la página de error 403 que hemos diseñado:</p>
+<p><center>
+<img src="./images/http/403.png" alt="Error 403" width="500"/>
+</center></p>
+<p>Y si tratamos de ir a una página que no exista, nos aparecerá nuestra página de error 404:</p>
+<p><center>
+<img src="./images/http/404.png" alt="Error 404" width="500"/>
+</center></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/http">HTTP</a>, <a href="./tags/url">URL</a>, <a href="./tags/mapeo">Mapeo</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
