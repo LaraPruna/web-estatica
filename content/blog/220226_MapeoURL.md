@@ -2,7 +2,7 @@ Title: Mapear URL a ubicaciones de un sistema de ficheros
 Date: 2021-10-21 16:17
 Category: Servicios de Red e Internet
 lang: es
-tags: HTTP,URL,Mapeo
+tags: HTTP,URL,Mapeo,Apache
 Header_Cover: images/covers/url.jpg
 summary: En este artículo emplearemos diferentes recursos de Apache para mapear direcciones URL a ubicaciones de un sistema de ficheros.
 

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Control de acceso, autentificación y autorización en Apache</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo veremos cómo podemos controlar el acceso de usuarios a diferentes recursos de nuestra aplicación web en Apache.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="HTTP">
+        <meta name="tags" content="Autenticacion">
+        <meta name="tags" content="Apache">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./control-de-acceso-autentificacion-y-autorizacion-en-apache.html">
+	<meta property="og:title" content="Control de acceso, autentificación y autorización en Apache">
+	<meta property="article:published_time" content="2021-10-26 15:45:00+02:00">
+            <meta property="og:description" content="En este artículo veremos cómo podemos controlar el acceso de usuarios a diferentes recursos de nuestra aplicación web en Apache.">
+
+            <meta property="og:image" content=".images/covers/autenticacion.jpeg">
+</head>
+
+<body class="article-control-de-acceso-autentificacion-y-autorizacion-en-apache">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="./categories">Categorías</a>
+                <a class="navbar-brand" href="./pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/autenticacion.jpeg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Control de acceso, autentificación y autorización en Apache</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on mar 26 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>El <strong>control de acceso</strong> en un servidor web nos permite determinar qué usuarios, y desde dónde, pueden acceder a los recursos del servidor. En Apache encontraremos dos principales tipos de autenticación: la básica y la digest.</p>
+<p>Para probarlos, he creado un escenario en Vagrant formado por un <strong>servidor</strong> con una red pública y otra privada, y un <strong>cliente</strong> conectado a la red privada. Este es el contenido del Vagrantfile:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">Vagrant</span>.<span class="nv">configure</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">2</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="k">do</span> <span class="o">|</span><span class="nv">config</span><span class="o">|</span>
+
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo1</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo1</span><span class="o">|</span>
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span>
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">servidor</span><span class="s2">&quot;</span>
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">public_network</span>,
+      :<span class="nv">dev</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">br0</span><span class="s2">&quot;</span>,
+      :<span class="nv">mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">bridge</span><span class="s2">&quot;</span>,
+      :<span class="nv">type</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">bridge</span><span class="s2">&quot;</span>
+    <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+      :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+      :<span class="nv">ip</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">10.0.0.4</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span>
+  <span class="k">end</span>
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo2</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo2</span><span class="o">|</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">cliente</span><span class="s2">&quot;</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+      :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+      :<span class="nv">ip</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">10.0.0.5</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+
+<p>En el servidor, he generado un <strong>host virtual</strong> con el nombre de dominio <code>departamentos.iesgn.org</code>. La página web se compone de dos directorios: <code>departamentos.iesgn.org/intranet</code>, al que solo tiene acceso el cliente desde la red privada; y <code>departamentos.iesgn.org/internet</code>, al que solo tiene acceso el anfitrión desde la red pública. Así ha quedado el <em>virtualhost</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;VirtualHost</span> <span class="err">*:80</span><span class="nt">&gt;</span>
+            ServerName departamentos.iesgn.org
+            ServerAdmin webmaster@localhost
+            DocumentRoot /var/www/departamentos
+            ErrorLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/departamentos.error.log
+            CustomLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/departamentos.access.log combined
+
+    <span class="nt">&lt;Directory</span> <span class="err">/var/www/departamentos/intranet</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;RequireAll&gt;</span>
+          Require all granted
+          Require not ip 192.168 172.22
+        <span class="nt">&lt;/RequireAll&gt;</span>
+    <span class="nt">&lt;/Directory&gt;</span>
+
+    <span class="nt">&lt;Directory</span> <span class="err">/var/www/departamentos/internet</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;RequireAll&gt;</span>
+          Require all granted
+          Require not ip 10.0.0
+        <span class="nt">&lt;/RequireAll&gt;</span>
+    <span class="nt">&lt;/Directory&gt;</span>
+
+<span class="nt">&lt;/VirtualHost&gt;</span>
+</code></pre></div>
+
+<p>Cuando intentamos acceder desde el anfitrión a Intranet, nos saltará la página de error que he preparado para esta ocación:</p>
+<p><center>
+<img src="./images/http/403_intranet.png" alt="No pasarás" width="500"/>
+</center></p>
+<p>Y lo mismo si entramos desde el cliente al directorio Internet:</p>
+<div class="highlight"><pre><span></span><code>vagrant@cliente:~$ sudo curl departamentos.iesgn.org/internet
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>403<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>403<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>NO PASARÁS<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;/images/gandalf.jpg&quot;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&quot;Gandalf&quot;</span> <span class="na">width</span><span class="o">=</span><span class="s">500</span> <span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<p>Dicho esto, comencemos a ver ambas formas de autentificación. <img src="./images/corriendo.png" alt="Empezamos" width="200"/></p>
+<p></br></p>
+<h2><img src="./images/http/candado_viejo.jpg" alt="Candado viejo" width="100"/> Autenticación básica</h2>
+<p>Esta es la forma de autenticación más básica, y se emplea a través de un módulo que ya viene instalado con Apache: <a href="https://httpd.apache.org/docs/2.4/es/mod/mod_auth_basic.html">mod_auth_basic</a>. Con este tipo de autenticación, vamos a limitar el acceso a la URL <code>departamentos.iesgn.org/secreto</code>. Para empezar, he creado una carpeta llamada "claves" en el servidor, y dentro he generado el fichero de contraseñas con <code>htpasswd</code> y el parámetro -c (de <em>create</em>):</p>
+<div class="highlight"><pre><span></span><code><span class="n">vagrant</span><span class="nv">@servidor</span><span class="err">:</span><span class="o">~</span><span class="err">$</span><span class="w"> </span><span class="n">sudo</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">claves</span><span class="w"></span>
+<span class="n">vagrant</span><span class="nv">@servidor</span><span class="err">:</span><span class="o">~</span><span class="err">$</span><span class="w"> </span><span class="n">sudo</span><span class="w"> </span><span class="n">htpasswd</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">claves</span><span class="o">/</span><span class="n">passwd</span><span class="p">.</span><span class="n">txt</span><span class="w"> </span><span class="n">lara</span><span class="w"></span>
+<span class="k">New</span><span class="w"> </span><span class="nl">password</span><span class="p">:</span><span class="w"> </span>
+<span class="n">Re</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nl">password</span><span class="p">:</span><span class="w"> </span>
+<span class="n">Adding</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">lara</span><span class="w"></span>
+</code></pre></div>
+
+<p><center>
+<img src="./images/cuidao.gif" alt="Cuidao" width="200"/> !Ojo cuidao!
+</center></p>
+<p>El parámetro -c solo se utiliza con el <strong>primer usuario</strong>. Para introducir el resto de usuarios quitad ese parámetro, o se borrarán los anteriores que hayáis metido.</p>
+<p>Si hacemos un <code>cat</code> del fichero, vemos que se ha generado un usuario con una contraseña cifrada:</p>
+<div class="highlight"><pre><span></span><code>lara:$apr1$Yi8ix035$TyDSJxxdA4tpozz3B1oEK1
+</code></pre></div>
+
+<p>Añadimos el directorio "secreto" en el VirtualHost de la siguiente manera:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;Directory</span> <span class="err">/var/www/departamentos/secreto</span><span class="nt">&gt;</span>
+        AuthUserFile &quot;/etc/apache2/claves/passwd.txt&quot;
+        AuthName &quot;Secreto&quot;
+        AuthType Basic
+        Require valid-user
+<span class="nt">&lt;/Directory&gt;</span>
+</code></pre></div>
+
+<ul>
+<li>En <strong>Directory</strong> especificamos la ruta del directorio en la aplicación que queremos proteger.</li>
+<li>En <strong><a href="https://httpd.apache.org/docs/2.4/es/mod/mod_authn_file.html#authuserfile">AuthUserFile</a></strong> indicamos el fichero que hemos creado antes con los usuarios que pueden acceder y sus respectivas contraseñas.</li>
+<li>En <strong><a href="https://httpd.apache.org/docs/2.4/es/mod/core.html#authname">AuthName</a></strong> indicamos la frase que queremos que aparezca en la ventana emergente que nos pedirá el usuario y la contraseña.</li>
+<li>En <strong><a href="https://httpd.apache.org/docs/2.4/es/mod/mod_authn_core.html#authtype">AuthType</a></strong> indicamos el tipo de autenticación que vamos a emplear (en este caso, la básica).</li>
+<li>Por último, añadimos la línea <code>Require valid-user</code> para permitir que acceda todo aquel usuario válido, es decir, que aparezca en el fichero de usuarios que hemos especificado (y que, por supuesto, introduzca la contraseña correcta).</li>
+</ul>
+<p>Al intentar acceder nos pedirá un usuario y una contraseña:</p>
+<p><center>
+<img src="./images/http/secreto_autenticacion.png" alt="Nos piden usuario y contraseña" width="750"/>
+</center></p>
+<p>Pero pero un momento, si echamos un vistazo a las cabeceras de la petición, vemos que las credenciales están codificadas en base64...</p>
+<p><img src="./images/miedo.png" alt="NOOOOO" width="200"/>...y se pueden traducir fácilmente:</p>
+<p><center>
+<img src="./images/http/cabecera.png" alt="Credenciales en base64" width="350"/>
+<img src="./images/http/base64.png" alt="Credenciales traducidas" width="250"/>
+</center></p>
+<p>Tranquilidad, hay una forma de arreglar este problema, y es empleando la otra forma de autentificación.</p>
+<p></br></p>
+<h2><img src="./images/http/candado_fuerte.jpg" alt="Candado fuerte" width="100"/> Autenticación digest</h2>
+<p>La autentificación tipo digest soluciona el problema de la transferencia de contraseñas en claro sin necesidad de usar SSL. El módulo de autenticación necesario suele venir con Apache, pero no habilitado por defecto. Para activarlo, usamos la utilidad <code>a2enmod</code> y reiniciamos el servicio de Apache:</p>
+<div class="highlight"><pre><span></span><code>a2enmod auth_digest
+systemctl restart apache2
+</code></pre></div>
+
+<p>El procedimiento es muy similar al de la autenticación básica, pero cambiando algunas de las directivas y usando la utilidad <code>htdigest</code> en lugar de <code>htpassword</code> para crear el fichero de contraseñas. Además, la directiva <em>AuthName</em> la usaremos para identificar un nombre de dominio (<em>realm</em>), que deberá coincidir con el que introduzcamos como argumento en el comando <code>htdigest</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">vagrant</span><span class="nv">@servidor</span><span class="err">:</span><span class="o">~</span><span class="err">$</span><span class="w"> </span><span class="n">sudo</span><span class="w"> </span><span class="n">htdigest</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">claves</span><span class="o">/</span><span class="n">digest</span><span class="p">.</span><span class="n">txt</span><span class="w"> </span><span class="n">secreto</span><span class="w"> </span><span class="n">lara</span><span class="w"></span>
+<span class="n">Adding</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">lara</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">realm</span><span class="w"> </span><span class="n">secreto</span><span class="p">.</span><span class="w"></span>
+<span class="k">New</span><span class="w"> </span><span class="nl">password</span><span class="p">:</span><span class="w"></span>
+<span class="n">Re</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nl">password</span><span class="p">:</span><span class="w"></span>
+</code></pre></div>
+
+<p>Para mayor seguridad, vamos a crear también un fichero con los grupos a los que permitamos el acceso. Dentro del archivo, añadimos los grupos separados por comas, junto con sus respectivos usuarios, de la siguiente forma:</p>
+<div class="highlight"><pre><span></span><code><span class="n">directivos</span><span class="o">:</span> <span class="n">lara</span> <span class="n">lpruna</span>
+</code></pre></div>
+
+<p>Finalmente, cambiamos la configuración del directorio en el VirtualHost:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;Directory</span> <span class="err">/var/www/departamentos/secreto</span><span class="nt">&gt;</span>
+        AuthUserFile &quot;/etc/apache2/claves/digest.txt&quot;
+        AuthGroupFile &quot;/etc/apache2/claves/groups.txt&quot;
+        AuthName &quot;secreto&quot;
+        AuthType Digest
+        Require valid-user
+        Require group directivos
+<span class="nt">&lt;/Directory&gt;</span>
+</code></pre></div>
+
+<ul>
+<li>En el parámetro <strong>AuthUserFile</strong> cambiamos el fichero de contraseñas por la que hemos creado con <code>htdigest</code>.</li>
+<li>En <strong><a href="https://httpd.apache.org/docs/2.4/es/mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></strong> indicamos la ruta del fichero de grupos que hemos creado para limitar el acceso a dichos grupos.</li>
+<li>En <strong>AuthName</strong> indicamos el nombre de dominio que introducimos como argumento a la hora de crear el fichero de contraseñas.</li>
+<li>En <strong>AuthType</strong> cambiamos el tipo básico por Digest.</li>
+<li>Por último, especificamos en la última línea (<strong>Require group</strong>) el grupo o grupos que hayamos incluido en el fichero de grupos.</li>
+</ul>
+<p>Una vez hemos terminado de configurar la autenticación digest, reiniciamos el servicio de Apache. Tras crear el grupo "directivos" en el sistema y asignárselo a nuestro usuario, probamos a acceder a la aplicación web:</p>
+<p><center>
+<img src="./images/http/AuthDigest.png" alt="Nos piden usuario y contraseña" width="750"/>
+</center></p>
+<p>Al echar un vistazo a las cabeceras, comprobamos que ahora el usuario y la contraseña están encriptados:</p>
+<p><center>
+<img src="./images/http/digest.png" alt="Nos piden usuario y contraseña" width="750"/>
+</center></p>
+<p></br></p>
+<p><img src="./images/pensando.png" alt="Pose pensativo" width="150"/> <strong>¿Pero cómo funciona este método de autentificación?</strong></p>
+<p>Cuando intentamos acceder desde el cliente a una URL que emplea el método de autentificación de tipo digest:</p>
+<p>Primero, el servidor manda una respuesta del tipo 401 <em>HTTP/1.1 401 Authorization Required</em> con una cabecera <em>WWW-Authenticate</em> al cliente de la siguiente forma:</p>
+<div class="highlight"><pre><span></span><code>WWW-Authenticate: Digest realm=&quot;secreto&quot;, 
+                  nonce=&quot;cIIDldTpBAA=9b0ce6b8eff03f5ef8b59da45a1ddfca0bc0c485&quot;, 
+                  algorithm=MD5, 
+                  qop=&quot;auth&quot;
+</code></pre></div>
+
+<p>Después, el navegador del cliente muestra una ventana emergente preguntando por el nombre de usuario y contraseña, y cuando se rellena, se envía una petición con una cabecera <em>Authorization</em>:</p>
+<div class="highlight"><pre><span></span><code>Authorization  Digest username=&quot;lara&quot;, 
+                realm=&quot;secreto&quot;, 
+                nonce=&quot;cIIDldTpBAA=9b0ce6b8eff03f5ef8b59da45a1ddfca0bc0c485&quot;,
+                uri=&quot;/secreto/&quot;, 
+                algorithm=MD5, 
+                response=&quot;814bc0d6644fa1202650e2c404460a21&quot;, 
+                qop=auth, 
+                nc=00000001, 
+                cnonce=&quot;3da69c14300e446b&quot;
+</code></pre></div>
+
+<p>La información que se manda es <em>response</em>, que en este caso está cifrada usando MD5 y que se calcula de la siguiente manera:</p>
+<ul>
+<li>Se calcula el MD5 del nombre de usuario, del dominio (<em>realm</em>) y la contraseña, la llamamos HA1.</li>
+<li>Se calcula el MD5 del método de la petición (por ejemplo, GET) y de la uri a la que estamos accediendo, la llamamos HA2.</li>
+<li>El resultado que se manda es el MD5 de HA1, un número aleatorio (<em>nonce</em>), el contador de peticiones (<em>nc</em>), el <em>qop</em> y el HA2.</li>
+</ul>
+<p>Una vez que lo recibe el servidor, puede hacer la misma operación y comprobar si la información que se ha enviado es válida, con lo que se permitiría el acceso.</p>
+<p><center>
+<img src="./images/bingo.png" alt="Ýa está claro" width="200"/>
+</center></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/http">HTTP</a>, <a href="./tags/autenticacion">Autenticacion</a>, <a href="./tags/apache">Apache</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
