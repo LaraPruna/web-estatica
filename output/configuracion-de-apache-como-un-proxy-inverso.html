@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Configuración de Apache como un proxy inverso</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo aprenderemos a configurar un proxy inverso en Apache, que enviará las peticiones a la aplicación web correspondiente.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Proxy">
+        <meta name="tags" content="HTTP">
+        <meta name="tags" content="Apache">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./configuracion-de-apache-como-un-proxy-inverso.html">
+	<meta property="og:title" content="Configuración de Apache como un proxy inverso">
+	<meta property="article:published_time" content="2021-10-30 13:50:00+02:00">
+            <meta property="og:description" content="En este artículo aprenderemos a configurar un proxy inverso en Apache, que enviará las peticiones a la aplicación web correspondiente.">
+
+            <meta property="og:image" content=".images/covers/proxy.webp">
+</head>
+
+<body class="article-configuracion-de-apache-como-un-proxy-inverso">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="./categories">Categorías</a>
+                <a class="navbar-brand" href="./pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/proxy.webp')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Configuración de Apache como un proxy inverso</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on sáb 30 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <h2>¿Qué es un servidor proxy?</h2>
+<p>Podemos describirlo como un <strong>intermediario</strong> entre los servicios que ofrecemos e Internet, aportándonos así una mayor seguridad, privacidad y rendimiento, dependiendo del uso que queramos darle. Al emplearlo junto con uno o varios servidores web, todas las peticiones que hagan los clientes pasarán primero por el proxy, que irá repartiendo dichas peticiones entre los diferentes servidores o servicios.</p>
+<p><center>
+<img src="./images/pensando.png" alt="Pero vamos a ver..." width="150"/>
+</center></p>
+<h4>Si eso es lo que hace un proxy, ¿por qué no mandar las peticiones directamente al servidor web?</h4>
+<p>Pues porque los servidores proxy modernos hacen mucho más que redirigir peticiones:</p>
+<ul>
+<li>Actúan como un cortafuegos, filtrando las peticiones web.</li>
+<li>Permiten conectar redes distintas.</li>
+<li>Guardan los datos en caché para aligerar el proceso de redirección.</li>
+</ul>
+<p><img src="./images/espia.png" alt="Que no me vean..." width="150"/> Y además, ofrecen un alto grado de privacidad.</p>
+<p>Bien, pero lo que vamos a usar en este caso es un <strong>proxy inverso</strong> (<em>reverse proxy</em>), un tipo de proxy que recibe las peticiones del cliente, y en vez de redirigirlas, manda esas peticiones al servidor correspondiente como si el proxy fuera el propio cliente, recibiendo también las respuestas del servidor.</p>
+<h3>¿En qué se diferencia un proxy inverso del proxy de reenvío?</h3>
+<p>Lo que diferencia a un proxy inverso de un proxy de reenvío es su <strong>posición</strong> en el escenario de red.</p>
+<ul>
+<li>El proxy de reenvío se sitúa en primera línea, <strong>delante de los clientes</strong>, evitando que los servidores se comuniquen directamente con dichos clientes.</li>
+<li>Por otro lado, el proxy inverso se sitúa <strong>delante de los servidores</strong>, evitando que los clientes se comuniquen directamente con dichos servidores.</li>
+</ul>
+<p><center>
+<img src="./images/http/barriosesamo.gif" alt="Delante, detrás" width="250"/>
+</center></p>
+<p>Una vez aclarada la teoría, ya podemos comenzar a instalar y configurar el proxy inverso.</p>
+<p></br></p>
+<h2>Creación del escenario</h2>
+<p>El escenario sobre el que vamos a poner en marcha un proxy inverso se compone de dos máquinas:</p>
+<ul>
+<li>El <strong>servidor proxy</strong>, conectado al exterior y a red interna.</li>
+<li>El <strong>servidor web</strong>, conectado a la red interna, y donde tenemos instalado Apache2 con dos hosts virtuales. Al encontrarse en la red interna, entendemos que no se puede acceder directamente al servidor web desde el exterior.</li>
+</ul>
+<p><img src="./images/http/escenarioProxy.png" alt="Internet, proxy y servidor web" width="750"/></p>
+<p>El primer paso será instalar Apache2 en la máquina proxy:</p>
+<div class="highlight"><pre><span></span><code>apt install apache2
+</code></pre></div>
+
+<p></br></p>
+<h2>Configuración del proxy para acceder a las páginas del servidor</h2>
+<h3>Acceso a la primera página con la URL www.app1.org y a la segunda con la URL www.app2.org</h3>
+<p>Para empezar, en la máquina del proxy habilitamos los módulos <code>proxy</code> y <code>proxy_html</code>:</p>
+<div class="highlight"><pre><span></span><code>sudo a2enmod proxy proxy_http
+</code></pre></div>
+
+<p>Después, creamos un virtualhost por cada página:</p>
+<ul>
+<li>Configuración de la página 1:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;VirtualHost</span> <span class="err">*:80</span><span class="nt">&gt;</span>
+        ServerName www.app1.org
+        ProxyPass               /       &quot;http://interno.example1.org&quot;
+        ProxyPassReverse        /       &quot;http://interno.example1.org&quot;
+
+<span class="nt">&lt;/VirtualHost&gt;</span>
+</code></pre></div>
+
+<ul>
+<li>Configuración de la página 2:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;VirtualHost</span> <span class="err">*:80</span><span class="nt">&gt;</span>
+        ServerName www.app2.org
+        ProxyPass               /       &quot;http://interno.example2.org&quot;
+        ProxyPassReverse        /       &quot;http://interno.example2.org&quot;
+
+<span class="nt">&lt;/VirtualHost&gt;</span>
+</code></pre></div>
+
+<p>La directiva <code>ProxyPass</code> permite mapear los servidores web. En este caso, cuando accedamos a la URL www.app1.org, el proxy le mandará la petición al primer virtualhost (http://interno.example1.org) del servidor web; si accedemos a la URL www.app2.org, el proxy le mandará la petición al segundo virtualhost (http://interno.example2.org) del servidor web.</p>
+<p>La directiva <code>ProxyPassReverse</code> la añadiremos cuando estemos usando un proxy inverso, y tendrá los mismos valores especificados en la directiva <code>ProxyPass</code>. Permite redirigir las respuestas del servidor web cambiando la URL en las cabeceras <code>Location</code>, <code>Content-Location</code> y <code>URI</code>.</p>
+<p>A continuación, activamos ambos hosts virtuales en Apache2:</p>
+<div class="highlight"><pre><span></span><code>sudo a2ensite app1.conf
+sudo a2ensite app2.conf
+</code></pre></div>
+
+<p>Reiniciamos el servicio y añadimos en el fichero /etc/hosts/ de la máquina anfitrión la ip del proxy y los nuevos dominios:</p>
+<div class="highlight"><pre><span></span><code><span class="mf">192.168.121.217</span> <span class="n">www</span><span class="mf">.</span><span class="n">app1</span><span class="mf">.</span><span class="ow">or</span><span class="n">g</span> <span class="n">www</span><span class="mf">.</span><span class="n">app2</span><span class="mf">.</span><span class="ow">or</span><span class="n">g</span>
+</code></pre></div>
+
+<p>Mientras que el fichero /etc/hosts del proxy tendrá la resolución estática para acceder a las páginas del servidor:</p>
+<div class="highlight"><pre><span></span><code><span class="mf">10.0.0.6</span> <span class="nb">int</span><span class="n">erno</span><span class="mf">.</span><span class="n">example1</span><span class="mf">.</span><span class="ow">or</span><span class="n">g</span> <span class="nb">int</span><span class="n">erno</span><span class="mf">.</span><span class="n">example2</span><span class="mf">.</span><span class="ow">or</span><span class="n">g</span>
+</code></pre></div>
+
+<p>Cuando accedemos a dichos dominios desde el anfitrión, nos aparecerán las páginas del servidor:</p>
+<p><img src="./images/http/acceso_app1.png" alt="Accediendo al aplicación 1" width="750"/></p>
+<p><img src="./images/http/acceso_app2.png" alt="Accediendo al aplicación 2" width="750"/></p>
+<p></br></p>
+<h3>Acceso a la primera página con la URL www.servidor.org\app1 y a la segunda con la URL www.servidor.org\app2</h3>
+<p>En lugar de tener dos hosts virtuales, tendremos solo uno con la siguiente configuración:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;VirtualHost</span> <span class="err">*:80</span><span class="nt">&gt;</span>
+        ServerName www.servidor.org
+
+<span class="nt">&lt;Location</span> <span class="err">&quot;/app1&quot;</span><span class="nt">&gt;</span>
+    ProxyPass           &quot;http://interno.example1.org&quot;
+    ProxyPassReverse    &quot;http://interno.example1.org&quot;
+<span class="nt">&lt;/Location&gt;</span>
+
+<span class="nt">&lt;Location</span> <span class="err">&quot;/app2&quot;</span><span class="nt">&gt;</span>
+    ProxyPass           &quot;http://interno.example2.org&quot;
+    ProxyPassReverse    &quot;http://interno.example2.org&quot;
+<span class="nt">&lt;/Location&gt;</span>
+
+<span class="nt">&lt;/VirtualHost&gt;</span>
+</code></pre></div>
+
+<p>Activamos el nuevo virtualhost y recargamos Apache2:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">a2ensite</span> <span class="n">servidor</span><span class="o">.</span><span class="n">conf</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">reload</span> <span class="n">apache2</span>
+</code></pre></div>
+
+<p>Reiniciamos el servicio y añadimos en el fichero /etc/hosts/ de la máquina anfitrión el nuevo dominio, aprovechando la IP que pusimos antes:</p>
+<div class="highlight"><pre><span></span><code><span class="mf">192.168.121.217</span> <span class="n">www</span><span class="mf">.</span><span class="n">app1</span><span class="mf">.</span><span class="ow">or</span><span class="n">g</span> <span class="n">www</span><span class="mf">.</span><span class="n">app2</span><span class="mf">.</span><span class="ow">or</span><span class="n">g</span> <span class="n">www</span><span class="mf">.</span><span class="n">servidor</span><span class="mf">.</span><span class="ow">or</span><span class="n">g</span>
+</code></pre></div>
+
+<p>Finalmente, podremos acceder desde el anfitrión a los directorios del nuevo virtualhost:</p>
+<p><img src="./images/http/acceso_app1_opcion2.png" alt="Accediendo al aplicación 1" width="750"/></p>
+<p><img src="./images/http/acceso_app2_opcion2.png" alt="Accediendo al aplicación 2" width="750"/></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/proxy">Proxy</a>, <a href="./tags/http">HTTP</a>, <a href="./tags/apache">Apache</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>

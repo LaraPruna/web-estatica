@@ -168,21 +168,18 @@
 <p><center>
 <img src="./images/http/403_intranet.png" alt="No pasarás" width="500"/>
 </center></p>
-<p>Y lo mismo si entramos desde el cliente al directorio Internet:</p>
-<div class="highlight"><pre><span></span><code>vagrant@cliente:~$ sudo curl departamentos.iesgn.org/internet
-<span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>403<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>403<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>NO PASARÁS<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;/images/gandalf.jpg&quot;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&quot;Gandalf&quot;</span> <span class="na">width</span><span class="o">=</span><span class="s">500</span> <span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
-</code></pre></div>
-
+<p>Pero sí podemos acceder al directorio Internet:</p>
+<p><center>
+<img src="./images/http/acceso_internet.png" alt="Hemos accedido a Internet desde una red pública" width="500"/>
+</center></p>
+<p>Por otro lado, si entramos desde el cliente al directorio Internet, nos saldrá la página de error 403:</p>
+<p><center>
+<img src="./images/http/403_internet.png" alt="No pasarás" width="500"/>
+</center></p>
+<p>Pero en cambio sí podemos acceder a la Intranet desde el cliente:</p>
+<p><center>
+<img src="./images/http/Acceso_intranet.png" alt="Hemos accedido a la Intranet desde la red privada" width="500"/>
+</center></p>
 <p>Dicho esto, comencemos a ver ambas formas de autentificación. <img src="./images/corriendo.png" alt="Empezamos" width="200"/></p>
 <p></br></p>
 <h2><img src="./images/http/candado_viejo.jpg" alt="Candado viejo" width="100"/> Autenticación básica</h2>

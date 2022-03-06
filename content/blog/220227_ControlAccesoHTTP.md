@@ -71,21 +71,23 @@ Cuando intentamos acceder desde el anfitrión a Intranet, nos saltará la págin
 <img src="{static}/images/http/403_intranet.png" alt="No pasarás" width="500"/>
 </center>
 
-Y lo mismo si entramos desde el cliente al directorio Internet:
-```
-vagrant@cliente:~$ sudo curl departamentos.iesgn.org/internet
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>403</title>
-  </head>
-  <body>
-    <h1>403</h1>
-    <h1>NO PASARÁS</h1>
-    <img src="/images/gandalf.jpg" alt="Gandalf" width=500 >
-  </body>
-```
+Pero sí podemos acceder al directorio Internet:
+
+<center>
+<img src="{static}/images/http/acceso_internet.png" alt="Hemos accedido a Internet desde una red pública" width="500"/>
+</center>
+
+Por otro lado, si entramos desde el cliente al directorio Internet, nos saldrá la página de error 403:
+
+<center>
+<img src="{static}/images/http/403_internet.png" alt="No pasarás" width="500"/>
+</center>
+
+Pero en cambio sí podemos acceder a la Intranet desde el cliente:
+
+<center>
+<img src="{static}/images/http/Acceso_intranet.png" alt="Hemos accedido a la Intranet desde la red privada" width="500"/>
+</center>
 
 Dicho esto, comencemos a ver ambas formas de autentificación. <img src="{static}/images/corriendo.png" alt="Empezamos" width="200"/>
 
