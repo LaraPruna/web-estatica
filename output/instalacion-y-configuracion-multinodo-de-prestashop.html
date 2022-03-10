@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Instalación y configuración multinodo de Prestashop</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo realizaremos la instalación y la configuración multinodo de Prestashop, un CMS de PHP enfocado en el comercio electrónico.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Prestashop">
+        <meta name="tags" content="CMS">
+        <meta name="tags" content="PHP">
+        <meta name="tags" content="Apache">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./instalacion-y-configuracion-multinodo-de-prestashop.html">
+	<meta property="og:title" content="Instalación y configuración multinodo de Prestashop">
+	<meta property="article:published_time" content="2021-10-28 09:07:00+02:00">
+            <meta property="og:description" content="En este artículo realizaremos la instalación y la configuración multinodo de Prestashop, un CMS de PHP enfocado en el comercio electrónico.">
+
+            <meta property="og:image" content=".images/covers/prestashop.png">
+</head>
+
+<body class="article-instalacion-y-configuracion-multinodo-de-prestashop">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="./categories">Categorías</a>
+                <a class="navbar-brand" href="./pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/prestashop.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Instalación y configuración multinodo de Prestashop</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on jue 28 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>Prestashop es un <strong>sistema de gestión de contenidos (CMS)</strong> libre y de código abierto, diseñado en PHP y enfocado en el comercio electrónico, donde los usuarios podrán vender sus productos y personalizar la tienda en línea de una manera ágil y sencilla. En el siguiente enlace encontraréis información más detallada sobre las ventajas de Prestashop:</p>
+<p><center>
+<a href="https://sergioescriba.com/que-es-prestashop/"><img src="./images/LAMP/que-es-prestashop.png" alt="Prestashop es maravilloso" width="750"/></a>
+</center></p>
+<p>Para instalar Prestashop, he creado una instancia en Vagrant basado en un <em>box</em> de Debian 11 Bullseye. Una vez levantada la máquina, dentro he instalado un LAMP, tal y como explico en <a href="https://www.sysraider.es/principal/instalacion-de-un-servidor-lamp-y-phpmyadmin.html">este artículo</a>. Posteriormente, crearemos un <em>Virtualhost</em> para acceder al CMS mediante un nombre de dominio:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;VirtualHost</span> <span class="err">*:80</span><span class="nt">&gt;</span>
+      ServerAdmin webmaster@localhost
+      ServerName www.lara-prestashop.org
+      ServerAlias www.www.lara-prestashop.org
+      DocumentRoot /var/www/www.lara-prestashop.org
+      ErrorLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/error.log
+      CustomLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/access.log combined
+
+      <span class="nt">&lt;Directory</span> <span class="err">/var/www/www.lara-prestashop.org</span><span class="nt">&gt;</span>
+            Options -Indexes
+      <span class="nt">&lt;/Directory&gt;</span>
+
+      <span class="nt">&lt;IfModule</span> <span class="err">mod_dir.c</span><span class="nt">&gt;</span>
+          DirectoryIndex index.php index.html index.cgi index.pl  index.xhtml index.htm
+      <span class="nt">&lt;/IfModule&gt;</span>
+
+<span class="nt">&lt;/VirtualHost&gt;</span>
+</code></pre></div>
+
+<p>En el fichero he añadido la siguiente configuración:</p>
+<ul>
+<li>En el caso de no encontrar el fichero <code>index.html</code>, no se mostrarán los directorios</li>
+<li>En el orden de prioridad del index, los ficheros PHP estarán por delante de los HTML.</li>
+</ul>
+<p>Guardamos el fichero y reiniciamos el servicio de Apache. A continuación, entramos en la base de datos y creamos un usuario:</p>
+<div class="highlight"><pre><span></span><code>GRANT ALL PRIVILEGES ON *.* TO &#39;lara&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;lara&#39;;
+</code></pre></div>
+
+<p>Descargamos el paquete comprimido de Prestashop desde la <a href="https://www.prestashop.com/es/descarga">página web oficial</a>, rellenando para ello el pequeño formulario que nos aparece, y lo pasamos por scp a la instancia de Vagrant:</p>
+<div class="highlight"><pre><span></span><code><span class="n">scp</span><span class="w"> </span><span class="n">prestashop_1</span><span class="mf">.7.8.0</span><span class="p">.</span><span class="n">zip</span><span class="w"> </span><span class="n">vagrant</span><span class="mf">@192.168.121.116</span><span class="o">:/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="w"></span>
+</code></pre></div>
+
+<p>Dentro del vagrant, extraemos el fichero comprimido en el directorio raíz:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">unzip</span> <span class="o">-</span><span class="n">d</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">www</span><span class="o">.</span><span class="n">lara</span><span class="o">-</span><span class="n">prestashop</span><span class="o">.</span><span class="n">org</span><span class="o">/</span> <span class="n">prestashop_1</span><span class="o">.</span><span class="mf">7.8</span><span class="o">.</span><span class="mf">0.</span><span class="n">zip</span>
+</code></pre></div>
+
+<p>Accedemos a la URL desde el host para realizar la instalación, y nos informarán de que tenemos que instalar la extención PHP zip:</p>
+<p><center>
+<img src="./images/rollo.png" alt="Vaya..." width="150"/>
+<img src="./images/LAMP/php_zip.png" alt="Error: hay que instalar PHP zip" width="400"/>
+</center></p>
+<p>No pasa nada, instalamos el paquete que nos piden y recargamos apache2:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">php</span><span class="o">-</span><span class="n">zip</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">reload</span> <span class="n">apache2</span>
+</code></pre></div>
+
+<p>Volvemos a probar, y ahora nos pide la extensión PHP Simple XML:</p>
+<p><center>
+<img src="./images/enfado.png" alt="Pero bueno..." width="150"/>
+<img src="./images/LAMP/simplexml_php.png" alt="Error: la instalación requiere la extensión SimpleXML PHP" width="400"/>
+</center></p>
+<p>Bueno, va, instalamos también esa extensión:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">simplexml</span><span class="o">-</span><span class="n">php</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">reload</span> <span class="n">apache2</span>
+</code></pre></div>
+
+<p><img src="./images/victoria.png" alt="Esta vez sí" width="150"/> Por fin, nos aparece el asistente de la instalación de Prestashop:</p>
+<p><img src="./images/LAMP/instalador_prestashop.png" alt="Instalador de Prestashop" width="750"/></p>
+<p>No, amigos, no os emocionéis aún, que esto aún no ha acabado. Prestashop también nos pedirá una serie de extensiones de PHP (<strong>php-gd</strong>, <strong>php-intl</strong>, <strong>php-curl</strong> y <strong>php-mbstring</strong>) y el módulo <strong>rewrite</strong> de Apache2.</p>
+<p><center>
+<img src="./images/bilbo-endemoniado.gif" alt="Pues no" width="400"/>
+</center></p>
+<p>Instalamos las extensiones, habilitamos el módulo rewrite en /etc/apache2/mods-enabled con <code>sudo a2enmod rewrite</code>, reiniciamos el servicio y seguimos con la instalación de Prestashop.</p>
+<p>Una vez terminada la instalación, nos dirigimos al <strong><em>back-office</em></strong> para gestionar la tienda (añadiendo en la URL el directorio "admin" e introduciendo nuestro usuario y contraseña de administrador). Dentro, podéis hacer los cambios que consideréis conveniente. Yo he cambiado el <em>favicon</em> y el logo de la página (no he cambiado la plantilla, porque los temas son de pago). También he publicado un producto nuevo en la tienda.</p>
+<p><img src="./images/LAMP/cambios.png" alt="Cambio de logo y favicon" width="750"/>
+<img src="./images/LAMP/posters.png" alt="Artículo publicado" width="750"/></p>
+<p>Para instalar un <strong>módulo</strong> en Prestashop, nos vamos al catálogo. Yo he instalado el módulo "Visitors online", que se encarga de realizar estadísticas y añade una lista de los visitantes que están navegando por la tienda.</p>
+<p><center>
+<img src="./images/LAMP/modulo.png" alt="Módulo de visitantes en línea" width="650"/>
+</center></p>
+<p>A continuación, vamos a realizar una <strong>configuración multinodo</strong>, es decir, tendremos la aplicación web en una máquina y la base de datos en otra. Para ello, necesitaremos una nueva instancia, aunque antes de crearla exportaremos los datos de la aplicación que tengamos en la base de datos. En mi caso, como estoy utilizando MariaDB, ejecutaré el siguiente comando para extraer todos los datos y almacenarlos en un fichero SQL:</p>
+<div class="highlight"><pre><span></span><code>mysqldump -v --opt --events --routines --triggers --default-character-set=utf8 -u lara -p prestashop &gt; db_backup_prestashop_`date +%Y%m%d_%H%M%S`.sql
+</code></pre></div>
+
+<p>Después, creamos otra máquina conectada con una red interna a la primera (ya que la base de datos no deberá ser accesible desde el exterior), editando el fichero Vagrantfile:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">Vagrant</span>.<span class="nv">configure</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">2</span><span class="s2">&quot;</span><span class="ss">)</span> <span class="k">do</span> <span class="o">|</span><span class="nv">config</span><span class="o">|</span>
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo1</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo1</span><span class="o">|</span>
+      <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span>
+      <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">provider</span> :<span class="nv">libvirt</span> <span class="k">do</span> <span class="o">|</span><span class="nv">v</span><span class="o">|</span>
+        <span class="nv">v</span>.<span class="nv">memory</span> <span class="o">=</span> <span class="mi">1024</span>
+      <span class="k">end</span>
+      <span class="nv">nodo1</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+        :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+        :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+        :<span class="nv">ip</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">192.168.100.2</span><span class="s2">&quot;</span>,
+        :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span>
+      <span class="k">end</span>
+  <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">define</span> :<span class="nv">nodo2</span> <span class="k">do</span> <span class="o">|</span><span class="nv">nodo2</span><span class="o">|</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">box</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">debian/bullseye64</span><span class="s2">&quot;</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">hostname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">nodo2</span><span class="s2">&quot;</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">synced_folder</span> <span class="s2">&quot;</span><span class="s">.</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">/vagrant</span><span class="s2">&quot;</span>, <span class="nv">disabled</span>: <span class="nv">true</span>
+    <span class="nv">nodo2</span>.<span class="nv">vm</span>.<span class="nv">network</span> :<span class="nv">private_network</span>,
+      :<span class="nv">libvirt__network_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">muyaislada</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__dhcp_enabled</span> <span class="o">=&gt;</span> <span class="nv">false</span>,
+      :<span class="nv">ip</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">192.168.100.3</span><span class="s2">&quot;</span>,
+      :<span class="nv">libvirt__forward_mode</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="s">veryisolated</span><span class="s2">&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+
+<p>Configuramos una base de datos en el segundo nodo y creamos un nuevo usuario, tal como lo hicimos la primera vez, y restauramos la base de datos con la copia de seguridad:</p>
+<div class="highlight"><pre><span></span><code>mysql -u lara --password=lara prestashop &lt; db_backup_prestashop_20211021_172335.sql
+</code></pre></div>
+
+<p>En la primera máquina, desinstalamos el servidor de base de datos para asegurarnos de que coja los datos del segundo nodo:</p>
+<div class="highlight"><pre><span></span><code>sudo apt remove mariadb-server
+</code></pre></div>
+
+<p><img src="./images/maldad.png" alt="JUAJUAJUA" width="200"/> Ya no hay vuelta atrás.</p>
+<p>Para que la página funcione desde el nodo2, cambiamos la dirección IP del servidor en el fichero <code>/etc/hosts</code> del anfitrión, mientras que en el nodo1 editamos el fichero <code>/app/config/parameters.php</code> y cambiamos la IP del host por la del nodo2.</p>
+<p><center>
+<img src="./images/LAMP/cambioIP.png" alt="Nueva configuración" width="500"/>
+</center></p>
+<p>Entramos en el nodo2 y configuramos MariaDB para el acceso remoto. Para ello, vamos al fichero <code>/etc/mysql/mariadb.conf.d/50-server.cnf</code> y comentamos la siguiente línea:</p>
+<div class="highlight"><pre><span></span><code>#bind-address            = 127.0.0.1
+</code></pre></div>
+
+<p><img src="./images/brindis.png" alt="Esto se merece un brindis" width="150"/> Ahora podemos volver acceder a la página web.</p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/prestashop">Prestashop</a>, <a href="./tags/cms">CMS</a>, <a href="./tags/php">PHP</a>, <a href="./tags/apache">Apache</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
