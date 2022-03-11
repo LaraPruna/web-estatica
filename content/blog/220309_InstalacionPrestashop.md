@@ -12,6 +12,10 @@ Prestashop es un **sistema de gestión de contenidos (CMS)** libre y de código 
 [<img src="{static}/images/LAMP/que-es-prestashop.png" alt="Prestashop es maravilloso" width="750"/>](https://sergioescriba.com/que-es-prestashop/)
 </center>
 
+<br>
+
+## Instalación de Prestashop
+
 Para instalar Prestashop, he creado una instancia en Vagrant basado en un *box* de Debian 11 Bullseye. Una vez levantada la máquina, dentro he instalado un LAMP, tal y como explico en [este artículo](https://www.sysraider.es/principal/instalacion-de-un-servidor-lamp-y-phpmyadmin.html). Posteriormente, crearemos un *Virtualhost* para acceder al CMS mediante un nombre de dominio:
 ```
 <VirtualHost *:80>
@@ -101,6 +105,10 @@ Para instalar un **módulo** en Prestashop, nos vamos al catálogo. Yo he instal
 <center>
 <img src="{static}/images/LAMP/modulo.png" alt="Módulo de visitantes en línea" width="650"/>
 </center>
+
+<br>
+
+## Configuración multinodo
 
 A continuación, vamos a realizar una **configuración multinodo**, es decir, tendremos la aplicación web en una máquina y la base de datos en otra. Para ello, necesitaremos una nueva instancia, aunque antes de crearla exportaremos los datos de la aplicación que tengamos en la base de datos. En mi caso, como estoy utilizando MariaDB, ejecutaré el siguiente comando para extraer todos los datos y almacenarlos en un fichero SQL:
 ```

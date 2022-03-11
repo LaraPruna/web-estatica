@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Instalación de Joomla y migración a un hosting externo</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="./theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="./theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="En este artículo realizaremos la instalación de Joomla, tras lo cual migraremos el CMS a un hosting externo, concretamente, Awardspace.">
+
+        <meta name="author" content="Lara Pruna">
+
+        <meta name="tags" content="Joomla">
+        <meta name="tags" content="CMS">
+        <meta name="tags" content="PHP">
+        <meta name="tags" content="Apache">
+        <meta name="tags" content="Awardspace">
+        <meta name="tags" content="Migración">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="SysRaider">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="./author/lara-pruna.html">
+	<meta property="og:url" content="./instalacion-de-joomla-y-migracion-a-un-hosting-externo.html">
+	<meta property="og:title" content="Instalación de Joomla y migración a un hosting externo">
+	<meta property="article:published_time" content="2021-10-28 09:30:00+02:00">
+            <meta property="og:description" content="En este artículo realizaremos la instalación de Joomla, tras lo cual migraremos el CMS a un hosting externo, concretamente, Awardspace.">
+
+            <meta property="og:image" content=".images/covers/joomla.png">
+</head>
+
+<body class="article-instalacion-de-joomla-y-migracion-a-un-hosting-externo">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+     <!--       <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> -->
+                <a class="navbar-brand" href="./">Inicio</a>
+		<a class="navbar-brand" href="./categories">Categorías</a>
+                <a class="navbar-brand" href="./pages/about.html">Sobre mí</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+<!--            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="./pages/about.html">Sobre mí</a></li>
+                </ul>
+            </div> -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('./images/covers/joomla.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Instalación de Joomla y migración a un hosting externo</h1>
+                        <span class="meta">Posted by
+                                <a href="./author/lara-pruna.html">Lara Pruna</a>
+                             on jue 28 octubre 2021
+                        </span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>Joomla es un <strong>sistema de gestión de contenidos (CMS)</strong> libre, de código abierto y desarrollado en PHP, que permite desarrollar sitios web dinámicos e interactivos. En el siguiente enlace encontraréis información más detallada sobre las ventajas de Joomla:</p>
+<p><center>
+<a href="https://www.lucushost.com/blog/que-es-joomla-y-para-que-sirve/"><img src="./images/LAMP/que-es-joomla.png" alt="Joomla es maravilloso" width="750"/></a>
+</center></p>
+<p><br></p>
+<h2>Instalación de Joomla</h2>
+<p>Para instalar Joomla, he aprovechado el escenario que creé en Vagrant para la instalación de <a href="https://www.sysraider.es/principal/instalacion-y-configuracion-multinodo-de-prestashop.html">Prestashop</a>, donde he creado un nuevo <em>VirtualHost</em> en Apache con el siguiente contenido:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;VirtualHost</span> <span class="err">*:80</span><span class="nt">&gt;</span>
+    ServerAdmin webmaster@localhost
+    ServerName www.lara-joomla.org
+    ServerAlias www.lara-joomla.org
+    DocumentRoot /var/www/www.lara-joomla.org
+    ErrorLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/joomla.error.log
+    CustomLog <span class="cp">${</span><span class="n">APACHE_LOG_DIR</span><span class="cp">}</span>/joomla.access.log combined
+
+    <span class="nt">&lt;Directory</span> <span class="err">/var/www/www.lara-joomla.org</span><span class="nt">&gt;</span>
+          Options -Indexes
+    <span class="nt">&lt;/Directory&gt;</span>
+
+    <span class="nt">&lt;IfModule</span> <span class="err">mod_dir.c</span><span class="nt">&gt;</span>
+        DirectoryIndex index.php index.html index.cgi index.pl  index.xhtml index.htm
+    <span class="nt">&lt;/IfModule&gt;</span>
+
+<span class="nt">&lt;/VirtualHost&gt;</span>
+</code></pre></div>
+
+<p>En primer lugar, nos descargaremos el paquete zip desde la <a href="https://downloads.joomla.org/">página oficial de descarga</a> y lo pasaremos por <code>scp</code> al servidor:</p>
+<div class="highlight"><pre><span></span><code><span class="err">`</span><span class="n">scp</span><span class="err">`</span><span class="w"> </span><span class="n">Joomla_4</span><span class="mf">.0.4</span><span class="o">-</span><span class="n">Stable</span><span class="o">-</span><span class="n">Full_Package</span><span class="p">.</span><span class="n">zip</span><span class="w"> </span><span class="n">vagrant</span><span class="mf">@192.168.121.116</span><span class="o">:/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="w"></span>
+</code></pre></div>
+
+<p>Extraemos el contenido del paquete en el directorio raíz con el comando <code>unzip</code> (lo instalamos desde los repositorios si no lo tenemos aún):</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">unzip</span> <span class="o">-</span><span class="n">d</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">www</span><span class="o">.</span><span class="n">lara</span><span class="o">-</span><span class="n">joomla</span><span class="o">.</span><span class="n">org</span><span class="o">/</span> <span class="n">Joomla_4</span><span class="o">.</span><span class="mf">0.4</span><span class="o">-</span><span class="n">Stable</span><span class="o">-</span><span class="n">Full_Package</span><span class="o">.</span><span class="n">zip</span>
+</code></pre></div>
+
+<p>Habilitamos el host virtual y recargamos apache2:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">a2ensite</span> <span class="n">www</span><span class="o">.</span><span class="n">lara</span><span class="o">-</span><span class="n">joomla</span><span class="o">.</span><span class="n">org</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">reload</span> <span class="n">apache2</span>
+</code></pre></div>
+
+<p>A continuación, accedemos a la URL del sitio:</p>
+<p><img src="./images/LAMP/joomla_configuracionPHP.png" alt="Empezamos" width="750"/></p>
+<p><img src="./images/pensando.png" alt="Empezamos" width="150"/> Parece que tenemos un problema de permisos.</p>
+<p>Básicamente, lo que nos están diciendo es que Apache <strong>no tiene permiso</strong> para acceder ni realizar cambios en el fichero de configuración, lo cual impide realizar la instalación de Joomla. Por lo tanto, cambiamos el propietario del directorio raíz y todo su contenido al usuario <code>www-data</code>, que es el usuario de Apache en Debian:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">chown</span> <span class="o">-</span><span class="n">Rf</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span><span class="p">:</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">www</span><span class="o">.</span><span class="n">lara</span><span class="o">-</span><span class="n">joomla</span><span class="o">.</span><span class="n">org</span><span class="o">/</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">reload</span> <span class="n">apache2</span>
+</code></pre></div>
+
+<p>Ahora sí podemos ejecutar el instalador, por lo que seguimos adelante sin problemas:</p>
+<p><img src="./images/LAMP/instalador_joomla.png" alt="¡Un obstáculo menos!" width="750"/>
+<img src="./images/LAMP/instalado_joomla.png" alt="Conseguido" width="750"/></p>
+<p>Una vez instalado, ya podemos acceder al sitio. Para acceder como administrador, introducimos el directorio "administrator" en la URL (en mi caso, www.lara-joomla.org/administrator).</p>
+<p><img src="./images/LAMP/joomla_administrator.png" alt="Administrando Joomla" width="750"/>
+<img src="./images/LAMP/portal_joomla_localhost.png" alt="Portal de Joomla" width="750"/></p>
+<p><br></p>
+<h2>Migración de Joomla a Awardspace</h2>
+<p>Awardspace es un <strong>proveedor de hosting gratuito</strong>, que permite alojar aplicaciones CMS y sin anuncios, aunque también incluye diferentes tarifas en las que se nos ofrece más y mejores prestaciones. En el siguiente enlace tenéis disponible un análisis completo de Awardspace:</p>
+<p><center>
+<a href="https://hostinglemon.com/opiniones/award-space/"><img src="./images/LAMP/Opiniones-y-Analisis-de-Award-Space.jpg" alt="Ventajas de Awardspace" width="350"/></a>
+</center></p>
+<p>Para migrar el sitio web, pasaremos todo el contenido del directorio raíz por <code>scp</code> al anfitrión, y desde ahí lo subiremos al gestor de ficheros de AwardSpace.</p>
+<p><img src="./images/LAMP/awardspace_ficheros.png" alt="Gestor de ficheros" width="750"/></p>
+<p>Después, editamos el fichero de configuración de Joomla (<code>configuration.php</code>), donde añadiremos los datos de la base de datos y la ruta del directorio raíz:</p>
+<p><img src="./images/LAMP/configurationJoomla.png" alt="Fichero configuration.php" width="750"/></p>
+<p>Una vez subidos todo los ficheros del CMS, nos vamos a la sección de bases de datos MySQL, donde creamos una nueva base de datos y un usuario.</p>
+<p><img src="./images/LAMP/awardspace_database.png" alt="Configuración de la base de datos" width="750"/></p>
+<p>Realizamos una copia de seguridad de la base de datos donde tenemos las tablas de Joomla, y la pasamos al anfitrión por <code>scp</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysqldump</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="o">--</span><span class="n">opt</span><span class="w"> </span><span class="o">--</span><span class="n">events</span><span class="w"> </span><span class="o">--</span><span class="n">routines</span><span class="w"> </span><span class="o">--</span><span class="n">triggers</span><span class="w"> </span><span class="o">--</span><span class="k">default</span><span class="o">-</span><span class="n">character</span><span class="o">-</span><span class="n">set</span><span class="o">=</span><span class="n">utf8</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="n">lara</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="n">joomla</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">db_backup_joomla_</span><span class="err">`</span><span class="n">date</span><span class="w"> </span><span class="o">+%</span><span class="n">Y</span><span class="o">%</span><span class="n">m</span><span class="o">%</span><span class="n">d_</span><span class="o">%</span><span class="n">H</span><span class="o">%</span><span class="n">M</span><span class="o">%</span><span class="n">S</span><span class="err">`</span><span class="p">.</span><span class="n">sql</span><span class="w"></span>
+
+<span class="n">scp</span><span class="w"> </span><span class="n">db_backup_joomla_20211027_154431</span><span class="p">.</span><span class="n">sql</span><span class="w"> </span><span class="n">lpruna</span><span class="mf">@192.168.1.109</span><span class="o">:/</span><span class="n">home</span><span class="o">/</span><span class="n">lpruna</span><span class="o">/</span><span class="w"></span>
+</code></pre></div>
+
+<p>Accedemos a la base de datos que hemos creado en AwardSpace a través de phpmyadmin, que podemos instalar con <code>apt install</code> (véase mi artículo sobre la instalación de <a href="https://www.sysraider.es/principal/instalacion-de-un-servidor-lamp-y-phpmyadmin.html">phpmyadmin</a>). Una vez dentro, seleccionamos nuestra base de datos en la parte izquierda de la pantalla y subimos la copia de seguridad en la pestaña "Importar":</p>
+<p><img src="./images/LAMP/phpmyadmin.png" alt="phpmyadmin" width="750"/>
+<img src="./images/LAMP/bd_subido.png" alt="Base de datos subida" width="750"/></p>
+<p><img src="./images/fiesta.png" alt="¡Toma ya!" width="100"/> Ahora podemos acceder al sitio web con el nuevo dominio del hosting:</p>
+<p><img src="./images/LAMP/portal_joomla_awardspace.png" alt="Portal de Joomla" width="750"/></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="./tags/joomla">Joomla</a>, <a href="./tags/cms">CMS</a>, <a href="./tags/php">PHP</a>, <a href="./tags/apache">Apache</a>, <a href="./tags/awardspace">Awardspace</a>, <a href="./tags/migracion">Migración</a></p>
+        </div>
+
+    <hr>
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://www.linkedin.com/in/lara-pruna-ternero-97887911b/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/LaraPruna/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>. <br />        &copy;  Lara Pruna
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="./theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="./theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="./theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>

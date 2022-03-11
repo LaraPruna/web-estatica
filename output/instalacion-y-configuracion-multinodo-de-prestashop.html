@@ -113,6 +113,8 @@
 <p><center>
 <a href="https://sergioescriba.com/que-es-prestashop/"><img src="./images/LAMP/que-es-prestashop.png" alt="Prestashop es maravilloso" width="750"/></a>
 </center></p>
+<p><br></p>
+<h2>Instalación de Prestashop</h2>
 <p>Para instalar Prestashop, he creado una instancia en Vagrant basado en un <em>box</em> de Debian 11 Bullseye. Una vez levantada la máquina, dentro he instalado un LAMP, tal y como explico en <a href="https://www.sysraider.es/principal/instalacion-de-un-servidor-lamp-y-phpmyadmin.html">este artículo</a>. Posteriormente, crearemos un <em>Virtualhost</em> para acceder al CMS mediante un nombre de dominio:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&lt;VirtualHost</span> <span class="err">*:80</span><span class="nt">&gt;</span>
       ServerAdmin webmaster@localhost
@@ -184,6 +186,8 @@
 <p><center>
 <img src="./images/LAMP/modulo.png" alt="Módulo de visitantes en línea" width="650"/>
 </center></p>
+<p><br></p>
+<h2>Configuración multinodo</h2>
 <p>A continuación, vamos a realizar una <strong>configuración multinodo</strong>, es decir, tendremos la aplicación web en una máquina y la base de datos en otra. Para ello, necesitaremos una nueva instancia, aunque antes de crearla exportaremos los datos de la aplicación que tengamos en la base de datos. En mi caso, como estoy utilizando MariaDB, ejecutaré el siguiente comando para extraer todos los datos y almacenarlos en un fichero SQL:</p>
 <div class="highlight"><pre><span></span><code>mysqldump -v --opt --events --routines --triggers --default-character-set=utf8 -u lara -p prestashop &gt; db_backup_prestashop_`date +%Y%m%d_%H%M%S`.sql
 </code></pre></div>
